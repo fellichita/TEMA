@@ -1,0 +1,20 @@
+{
+  "version": "3.4.0",
+  "predecessor": "3.3.0",
+  "purpose": "Correct publication units and the meaning of archived quotations while preserving uncertainty and access to every retained study.",
+  "archive_policy": "Results 3.0 through 3.3 retain their arithmetic and extraction policies. New analysis creates a new result; reading an archive never migrates its scientific meaning. A newer result may retain unchanged older cards with their own methodology versions.",
+  "formulae": "The 3.3 bibliometric formulas, evidence gates, fixed primary-observation watchlist priority and completed-year rules are unchanged. Priority remains an uncalibrated ordering, never a success probability.",
+  "publication_units": "Observed withdrawal notices and explicit version/supplement relations are evaluated across received source revisions. A dataset, supplement or retraction notice is not an independent research study. Supporting metadata remains archived with its real source; a rich abstract is not replaced by a later empty revision.",
+  "quotation_policy": "New automatic claims use exact raw sentence spans, preserving abbreviations, decimal values, Unicode and source offsets. A beneficial change must be an achieved own result; an adverse effect, a required future improvement or an unresolved barrier does not establish an advantage. A one-paper result cannot establish an advantage of an unverified mixed group.",
+  "application_policy": "The automatic research-application component requires an own empirical result under the same contextual rules as its advantage. Computational and theoretical findings remain research observations and cannot establish experimental application. Demonstration and deployment still require attributed review.",
+  "queue_policy": "The TOP limit and the limit of distinct attempted hypotheses are separate. Attempted, rejected, unfinished and unattempted hypotheses retain traceable status. Resuming a run reuses frozen selections and budget allocations; it does not reset spending or scientific decisions.",
+  "evidence_versions": {
+    "publication_status": "publication-status/2.0.0",
+    "primary_result": "archived-primary-result/2.0.0",
+    "source_novelty": "archived-author-novelty/3.0.0",
+    "primary_passport": "exact-contextual-quotation/4.0.0",
+    "research_application": "verified-application/research/2.0.0",
+    "sentence_segmentation": "raw-sentence-spans/1.0.0"
+  },
+  "validation_status": "Development corpora and regression tests verify specified behavior and provenance. Independent external scientific labeling remains required to measure relevance, claim support, emerging precision, useful yield and forecasting ability. No scientific acceptance claim follows from test success or a completed run."
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "provenance": "Synthetic English smoke examples authored for software checking; no scientific reference labels.",
+  "calibrated": false,
+  "queries": [
+    {
+      "id": "batteries",
+      "query": "solid state batteries",
+      "smoke_expected": {"higher": "solid-electrolyte", "lower": "bird-migration"},
+      "documents": [
+        {"id": "solid-electrolyte", "kind": "smoke_expected", "title": "Solid electrolytes for rechargeable batteries", "abstract": "This study investigates ceramic electrolytes in rechargeable lithium cells. Ionic transport and contact resistance are measured during repeated charging and discharging."},
+        {"id": "bird-migration", "kind": "smoke_expected", "title": "Seasonal migration of coastal birds", "abstract": "Researchers track coastal birds over several seasons using satellite tags. Their analysis describes nesting locations, migration distances and changes in feeding behaviour."}
+      ]
+    },
+    {
+      "id": "dna",
+      "query": "DNA data storage",
+      "smoke_expected": {"higher": "digital-dna", "lower": "volcanic-rocks"},
+      "documents": [
+        {"id": "digital-dna", "kind": "smoke_expected", "title": "Digital files encoded into synthetic DNA", "abstract": "Digital images are encoded in synthetic DNA sequences and recovered by sequencing. The proposed error correcting code protects stored information against substitutions and deletions."},
+        {"id": "volcanic-rocks", "kind": "smoke_expected", "title": "Mineral composition of volcanic rocks", "abstract": "Geological samples from volcanic islands are examined under a microscope. Mineral composition and crystal structure reveal the cooling history of ancient lava flows."}
+      ]
+    },
+    {
+      "id": "quantum",
+      "query": "quantum reservoir computing",
+      "smoke_expected": {"higher": "quantum-dynamics", "lower": "crop-irrigation"},
+      "documents": [
+        {"id": "quantum-dynamics", "kind": "smoke_expected", "title": "Learning temporal signals with a quantum reservoir", "abstract": "A quantum reservoir uses the dynamics of interacting qubits to process temporal inputs. A trained linear readout estimates the next value of a benchmark sequence."},
+        {"id": "crop-irrigation", "kind": "smoke_expected", "title": "Irrigation schedules for wheat production", "abstract": "Field trials compare irrigation schedules during wheat cultivation. Soil moisture, rainfall and grain yield are recorded to estimate water requirements across several farms."}
+      ]
+    },
+    {
+      "id": "solar",
+      "query": "perovskite solar cells",
+      "smoke_expected": {"higher": "solar-absorbers", "lower": "medieval-trade"},
+      "documents": [
+        {"id": "solar-absorbers", "kind": "smoke_expected", "title": "Stable perovskite absorbers for photovoltaic devices", "abstract": "Perovskite thin films absorb sunlight in photovoltaic devices. This study measures charge extraction and power conversion efficiency after exposure to heat and moisture."},
+        {"id": "medieval-trade", "kind": "smoke_expected", "title": "Trade routes in medieval coastal towns", "abstract": "Historical archives describe merchants and shipping routes between medieval towns. Records of household goods and harbour fees are compared across several centuries."}
+      ]
+    },
+    {
+      "id": "photonic",
+      "query": "photonic neuromorphic computing",
+      "smoke_expected": {"higher": "optical-compute", "lower": "coral-reefs"},
+      "documents": [
+        {"id": "optical-compute", "kind": "smoke_expected", "title": "Photonic neural networks for optical matrix computation", "abstract": "An integrated photonic neural network performs weighted matrix multiplication with optical signals. Measurements demonstrate the computing operation in a programmable optical circuit."},
+        {"id": "coral-reefs", "kind": "smoke_expected", "title": "Ecological surveys of tropical coral reefs", "abstract": "Marine biologists survey coral reefs to record fish populations and coral diversity. Their observations describe ecological changes after seasonal storms in tropical waters."},
+        {"id": "optical-interconnect", "kind": "adversarial_unvalidated", "title": "Photonic interconnects for neural network accelerators", "abstract": "An optical interconnect transfers activations between electronic processors in a neural network accelerator. All matrix multiplication and nonlinear activation are performed electronically; the photonic link transports the data but does not execute neural computation."},
+        {"id": "future-optical-compute", "kind": "adversarial_unvalidated", "title": "Optical switches with a possible future neural application", "abstract": "The experiment characterizes an optical switch for communication systems. The authors suggest that future photonic neural networks could use this device, but no neural computation or synaptic operation is demonstrated in the present study."}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1390 @@
+/* Презентационный слой веб-интерфейса.
+   Стиль: сдержанный редакционный минимализм для исследовательского инструмента —
+   бумажные поверхности, один индиговый акцент, волосяные линии вместо теней
+   там, где это возможно, крупная типографика и много воздуха.
+   Ни одного внешнего ресурса: шрифты системные, иконки и текстуры — CSS и SVG. */
+
+:root {
+  color-scheme: light;
+  /* Поверхности, от дальней к ближней. */
+  --ta-bg: #F5F3EF;
+  --ta-surface: #FDFCFA;
+  --ta-raised: #EFECE6;
+  --ta-field: #FAF8F4;
+  /* Линии: border — у элементов управления (≥3:1), divider — декоративная. */
+  --ta-border: #7A736A;
+  --ta-divider: #E6E2DA;
+  /* Текст. */
+  --ta-text: #1B1917;
+  --ta-muted: #5E584F;
+  --ta-disabled: #9B958B;
+  /* Акцент и тональные заливки от него. */
+  --ta-accent: #1D1B18;
+  --ta-accent-hover: #2C2925;
+  --ta-accent-pressed: #0F0E0C;
+  --ta-on-accent: #FDFCFA;
+  --ta-link: #1D1B18;
+  --ta-tonal: #E9E5DD;
+  --ta-selected: #F0ECE4;
+  --ta-glow: 29 27 24;
+  --ta-halo: rgb(29 27 24 / 45%);
+  --ta-halo-strong: rgb(29 27 24 / 62%);
+  --ta-bevel: rgb(255 255 255 / 90%);
+  --ta-dot: rgb(40 34 28 / 9%);
+  --ta-line: rgb(29 27 24 / 11%);
+  --ta-line-strong: rgb(29 27 24 / 24%);
+  /* Статусы. */
+  --ta-error: #B42318;
+  --ta-error-surface: #FBEEE9;
+  /* Форма. */
+  --ta-radius-sm: 10px;
+  --ta-radius-md: 14px;
+  --ta-radius-lg: 22px;
+  --ta-shadow-sm: 0 1px 2px rgb(20 22 28 / 5%), 0 1px 3px rgb(20 22 28 / 4%);
+  --ta-shadow: 0 1px 2px rgb(20 22 28 / 4%), 0 12px 32px -12px rgb(20 22 28 / 14%);
+  --ta-shadow-lift: 0 2px 4px rgb(20 22 28 / 5%), 0 24px 48px -16px rgb(20 22 28 / 20%);
+  /* Шрифт берётся из установленных: Inter, если он есть, иначе системный. */
+  --ta-font: Inter, "Segoe UI Variable Text", "Segoe UI", -apple-system,
+             BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Ubuntu, sans-serif;
+  --ta-mono: ui-monospace, "Cascadia Mono", "SF Mono", "JetBrains Mono", Consolas, monospace;
+  /* Одна шкала движения; выход — около 65% от входа. */
+  --ta-motion-in: 200ms;
+  --ta-motion-out: 130ms;
+  --ta-ease: cubic-bezier(0.2, 0, 0, 1);
+  /* Иконки-маски: один стиль штриха, цвет задаётся заливкой элемента. */
+  --ta-icon-arrow: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2.2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%2012h13'/%3E%3Cpath%20d='M12%205l7%207-7%207'/%3E%3C/svg%3E");
+  --ta-icon-alert: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='9'/%3E%3Cpath%20d='M12%207v6'/%3E%3Cpath%20d='M12%2016.6v.4'/%3E%3C/svg%3E");
+}
+
+/* Тёмная тема нарисована отдельно, а не инверсией: у инвертированных тональных
+   заливок не остаётся контраста с текстом. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --ta-bg: #2C2D33;
+    --ta-surface: #34363C;
+    --ta-raised: #3D3F46;
+    --ta-field: #292A30;
+    --ta-border: #868A92;
+    --ta-divider: #43454C;
+    --ta-text: #E4E6EA;
+    --ta-muted: #ABAFB6;
+    --ta-disabled: #787C84;
+    --ta-accent: #E4E6EA;
+    --ta-accent-hover: #F2F4F7;
+    --ta-accent-pressed: #C8CBD1;
+    --ta-on-accent: #2C2D33;
+    --ta-link: #E4E6EA;
+    --ta-tonal: #41434A;
+    --ta-selected: #3A3C43;
+    --ta-glow: 228 230 234;
+    --ta-halo: rgb(0 0 0 / 42%);
+    --ta-halo-strong: rgb(0 0 0 / 55%);
+    --ta-bevel: rgb(255 255 255 / 7%);
+    --ta-dot: rgb(255 255 255 / 7%);
+    --ta-line: rgb(228 230 234 / 14%);
+    --ta-line-strong: rgb(228 230 234 / 30%);
+    --ta-error: #F2777A;
+    --ta-error-surface: #43312F;
+    --ta-shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+    --ta-shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 12px 32px -12px rgb(0 0 0 / 60%);
+    --ta-shadow-lift: 0 2px 4px rgb(0 0 0 / 45%), 0 24px 48px -16px rgb(0 0 0 / 70%);
+  }
+}
+
+/* Ручной выбор темы. Streamlit не умеет переключать оформление на лету, а
+   системной настройки мало: человек может хотеть тёмный интерфейс на светлой
+   системе. Маркер рисуется в разметке, а `:has()` поднимает его до :root.
+   Оба блока ниже — копии палитр выше; тест test_web_theme_overrides_match
+   следит, чтобы значения не разошлись. */
+:root:has(.ta-theme-light) {
+  color-scheme: light;
+  /* Поверхности, от дальней к ближней. */
+  --ta-bg: #F5F3EF;
+  --ta-surface: #FDFCFA;
+  --ta-raised: #EFECE6;
+  --ta-field: #FAF8F4;
+  /* Линии: border — у элементов управления (≥3:1), divider — декоративная. */
+  --ta-border: #7A736A;
+  --ta-divider: #E6E2DA;
+  /* Текст. */
+  --ta-text: #1B1917;
+  --ta-muted: #5E584F;
+  --ta-disabled: #9B958B;
+  /* Акцент и тональные заливки от него. */
+  --ta-accent: #1D1B18;
+  --ta-accent-hover: #2C2925;
+  --ta-accent-pressed: #0F0E0C;
+  --ta-on-accent: #FDFCFA;
+  --ta-link: #1D1B18;
+  --ta-tonal: #E9E5DD;
+  --ta-selected: #F0ECE4;
+  --ta-glow: 29 27 24;
+  --ta-halo: rgb(29 27 24 / 45%);
+  --ta-halo-strong: rgb(29 27 24 / 62%);
+  --ta-bevel: rgb(255 255 255 / 90%);
+  --ta-dot: rgb(40 34 28 / 9%);
+  --ta-line: rgb(29 27 24 / 11%);
+  --ta-line-strong: rgb(29 27 24 / 24%);
+  /* Статусы. */
+  --ta-error: #B42318;
+  --ta-error-surface: #FBEEE9;
+  /* Форма. */
+  --ta-radius-sm: 10px;
+  --ta-radius-md: 14px;
+  --ta-radius-lg: 22px;
+  --ta-shadow-sm: 0 1px 2px rgb(20 22 28 / 5%), 0 1px 3px rgb(20 22 28 / 4%);
+  --ta-shadow: 0 1px 2px rgb(20 22 28 / 4%), 0 12px 32px -12px rgb(20 22 28 / 14%);
+  --ta-shadow-lift: 0 2px 4px rgb(20 22 28 / 5%), 0 24px 48px -16px rgb(20 22 28 / 20%);
+  /* Шрифт берётся из установленных: Inter, если он есть, иначе системный. */
+  --ta-font: Inter, "Segoe UI Variable Text", "Segoe UI", -apple-system,
+             BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Ubuntu, sans-serif;
+  --ta-mono: ui-monospace, "Cascadia Mono", "SF Mono", "JetBrains Mono", Consolas, monospace;
+  /* Одна шкала движения; выход — около 65% от входа. */
+  --ta-motion-in: 200ms;
+  --ta-motion-out: 130ms;
+  --ta-ease: cubic-bezier(0.2, 0, 0, 1);
+  /* Иконки-маски: один стиль штриха, цвет задаётся заливкой элемента. */
+  --ta-icon-arrow: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2.2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%2012h13'/%3E%3Cpath%20d='M12%205l7%207-7%207'/%3E%3C/svg%3E");
+  --ta-icon-alert: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='9'/%3E%3Cpath%20d='M12%207v6'/%3E%3Cpath%20d='M12%2016.6v.4'/%3E%3C/svg%3E");
+}
+:root:has(.ta-theme-dark) {
+  color-scheme: dark;
+  --ta-bg: #2C2D33;
+  --ta-surface: #34363C;
+  --ta-raised: #3D3F46;
+  --ta-field: #292A30;
+  --ta-border: #868A92;
+  --ta-divider: #43454C;
+  --ta-text: #E4E6EA;
+  --ta-muted: #ABAFB6;
+  --ta-disabled: #787C84;
+  --ta-accent: #E4E6EA;
+  --ta-accent-hover: #F2F4F7;
+  --ta-accent-pressed: #C8CBD1;
+  --ta-on-accent: #2C2D33;
+  --ta-link: #E4E6EA;
+  --ta-tonal: #41434A;
+  --ta-selected: #3A3C43;
+  --ta-glow: 228 230 234;
+    --ta-halo: rgb(0 0 0 / 42%);
+    --ta-halo-strong: rgb(0 0 0 / 55%);
+  --ta-bevel: rgb(255 255 255 / 7%);
+  --ta-dot: rgb(255 255 255 / 7%);
+  --ta-line: rgb(228 230 234 / 14%);
+  --ta-line-strong: rgb(228 230 234 / 30%);
+  --ta-error: #F2777A;
+  --ta-error-surface: #43312F;
+  --ta-shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+  --ta-shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 12px 32px -12px rgb(0 0 0 / 60%);
+  --ta-shadow-lift: 0 2px 4px rgb(0 0 0 / 45%), 0 24px 48px -16px rgb(0 0 0 / 70%);
+}
+
+/* Отметка вкладки для панели владельца ничего не рисует и не занимает места. */
+.st-key-ta-presence { display: none !important; }
+
+/* Переключатель в правом верхнем углу: маленький, не спорит с содержимым. */
+.st-key-ta-theme {
+  position: fixed; top: 12px; right: 16px; z-index: 10; width: auto;
+}
+.st-key-ta-theme [data-testid="stElementContainer"] { width: auto; }
+.st-key-ta-theme [role="radiogroup"],
+.st-key-ta-theme [data-baseweb="button-group"] {
+  background: var(--ta-surface);
+  border: 1px solid var(--ta-divider); border-radius: 999px;
+  box-shadow: inset 0 1px 0 var(--ta-bevel), var(--ta-shadow-sm);
+  padding: 2px; gap: 2px;
+}
+.st-key-ta-theme button {
+  min-height: 30px; padding: 4px 12px; border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important; color: var(--ta-muted) !important;
+  font-size: .8125rem !important; font-weight: 500;
+  transition: background-color var(--ta-motion-in) var(--ta-ease),
+              color var(--ta-motion-in) var(--ta-ease);
+}
+.st-key-ta-theme button:hover { color: var(--ta-text) !important; }
+.st-key-ta-theme button[aria-checked="true"],
+.st-key-ta-theme button[kind="segmented_controlActive"] {
+  background: var(--ta-accent) !important; color: var(--ta-on-accent) !important;
+}
+
+/* ---------- История анализов ---------- */
+
+/* Кнопка — зеркало переключателя темы в левом углу: та же пилюля и высота. */
+.st-key-ta-history {
+  position: fixed; top: 12px; left: 16px; z-index: 10; width: auto;
+}
+.st-key-ta-history [data-testid="stElementContainer"] { width: auto; }
+.st-key-ta-history button {
+  min-height: 36px; padding: 4px 14px 4px 11px; gap: 6px;
+  border: 1px solid var(--ta-divider) !important; border-radius: 999px !important;
+  background: var(--ta-surface) !important; color: var(--ta-muted) !important;
+  box-shadow: inset 0 1px 0 var(--ta-bevel), var(--ta-shadow-sm);
+  transition: color var(--ta-motion-in) var(--ta-ease),
+              border-color var(--ta-motion-in) var(--ta-ease);
+}
+.st-key-ta-history button p { font-size: .8125rem !important; font-weight: 500; }
+.st-key-ta-history button:hover {
+  color: var(--ta-text) !important; border-color: var(--ta-line-strong) !important;
+}
+
+/* Окно в палитре страницы: бумажная поверхность, крупный радиус. */
+[data-testid="stDialog"] [role="dialog"] {
+  background: var(--ta-surface); color: var(--ta-text);
+  border: 1px solid var(--ta-divider); border-radius: var(--ta-radius-lg);
+  box-shadow: var(--ta-shadow-lift);
+}
+[data-testid="stDialog"] [role="dialog"] h2 {
+  font-size: 1.1875rem !important; font-weight: 650; letter-spacing: -0.01em;
+}
+[data-testid="stDialog"] [data-testid="stVerticalBlock"] { gap: 4px; }
+/* Крестик Streamlit красится цветом своей светлой темы и тонет в тёмной. */
+[data-testid="stDialog"] [role="dialog"] button[aria-label="Close"] {
+  color: var(--ta-muted); border-radius: var(--ta-radius-sm);
+}
+[data-testid="stDialog"] [role="dialog"] button[aria-label="Close"]:hover {
+  color: var(--ta-text); background: var(--ta-selected);
+}
+.ta-history-note {
+  margin: 0 0 8px !important; color: var(--ta-muted); font-size: .875rem !important;
+}
+
+/* Строка — одна большая цель нажатия: невидимая кнопка Streamlit растянута на
+   неё целиком, а подсветку и кольцо фокуса рисует сама строка через :has(). */
+[class*="st-key-ta-hrow-"] {
+  position: relative; gap: 0 !important;
+  border-radius: var(--ta-radius-md);
+  transition: background-color var(--ta-motion-out) var(--ta-ease);
+}
+[class*="st-key-ta-hrow-"]:has(button:hover) {
+  background: var(--ta-selected);
+  transition-duration: var(--ta-motion-in);
+}
+[class*="st-key-ta-hrow-"]:has(button:active) { background: var(--ta-tonal); }
+[class*="st-key-ta-hrow-"]:has(button:focus-visible) {
+  outline: 3px solid var(--ta-accent); outline-offset: 2px;
+}
+[class*="st-key-ta-hopen-"] {
+  position: absolute !important; inset: 0; z-index: 1; margin: 0 !important;
+  width: auto !important; height: auto !important;
+}
+[class*="st-key-ta-hopen-"] .stButton,
+[class*="st-key-ta-hopen-"] button {
+  width: 100%; height: 100%; min-height: 0;
+}
+[class*="st-key-ta-hopen-"] button {
+  opacity: 0; cursor: pointer; outline: none !important;
+}
+.ta-history-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px 12px 14px;
+}
+.ta-history-text { display: grid; gap: 3px; min-width: 0; flex: 1; }
+/* Длинный запрос не раздувает строку: две строки и многоточие. */
+.ta-history-query {
+  color: var(--ta-text); font-size: .9375rem; font-weight: 550; line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; overflow-wrap: anywhere;
+}
+.ta-history-meta {
+  color: var(--ta-muted); font-size: .8125rem; line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+.ta-history-state { color: var(--ta-text); font-weight: 600; }
+.ta-history-current::before {
+  content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 6px 1px 0;
+  border-radius: 50%; background: var(--ta-accent); vertical-align: middle;
+}
+.ta-history-idle .ta-history-query { color: var(--ta-muted); }
+.ta-history-go {
+  flex: 0 0 auto; display: grid; place-items: center; color: var(--ta-muted);
+  transition: transform var(--ta-motion-out) var(--ta-ease),
+              color var(--ta-motion-out) var(--ta-ease);
+}
+[class*="st-key-ta-hrow-"]:has(button:hover) .ta-history-go {
+  color: var(--ta-text); transform: translateX(2px);
+  transition-duration: var(--ta-motion-in);
+}
+.st-key-ta-history-pager { margin-top: 8px; }
+.st-key-ta-history-pager button { color: var(--ta-muted) !important; }
+.st-key-ta-history-pager button:hover:not(:disabled) { color: var(--ta-text) !important; }
+.st-key-ta-history-pager button:disabled { color: var(--ta-disabled) !important; }
+
+/* Сервис занят чужим анализом: пояснение прямо под формой, без тревожного цвета. */
+.ta-busy-note {
+  margin: 14px auto 0 !important; max-width: 620px; text-align: center;
+  color: var(--ta-muted); font-size: .875rem !important; line-height: 1.55;
+}
+/* Сообщение владельца сервиса этому посетителю: заметно, но не как ошибка. */
+/* Сверху — отступ под закреплённые кнопки «История» и темы. */
+.st-key-ta-owner-note { max-width: 760px; margin: 52px auto 0; width: 100%; gap: 6px; }
+.st-key-ta-owner-note [data-testid="stButton"] { display: flex; justify-content: flex-end; }
+.ta-owner-note {
+  padding: 14px 18px; border-radius: var(--ta-radius-md); background: var(--ta-surface);
+  border: 1px solid var(--ta-line-strong); box-shadow: var(--ta-shadow-sm); line-height: 1.55;
+}
+.ta-owner-note b { display: block; font-size: .8125rem; color: var(--ta-muted); margin-bottom: 4px; }
+.ta-owner-note p { margin: 0 !important; color: var(--ta-text); overflow-wrap: anywhere; }
+.ta-owner-note p + p { margin-top: 6px !important; }
+.ta-login-note {
+  margin: 14px auto 0 !important; max-width: 40ch;
+  color: var(--ta-muted); font-size: .8125rem !important; line-height: 1.55;
+}
+
+/* Страница анализа из истории: вместо вопроса и формы — что это за анализ. */
+.ta-saved { margin: 0 auto 4px; max-width: 760px; text-align: center; }
+.ta-saved-kicker {
+  margin: 0 0 10px !important; color: var(--ta-muted);
+  font-size: .75rem !important; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+}
+.ta-saved h1 {
+  font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.0625rem) !important;
+  font-weight: 600; letter-spacing: -0.025em; line-height: 1.2 !important;
+  margin: 0 !important; padding: 0 !important; overflow-wrap: anywhere;
+}
+.ta-saved-note {
+  margin: 12px auto 0 !important; max-width: 56ch;
+  color: var(--ta-muted); font-size: .875rem !important;
+}
+.st-key-ta-saved-back { align-items: center; margin: 16px 0 8px; }
+.st-key-ta-saved-back [data-testid="stElementContainer"] { width: auto; }
+.st-key-ta-saved-back button {
+  min-height: 36px; padding: 4px 16px 4px 12px;
+  border: 1px solid var(--ta-divider) !important; border-radius: 999px !important;
+  background: var(--ta-surface) !important; color: var(--ta-text) !important;
+  box-shadow: inset 0 1px 0 var(--ta-bevel), var(--ta-shadow-sm);
+}
+.st-key-ta-saved-back button p { font-size: .875rem !important; font-weight: 500; }
+.st-key-ta-saved-back button:hover { border-color: var(--ta-line-strong) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="st-key-ta-hrow-"], .ta-history-go { transition: none; }
+  [class*="st-key-ta-hrow-"]:has(button:hover) .ta-history-go { transform: none; }
+}
+
+/* ---------- Каркас страницы ---------- */
+
+html, body, .stApp, input, textarea, button, select,
+[data-testid="stMarkdownContainer"] {
+  font-family: var(--ta-font) !important;
+}
+html, body { background: var(--ta-bg); }
+/* Рассеянный свет на фоне: страница перестаёт быть плоским листом. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(52% 44% at 12% 4%, rgb(var(--ta-glow) / 8%) 0%, transparent 72%),
+    radial-gradient(46% 40% at 92% 10%, rgb(var(--ta-glow) / 7%) 0%, transparent 72%),
+    radial-gradient(60% 46% at 50% 108%, rgb(var(--ta-glow) / 6%) 0%, transparent 74%);
+}
+.stApp { background: transparent; color: var(--ta-text); }
+[data-testid="stHeader"] { background: transparent; }
+
+/* Колонка широкая ради сетки плиток выдачи; форма и справка остаются
+   узкими — у них собственный max-width по центру. */
+.stMainBlockContainer {
+  position: relative; max-width: 1180px;
+  padding: clamp(32px, 7vh, 80px) 24px 48px;
+}
+.stMainBlockContainer > div { gap: 0; }
+/* Пока фрагмент ждёт ответа API, Streamlit помечает его элементы устаревшими
+   и гасит до 0.33. Панель хода анализа опрашивает сервис каждые две секунды,
+   а под нагрузкой анализа ответ идёт дольше секунды — страница мигала. Старое
+   содержимое остаётся видимым, пока не придёт новое. */
+[data-testid="stElementContainer"][data-stale="true"],
+[data-testid="stVerticalBlock"][data-stale="true"] {
+  opacity: 1 !important; transition: none !important;
+}
+/* Обёртка markdown иногда получает высоту меньше содержимого и накрывает
+   соседний блок; высоту всегда задаёт само содержимое. */
+.stMarkdown, .stMarkdown > div,
+[data-testid="stMarkdownContainer"] { height: auto !important; }
+[data-testid="stVerticalBlock"] { gap: 16px; }
+
+h1, h2, h3 { font-family: var(--ta-font) !important; color: var(--ta-text); }
+p, li { line-height: 1.6; }
+a { color: var(--ta-link); }
+::selection { background: var(--ta-tonal); color: var(--ta-text); }
+
+button:focus-visible, a:focus-visible, textarea:focus-visible,
+[data-testid="stTextInput"] input:focus-visible,
+[data-testid="stTextArea"] textarea:focus-visible {
+  outline: 3px solid var(--ta-accent) !important;
+  outline-offset: 2px;
+  border-radius: var(--ta-radius-sm);
+}
+
+/* ---------- Закрытый вход в демо ---------- */
+
+.ta-login { margin: 12vh auto 28px; max-width: 420px; text-align: center; }
+.ta-login-mark {
+  width: 52px; height: 52px; margin: 0 auto 18px; display: grid; place-items: center;
+  border-radius: 16px; background: var(--ta-accent); color: var(--ta-on-accent);
+  font-size: 1.25rem; font-weight: 750; box-shadow: var(--ta-shadow);
+}
+.ta-login h1 { margin: 0 0 8px !important; font-size: 1.75rem !important; }
+.ta-login p { margin: 0; color: var(--ta-muted); }
+.st-key-login {
+  max-width: 420px; margin: 0 auto; padding: 24px;
+  border: 1px solid var(--ta-divider); border-radius: var(--ta-radius-lg);
+  background: var(--ta-surface); box-shadow: var(--ta-shadow);
+}
+.st-key-login [data-testid="stFormSubmitButton"] { width: 100%; }
+.st-key-login [data-testid="stFormSubmitButton"] button {
+  position: static; width: 100%; height: 44px; border-radius: var(--ta-radius-sm);
+}
+.st-key-login [data-testid="stFormSubmitButton"] button p {
+  font-size: .9375rem !important; line-height: 1.2;
+}
+.st-key-login [data-testid="stFormSubmitButton"] button::after { display: none; }
+
+/* ---------- Фон ---------- */
+
+/* Вместо объёмных фигур — только свет и едва заметная точечная сетка. Глубину
+   дальше держат контактные тени под карточками, а фон перестал спорить с
+   содержимым. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(64% 52% at 50% -8%, rgb(var(--ta-glow) / 10%) 0%, transparent 70%),
+    radial-gradient(48% 40% at 50% 104%, rgb(var(--ta-glow) / 6%) 0%, transparent 72%);
+}
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background-image: radial-gradient(circle, var(--ta-dot) 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-mask: radial-gradient(78% 64% at 50% 34%, rgb(0 0 0 / 90%), transparent 78%);
+  mask: radial-gradient(78% 64% at 50% 34%, rgb(0 0 0 / 90%), transparent 78%);
+}
+
+/* Граф связей на фоне: узлы — материалы, рёбра — их связи, бегущие точки —
+   сигнал, идущий по цепочке подтверждений. Рисунок статичен и одинаков при
+   каждом заходе: это фон, а не визуализация реальных данных, и выдавать его
+   за неё нельзя. Декоративный: aria-hidden, за содержимым, указатель не
+   перехватывает, движение снимается при prefers-reduced-motion. */
+.ta-graph {
+  position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%;
+  pointer-events: none; color: var(--ta-line);
+  /* Центральная колонка вырезана из графа: узел, попавший на строку, читается
+     как опечатка в тексте. Рисунок остаётся по краям, где текста нет. */
+  -webkit-mask: radial-gradient(58% 48% at 50% 56%,
+                rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 0%) 46%, rgb(0 0 0 / 100%) 84%);
+  mask: radial-gradient(58% 48% at 50% 56%,
+        rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 0%) 46%, rgb(0 0 0 / 100%) 84%);
+}
+.ta-graph line { stroke: currentColor; stroke-width: 1; }
+.ta-graph circle { fill: var(--ta-line-strong); }
+.ta-graph .ta-node-live {
+  fill: rgb(var(--ta-glow) / 55%);
+  animation: ta-node 4.5s var(--ta-ease) infinite;
+}
+.ta-graph .ta-node-live:nth-of-type(2n) { animation-delay: -1.6s; }
+.ta-graph .ta-node-live:nth-of-type(3n) { animation-delay: -3.1s; }
+@keyframes ta-node {
+  0%, 100% { opacity: .45; }
+  50% { opacity: 1; }
+}
+.ta-graph .ta-spark {
+  fill: rgb(var(--ta-glow) / 85%);
+  animation: ta-travel 9s var(--ta-ease) infinite;
+}
+.ta-graph .ta-spark-b { animation-delay: -3s; }
+.ta-graph .ta-spark-c { animation-delay: -6s; }
+/* Точка бежит по своему ребру: смещение задано в координатах viewBox, поэтому
+   оно масштабируется вместе с рисунком. */
+@keyframes ta-travel {
+  0% { opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; transform: translate(var(--ta-dx), var(--ta-dy)); }
+  100% { opacity: 0; transform: translate(var(--ta-dx), var(--ta-dy)); }
+}
+
+/* ---------- Заголовок страницы ---------- */
+
+/* Вопрос по центру заменяет подпись поля: сама подпись свёрнута, но осталась
+   в разметке для скринридера. */
+.ta-hero { margin: 0 0 8px; text-align: center; }
+.ta-hero h1 {
+  font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.0625rem) !important;
+  font-weight: 600; letter-spacing: -0.025em; line-height: 1.2 !important;
+  margin: 0 !important; padding: 0 !important;
+}
+
+/* ---------- Справка под строкой ввода ---------- */
+
+/* Раньше этот текст жил в боковой панели под «тремя полосками». Панель и
+   кнопка убраны: текст вернулся на страницу и заодно занял пустое место под
+   строкой. Он вторичен по отношению к полю ввода, поэтому лёгкий шрифт,
+   приглушённый цвет и никакой карточки — только воздух и волосяная линия. */
+.ta-about {
+  /* Одна колонка с полем ввода: справка у́же, чем текстовая мера страницы. */
+  margin: 36px auto 0; max-width: 620px;
+  border-top: 1px solid var(--ta-divider); padding-top: 22px;
+}
+.ta-about-brand { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; }
+.ta-about-brand b {
+  font-size: 1rem; font-weight: 800 !important; letter-spacing: .01em;
+}
+.ta-mark {
+  width: 28px; height: 28px; flex: 0 0 28px;
+  display: grid; place-items: center;
+  border-radius: 9px;
+  background: linear-gradient(140deg, var(--ta-accent), var(--ta-accent-pressed));
+  color: var(--ta-on-accent);
+  box-shadow:
+    inset 0 1px 0 var(--ta-bevel),
+    inset 0 -2px 4px rgb(0 0 0 / 18%),
+    0 4px 10px -5px var(--ta-halo);
+}
+.ta-mark svg { display: block; width: 16px; height: 16px; }
+.ta-about-lead {
+  color: var(--ta-muted); font-size: .875rem !important; font-weight: 400;
+  line-height: 1.55; margin: 0 0 20px; max-width: 62ch;
+}
+.ta-about-cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 32px; }
+/* Заголовки колонок теперь держат вес: они делят справку на два смысла, а
+   выделение внутри пунктов только спорило с ними. */
+.ta-about h2 {
+  font-size: .75rem !important; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ta-text);
+  margin: 0 0 12px !important; padding: 0 !important;
+}
+.ta-about ul { margin: 0; padding-left: 18px; }
+.ta-about li {
+  font-size: .875rem; font-weight: 400; line-height: 1.55;
+  color: var(--ta-text); margin: 0 0 7px;
+}
+/* Маркеры остаются приглушёнными: чёрные точки перетягивают внимание с текста. */
+.ta-about li::marker { color: var(--ta-muted); }
+.ta-about b { color: var(--ta-text); font-weight: 600; }
+
+@media (max-width: 767px) {
+  .ta-about { margin-top: 40px; }
+  .ta-about-cols { grid-template-columns: 1fr; }
+}
+
+/* ---------- Форма запроса ---------- */
+
+[data-testid="stForm"] {
+  position: relative;
+  /* Поле у́же колонки: строка поиска не должна тянуться во всю ширину текста. */
+  max-width: 620px; margin: 52px auto 0;
+  background: var(--ta-surface);
+  border: 1px solid var(--ta-divider);
+  border-radius: var(--ta-radius-lg);
+  box-shadow:
+    inset 0 1px 0 var(--ta-bevel),
+    0 2px 6px rgb(20 22 28 / 10%),
+    0 16px 24px -12px rgb(20 22 28 / 26%),
+    0 40px 56px -26px rgb(20 22 28 / 34%);
+  padding: 18px 18px 64px;
+  transition: border-color var(--ta-motion-in) var(--ta-ease),
+              box-shadow var(--ta-motion-in) var(--ta-ease);
+}
+/* Ореол вокруг карточки: размытая подложка, а не тень — она мягче и не режет
+   край. Декоративная, лежит ниже содержимого. */
+/* Контактная тень: вытянутое размытое пятно под карточкой. Главный признак
+   глубины — предмет стоит на поверхности, а не висит в цветном тумане. */
+[data-testid="stForm"]::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  left: 12%; right: 12%; bottom: -38px; height: 56px;
+  border-radius: 50%;
+  /* Центр пятна вынесен ниже края карточки: иначе видно только прозрачную
+     кромку градиента, а сама тень остаётся за карточкой. */
+  background: radial-gradient(ellipse 50% 50% at 50% 62%,
+              rgb(20 22 28 / 55%) 0%, rgb(20 22 28 / 28%) 45%, transparent 76%);
+  filter: blur(10px);
+}
+[data-testid="stForm"]:focus-within {
+  border-color: var(--ta-accent);
+  box-shadow: var(--ta-shadow), 0 0 0 4px rgb(var(--ta-glow) / 12%);
+}
+/* Streamlit красит обёртку поля по своей светлой теме — в тёмной она осталась
+   бы белой пластиной внутри карточки. */
+[data-testid="stTextArea"] > div,
+[data-testid="stTextArea"] [data-baseweb="textarea"],
+[data-testid="stTextArea"] [data-baseweb="base-input"] {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+[data-testid="stTextArea"] textarea {
+  background: transparent !important;
+  color: var(--ta-text) !important;
+  border: 0 !important;
+  border-radius: var(--ta-radius-md) !important;
+  font-size: 1.0625rem !important; line-height: 1.55;
+  padding: 8px 8px 0 !important;
+  resize: none;
+}
+[data-testid="stTextArea"] textarea::placeholder { color: var(--ta-disabled) !important; }
+[data-testid="stTextArea"] textarea:disabled { opacity: .55; }
+[data-testid="stTextArea"] [data-testid="InputInstructions"] { display: none; }
+/* Кольцо фокуса рисует карточка целиком, иначе их было бы два. */
+[data-testid="stTextArea"] textarea:focus-visible { outline: 0 !important; }
+
+/* Подписи и значок подсказки Streamlit красит своей светлой темой: в тёмной
+   они сливались с карточкой. */
+[data-testid="stWidgetLabel"] p { color: var(--ta-text) !important; }
+[data-testid="stTooltipIcon"] button { color: var(--ta-muted) !important; }
+[data-testid="stTooltipIcon"] svg { stroke: currentColor !important; }
+
+/* Поле пароля на входе: заливка почти совпадала с карточкой, и строку не было
+   видно в светлой теме, а в тёмной оставалась белая пластина. Рамка — токен
+   элементов управления, у него контраст не ниже 3:1 в обеих палитрах. */
+[data-testid="stTextInputRootElement"] {
+  background: var(--ta-field) !important;
+  border: 1px solid var(--ta-border) !important;
+  border-radius: var(--ta-radius-sm) !important;
+}
+[data-testid="stTextInputRootElement"]:focus-within { border-color: var(--ta-accent) !important; }
+[data-testid="stTextInput"] input {
+  background: transparent !important; color: var(--ta-text) !important;
+}
+[data-testid="stTextInput"] button { background: transparent !important; color: var(--ta-muted) !important; }
+
+/* Переключатель режима: капсула из двух вариантов у нижнего края строки
+   запроса, на одной линии с кнопкой отправки. Выбранный вариант отмечает
+   светлая плашка, которая плавно переезжает, а не перекрашивает кнопки.
+   Пустой выбор (повторное нажатие) — быстрый режим, так он и нарисован. */
+[data-testid="stForm"] .st-key-analysis_mode {
+  position: absolute; left: 14px; bottom: 18px; width: auto; z-index: 1;
+}
+.st-key-analysis_mode [role="radiogroup"] {
+  position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  padding: 3px; border-radius: 999px;
+  background: var(--ta-tonal); border: 1px solid var(--ta-divider);
+}
+.st-key-analysis_mode [role="radiogroup"]::before {
+  content: ""; position: absolute; top: 3px; bottom: 3px; left: 3px;
+  width: calc(50% - 3px); border-radius: 999px;
+  background: var(--ta-surface);
+  box-shadow: var(--ta-shadow-sm), 0 0 0 1px var(--ta-divider);
+  transition: transform 320ms var(--ta-ease);
+}
+.st-key-analysis_mode [role="radiogroup"]:has(button:nth-child(2)[aria-checked="true"])::before {
+  transform: translateX(100%);
+}
+.st-key-analysis_mode button[role="radio"] {
+  position: relative; z-index: 1; width: 100%;
+  min-height: 32px; height: 32px; padding: 0 14px;
+  border: 0 !important; border-radius: 999px !important;
+  background: transparent !important; color: var(--ta-muted) !important;
+  font-weight: 600;
+  transition: color 320ms var(--ta-ease);
+}
+.st-key-analysis_mode button[role="radio"][aria-checked="true"],
+.st-key-analysis_mode [role="radiogroup"]:not(:has([aria-checked="true"])) button:first-child,
+.st-key-analysis_mode button[role="radio"]:hover:not(:disabled) {
+  color: var(--ta-text) !important;
+}
+.st-key-analysis_mode button[role="radio"]:focus-visible {
+  outline: 2px solid var(--ta-accent) !important; outline-offset: 2px;
+}
+.st-key-analysis_mode button[role="radio"]:disabled { opacity: .55; cursor: not-allowed; }
+.st-key-analysis_mode button p {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: inherit !important; font-size: .8125rem !important; line-height: 1; white-space: nowrap;
+}
+.st-key-analysis_mode button p [data-testid="stIconMaterial"] { font-size: 1.05rem !important; color: inherit !important; }
+/* Плавный переезд плашки — явное требование к интерфейсу, поэтому при
+   «уменьшить движение» он не отключается общим правилом ниже, а только
+   ускоряется: сдвиг короткий, на ширину одной кнопки. */
+@media (prefers-reduced-motion: reduce) {
+  .st-key-analysis_mode [role="radiogroup"]::before { transition: transform 240ms var(--ta-ease) !important; }
+  .st-key-analysis_mode button[role="radio"] { transition: color 240ms var(--ta-ease) !important; }
+}
+
+/* Позиционируется именно обёртка элемента: у самой кнопки контейнером
+   оказывается схлопнутый stElementContainer шириной 16px. */
+[data-testid="stForm"] .stElementContainer:has([data-testid="stFormSubmitButton"]) {
+  position: absolute; right: 16px; bottom: 16px; width: 44px;
+}
+[data-testid="stFormSubmitButton"] { width: 44px; }
+[data-testid="stFormSubmitButton"] button {
+  position: relative;
+  width: 44px; height: 44px; min-height: 44px; padding: 0;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--ta-accent), var(--ta-accent-pressed)) !important;
+  border: 0 !important;
+  color: var(--ta-on-accent) !important;
+  box-shadow:
+    inset 0 1px 0 var(--ta-bevel),
+    inset 0 -3px 6px rgb(0 0 0 / 20%),
+    0 8px 16px -7px var(--ta-halo);
+  transition: box-shadow var(--ta-motion-in) var(--ta-ease),
+              transform var(--ta-motion-out) var(--ta-ease),
+              filter var(--ta-motion-in) var(--ta-ease);
+}
+/* Подсветка при наведении — слой цвета текста кнопки поверх градиента: в
+   светлой теме кнопка чуть светлеет, в тёмной чуть темнеет. Градиент сам не
+   умеет плавно меняться, а прозрачность слоя — умеет. */
+[data-testid="stFormSubmitButton"] button::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: var(--ta-on-accent); opacity: 0; pointer-events: none;
+  transition: opacity var(--ta-motion-in) var(--ta-ease);
+}
+[data-testid="stFormSubmitButton"] button:hover:not(:disabled)::before { opacity: .16; }
+/* Подпись остаётся в разметке ради доступного имени, но не занимает места. */
+[data-testid="stFormSubmitButton"] button p { font-size: 0 !important; line-height: 0; }
+/* Стрелка нарисована маской по встроенному SVG: шрифтовых глифов у проекта нет. */
+[data-testid="stFormSubmitButton"] button::after {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: 18px; height: 18px;
+  background-color: currentColor;
+  -webkit-mask: var(--ta-icon-arrow) center / contain no-repeat;
+  mask: var(--ta-icon-arrow) center / contain no-repeat;
+  transform: rotate(-90deg);
+  transition: transform var(--ta-motion-in) var(--ta-ease);
+}
+[data-testid="stFormSubmitButton"] button:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 var(--ta-bevel),
+    inset 0 -3px 6px rgb(0 0 0 / 20%),
+    0 12px 22px -8px var(--ta-halo-strong);
+}
+[data-testid="stFormSubmitButton"] button:hover:not(:disabled)::after {
+  transform: rotate(-90deg) translateX(2px);
+}
+[data-testid="stFormSubmitButton"] button:active:not(:disabled) { transform: scale(.94); }
+[data-testid="stFormSubmitButton"] button:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+/* Во время анализа та же кнопка показывает узнаваемый квадрат остановки. */
+.st-key-cancel_analysis button::after,
+.st-key-cancel_analysis button:hover:not(:disabled)::after {
+  width: 12px; height: 12px; border-radius: 2px;
+  -webkit-mask: none; mask: none; transform: none;
+}
+
+/* ---------- Заголовок раздела и сводка ---------- */
+
+.ta-section {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 16px;
+  margin: 64px 0 20px;
+}
+.ta-section h2 {
+  font-size: 1.625rem !important; font-weight: 620; line-height: 1.2 !important;
+  letter-spacing: -0.025em; margin: 0 !important; padding: 0 !important;
+}
+.ta-section-note { color: var(--ta-muted); font-size: .875rem !important; margin: -8px 0 20px; max-width: 72ch; }
+.ta-section-note b { color: var(--ta-text); font-weight: 600; }
+
+.ta-stats { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 20px; }
+.ta-stat {
+  flex: 1 1 160px;
+  border: 1px solid var(--ta-divider); border-radius: var(--ta-radius-md);
+  background: var(--ta-surface);
+  box-shadow: inset 0 1px 0 var(--ta-bevel), var(--ta-shadow-sm);
+  padding: 14px 18px;
+}
+.ta-stat dt {
+  color: var(--ta-muted); font-size: .6875rem; letter-spacing: .09em;
+  text-transform: uppercase; margin: 0 0 6px;
+}
+.ta-stat dd {
+  margin: 0; font-size: 1.5rem; font-weight: 620; letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.ta-stat dd.ta-stat-text { font-size: 1rem; font-weight: 600; font-family: var(--ta-mono); }
+
+/* ---------- Плитки выдачи ---------- */
+
+/* Выдача — сетка плиток: по три-четыре в ряд на широком экране, по одной на
+   телефоне, поэтому ТОП-15 умещается в несколько экранов, а не в десятки.
+   Плитка целиком — ссылка на материал; длинные заголовки и аннотации
+   обрезаются, полный текст — у источника. Нижний отступ сетки возмещает
+   −1rem, которым Streamlit поджимает блок Markdown. */
+.ta-grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 256px), 1fr));
+  margin: 0 0 1rem;
+}
+
+.ta-card {
+  position: relative;
+  display: flex; flex-direction: column; gap: 10px; min-width: 0;
+  background: var(--ta-surface);
+  border: 1px solid var(--ta-divider);
+  border-radius: var(--ta-radius-md);
+  box-shadow: inset 0 1px 0 var(--ta-bevel), var(--ta-shadow-sm);
+  padding: 16px 16px 14px;
+  overflow-wrap: anywhere;
+  /* backwards, а не both: иначе конечный кадр держит transform и
+     перебивает подъём плитки при наведении. */
+  animation: ta-rise var(--ta-motion-in) var(--ta-ease) backwards;
+  transition: box-shadow var(--ta-motion-in) var(--ta-ease),
+              transform var(--ta-motion-in) var(--ta-ease),
+              border-color var(--ta-motion-in) var(--ta-ease);
+}
+.ta-card:hover, .ta-card:focus-within {
+  transform: translateY(-2px);
+  border-color: var(--ta-border);
+  box-shadow: inset 0 1px 0 var(--ta-bevel), var(--ta-shadow-lift);
+}
+@keyframes ta-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Верхняя строка: номер, площадка с типом и датой, значок внешней ссылки. */
+.ta-card-top { display: flex; align-items: center; gap: 10px; min-height: 26px; }
+.ta-card-top > svg {
+  flex: 0 0 14px; margin-left: auto; color: var(--ta-muted); opacity: .7;
+  transition: opacity var(--ta-motion-in) var(--ta-ease),
+              transform var(--ta-motion-in) var(--ta-ease);
+}
+.ta-card:hover .ta-card-top > svg { opacity: 1; transform: translate(1px, -1px); }
+.ta-index {
+  flex: 0 0 26px; width: 26px; height: 26px;
+  display: grid; place-items: center; border-radius: 8px;
+  background: var(--ta-tonal); color: var(--ta-accent);
+  font-family: var(--ta-mono); font-size: .75rem; font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.ta-publication-meta {
+  flex: 1 1 auto; min-width: 0; color: var(--ta-muted);
+  font-size: .75rem; line-height: 1.35;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+}
+.ta-date { white-space: nowrap; }
+
+.ta-card h3 {
+  font-size: 1rem !important; font-weight: 620; line-height: 1.35 !important;
+  letter-spacing: -0.01em; margin: 0 !important; padding: 0 !important;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+}
+.ta-card h3 a {
+  color: var(--ta-text); text-decoration: none; text-underline-offset: 3px;
+}
+/* Заголовок растянут на всю плитку: нажатие в любом месте открывает материал.
+   Псевдоэлемент позиционируется от плитки, поэтому обрезка заголовка его не
+   задевает. */
+.ta-card h3 a::after {
+  content: ""; position: absolute; inset: 0; border-radius: var(--ta-radius-md);
+}
+.ta-card:hover h3 a { text-decoration: underline; }
+/* Кольцо фокуса обводит плитку целиком, а не строку заголовка. */
+.ta-card h3 a:focus-visible { outline: none !important; }
+.ta-card h3 a:focus-visible::after { outline: 3px solid var(--ta-accent); outline-offset: 2px; }
+
+.ta-card .ta-card-summary {
+  margin: 0 !important; color: var(--ta-muted);
+  font-size: .8125rem !important; line-height: 1.5;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+}
+
+/* Сигнал анализа прямо на плитке ТОПа: рамка плитки темнее, внутри —
+   плашка с технологией и категорией. */
+.ta-card-signal { border-color: var(--ta-border); }
+.ta-signal {
+  padding: 8px 10px; border-radius: var(--ta-radius-sm);
+  background: var(--ta-raised); border: 1px solid var(--ta-divider);
+}
+.ta-signal-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.ta-signal-label {
+  color: var(--ta-muted); font-size: .6875rem; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.ta-signal-head strong { color: var(--ta-text); font-size: .8125rem; font-weight: 650; }
+.ta-category {
+  /* Не пилюля: в узкой плитке подпись переносится, а скругление 999px на
+     двух строках превращает плашку в овал. */
+  display: inline-block; margin-top: 6px; padding: 2px 8px;
+  border: 1px solid var(--ta-border); border-radius: 8px;
+  background: var(--ta-tonal); color: var(--ta-text);
+  font-size: .75rem; font-weight: 600; line-height: 1.4;
+}
+
+/* Оценка конкретной публикации и оценка тренда методикой — разные показатели,
+   но нарисованы одинаково: одна строка — подпись, короткая полоска, значение.
+   Полоска одного тона с акцентом страницы: смысл несут длина и число, а не
+   цвет. Значение одной ширины, поэтому полоски двух строк стоят друг под другом. */
+.ta-card-assessment {
+  margin-top: auto; padding-top: 12px; border-top: 1px solid var(--ta-divider);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.ta-meter {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px;
+  color: var(--ta-muted); font-size: .75rem; line-height: 1.4;
+}
+.ta-meter-label { flex: 1 1 auto; min-width: 0; }
+.ta-meter-value {
+  flex: none; min-width: 3.6em; text-align: right;
+  color: var(--ta-text); font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.ta-meter-value small { color: var(--ta-muted); font-size: .6875rem; font-weight: 400; }
+.ta-model-confidence-none .ta-meter-value { color: var(--ta-muted); font-weight: 500; }
+
+/* Похожие материалы выборки по месяцам: столбик — месяц, высота — от пика
+   этой же карточки. Пустой месяц — тонкая риска, а не пропуск. График лежит
+   поверх ссылки плитки, чтобы подсказки месяцев открывались при наведении. */
+.ta-similar { display: flex; flex-direction: column; gap: 4px; }
+.ta-similar-none .ta-meter-value { color: var(--ta-muted); font-weight: 500; }
+.ta-similar-chart {
+  position: relative; z-index: 1; display: block; width: 100%; height: 40px;
+}
+.ta-similar-chart rect { fill: var(--ta-accent); }
+.ta-similar-chart rect.ta-similar-empty { fill: var(--ta-line); }
+.ta-similar-axis {
+  display: flex; justify-content: space-between; gap: 8px;
+  color: var(--ta-muted); font-size: .6875rem; font-variant-numeric: tabular-nums;
+}
+
+.ta-scale, .ta-steps { flex: none; width: 52px; height: 4px; }
+.ta-scale {
+  position: relative; overflow: hidden; border-radius: 2px; background: var(--ta-line);
+}
+.ta-scale i {
+  position: absolute; inset: 0 auto 0 0; width: var(--ta-value);
+  border-radius: inherit; background: var(--ta-accent);
+}
+/* Три ступени уверенности методики в тренде: заполненные — уровень, не вероятность. */
+.ta-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.ta-steps i { border-radius: 2px; background: var(--ta-line); }
+.ta-steps i.on { background: var(--ta-accent); }
+
+/* «Основание оценки» раскрывается в потоке; у соседей по ряду оно открывается
+   вместе с ним (скрипт ROW_DETAILS в web.py), чтобы не оставалось пустого поля. */
+.ta-model-details { position: relative; z-index: 1; margin-top: 2px; }
+.ta-model-details summary {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 28px;
+  color: var(--ta-muted); font-size: .75rem; cursor: pointer; list-style: none;
+  transition: color var(--ta-motion-in) var(--ta-ease);
+}
+.ta-model-details summary::-webkit-details-marker { display: none; }
+.ta-model-details summary::before {
+  content: ""; width: 5px; height: 5px; margin: 0 2px 3px 1px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); transition: transform var(--ta-motion-in) var(--ta-ease);
+}
+.ta-model-details summary:hover, .ta-model-details[open] summary { color: var(--ta-text); }
+.ta-model-details[open] summary::before { transform: rotate(-135deg); margin-bottom: -2px; }
+.ta-model-details summary:focus-visible { outline: 2px solid var(--ta-accent); outline-offset: 2px; }
+.ta-card .ta-model-criteria {
+  margin: 2px 0 0 !important; padding: 8px 10px 8px 24px !important;
+  border-radius: var(--ta-radius-sm); background: var(--ta-raised);
+  color: var(--ta-muted); font-size: .75rem; line-height: 1.45;
+}
+.ta-model-criteria li + li { margin-top: 3px; }
+
+.ta-card .ta-confidence-detail, .ta-card .ta-trend-topic {
+  margin: 4px 0 0 !important; color: var(--ta-muted);
+  font-size: .75rem !important; line-height: 1.45;
+}
+.ta-card .ta-trend-topic {
+  margin-top: 2px !important;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+}
+.ta-trend-topic b { color: var(--ta-text); font-weight: 600; }
+
+/* Остальные ссылки сигнала лежат над растянутым заголовком и открываются сами. */
+.ta-links { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px; }
+.ta-links a {
+  display: inline-flex; align-items: center; gap: 6px;
+  max-width: 100%; min-height: 32px; padding: 5px 10px;
+  border: 1px solid var(--ta-divider); border-radius: 999px;
+  background: var(--ta-raised); color: var(--ta-link);
+  font-family: var(--ta-mono); font-size: .6875rem !important; text-decoration: none;
+  transition: border-color var(--ta-motion-in) var(--ta-ease),
+              background-color var(--ta-motion-in) var(--ta-ease);
+}
+.ta-links a:hover { border-color: var(--ta-accent); background: var(--ta-selected); text-decoration: underline; }
+.ta-links svg { flex: 0 0 12px; width: 12px; height: 12px; opacity: .75; }
+.ta-links span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Язык карточек ТОПа: такая же пилюля, как переключатель темы, но в потоке
+   страницы — над сеткой, к которой относится. */
+/* Под переключателем больше нет пояснения о переводе: отступ до сетки даёт он сам. */
+.st-key-ta-top-language { width: auto; margin: 0 0 12px; }
+.st-key-ta-top-language [data-testid="stElementContainer"] { width: auto; }
+.st-key-ta-top-language [data-baseweb="button-group"] {
+  background: var(--ta-surface);
+  border: 1px solid var(--ta-divider); border-radius: 999px;
+  box-shadow: inset 0 1px 0 var(--ta-bevel), var(--ta-shadow-sm);
+  padding: 2px; gap: 2px; width: max-content;
+}
+.st-key-ta-top-language button {
+  min-height: 30px; padding: 4px 14px; border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important; color: var(--ta-muted) !important;
+  transition: background-color var(--ta-motion-in) var(--ta-ease),
+              color var(--ta-motion-in) var(--ta-ease);
+}
+.st-key-ta-top-language button p { color: inherit !important; font-size: .8125rem !important; }
+.st-key-ta-top-language button:hover { color: var(--ta-text) !important; }
+.st-key-ta-top-language button[aria-checked="true"],
+.st-key-ta-top-language button[kind="segmented_controlActive"] {
+  background: var(--ta-accent) !important; color: var(--ta-on-accent) !important;
+}
+/* Пометка о машинном переводе и его ходе. Нижний отступ возмещает −1rem
+   блока Markdown, иначе строка прилипает к сетке. */
+.ta-translation-note {
+  color: var(--ta-muted); font-size: .8125rem !important; line-height: 1.5;
+  margin: 0 0 calc(1rem + 4px) !important; max-width: 72ch;
+}
+
+/* Остальная выдача свёрнута; внутри — та же сетка, аннотации короче. */
+.ta-more { margin: 0 0 1rem; }
+.ta-more-publications {
+  margin-top: 18px; border: 1px solid var(--ta-divider);
+  border-radius: var(--ta-radius-md); background: var(--ta-surface);
+}
+.ta-more-publications summary {
+  cursor: pointer; min-height: 52px; padding: 15px 18px;
+  color: var(--ta-text); font-weight: 600; line-height: 1.5;
+}
+.ta-more-publications summary:focus-visible {
+  outline: 3px solid var(--ta-accent); outline-offset: 2px;
+  border-radius: var(--ta-radius-md);
+}
+.ta-more-publications-body { margin: 0; padding: 4px 14px 16px; }
+.ta-more-publications .ta-card .ta-card-summary { -webkit-line-clamp: 2; }
+.ta-more .ta-list-limit { margin: 12px 0 0; }
+
+/* Источники свёрнуты в одну строку-сводку и раскрываются по нажатию. */
+.ta-sources {
+  margin: 40px 0 0; border: 1px solid var(--ta-divider);
+  border-radius: var(--ta-radius-md); background: var(--ta-surface);
+}
+.ta-sources summary {
+  cursor: pointer; min-height: 52px; padding: 15px 18px;
+  color: var(--ta-text); font-weight: 600; line-height: 1.5;
+}
+.ta-sources summary:focus-visible {
+  outline: 3px solid var(--ta-accent); outline-offset: 2px;
+  border-radius: var(--ta-radius-md);
+}
+.ta-sources[open] { padding-bottom: 12px; }
+.ta-sources > .ta-section-note, .ta-sources > .ta-coverage-list, .ta-sources > .ta-table-wrap {
+  margin-left: 18px; margin-right: 18px;
+}
+
+/* ТОП технологий: раскрытая карточка показывает источники только своей темы;
+   полный отчёт остаётся отдельной ссылкой. */
+.ta-radar-stats { margin-top: 4px; }
+.ta-radar-overview { display: flex; flex-direction: column; gap: 10px; min-width: 0; flex: 1; }
+.ta-radar-card:has(> .ta-radar-details[open]) {
+  grid-column: 1 / -1;
+  display: grid; grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
+  align-items: start; gap: 22px;
+}
+.ta-radar-card:has(> .ta-radar-details[open]) > .ta-radar-details {
+  margin-top: 0; padding-left: 22px; border-left: 1px solid var(--ta-divider);
+}
+.ta-radar-details { margin-top: auto; }
+.ta-radar-expand {
+  display: flex; align-items: center; gap: 8px;
+  min-height: 44px; margin-top: 2px; color: var(--ta-link);
+  font-size: .8125rem; font-weight: 600; cursor: pointer; list-style: none;
+}
+.ta-radar-expand::-webkit-details-marker { display: none; }
+.ta-radar-expand::marker { content: ""; }
+.ta-radar-expand:focus-visible {
+  outline: 3px solid var(--ta-accent); outline-offset: 5px;
+  border-radius: var(--ta-radius-sm);
+}
+.ta-radar-card h3 { color: var(--ta-text); }
+.ta-radar-expand::before {
+  content: ""; display: block; width: 6px; height: 6px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); transition: transform var(--ta-motion-in) var(--ta-ease);
+}
+.ta-radar-details[open] .ta-radar-expand::before { transform: rotate(225deg); }
+.ta-radar-source-panel { min-width: 0; margin-top: 8px; }
+.ta-radar-kind {
+  align-self: flex-start; padding: 2px 8px; border: 1px solid var(--ta-border);
+  border-radius: 8px; background: var(--ta-tonal); color: var(--ta-text);
+  font-size: .6875rem; font-weight: 600; line-height: 1.4;
+}
+.ta-radar-source-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; }
+.ta-radar-source-head h4 { margin: 0 !important; font-size: .875rem !important; font-weight: 650; }
+.ta-radar-source-head a { color: var(--ta-link); font-size: .8125rem; font-weight: 600; }
+.ta-radar-source-head a:focus-visible, .ta-radar-source-list a:focus-visible {
+  outline: 3px solid var(--ta-accent); outline-offset: 3px;
+}
+.ta-radar-source-list {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 0 22px; margin: 10px 0 0 !important; padding: 0 !important; list-style: none;
+}
+.ta-radar-source-list li { min-width: 0; padding: 11px 0; border-top: 1px solid var(--ta-divider); }
+.ta-radar-source-list a {
+  display: block; color: var(--ta-link); font-size: .8125rem; line-height: 1.45;
+  font-weight: 600; overflow-wrap: anywhere;
+}
+.ta-radar-source-meta, .ta-radar-source-score {
+  display: block; margin-top: 4px; color: var(--ta-muted);
+  font-size: .75rem; line-height: 1.4;
+}
+.ta-radar-source-score b { color: var(--ta-text); font-variant-numeric: tabular-nums; }
+.ta-report-source-score b { color: var(--ta-text); font-variant-numeric: tabular-nums; }
+.ta-report-source-score { display: block; margin-top: 4px; color: var(--ta-muted); font-size: .75rem; }
+.ta-radar-original { display: block; color: var(--ta-muted); font-size: .75rem; font-family: var(--ta-mono); }
+.ta-radar-curve-line { margin: 0 !important; color: var(--ta-muted); font-size: .75rem !important; }
+.ta-radar-curve-line b { color: var(--ta-text); font-variant-numeric: tabular-nums; }
+.ta-radar-predictors { margin: 0 !important; padding: 0 !important; list-style: none; font-size: .75rem; }
+/* Streamlit задаёт пунктам списка в Markdown 1rem — предикторы были крупнее
+   остального текста карточки. */
+.ta-radar-predictors li { color: var(--ta-muted); line-height: 1.5; font-size: .75rem !important; }
+.ta-radar-predictors li::before { display: inline-block; width: 1.1em; font-weight: 700; }
+.ta-radar-predictors li.ta-plus::before { content: "+"; color: var(--ta-accent); }
+.ta-radar-predictors li.ta-minus::before { content: "−"; color: var(--ta-muted); }
+.ta-radar-progress { padding: 10px 12px; border-left: 3px solid var(--ta-accent); background: var(--ta-raised); }
+.ta-radar-policy-note {
+  padding: 10px 12px; border-left: 3px solid var(--ta-accent);
+  background: var(--ta-raised); color: var(--ta-text);
+}
+.ta-curve { display: block; width: 100%; height: 56px; }
+.ta-curve-large { height: 200px; margin: 12px 0; }
+.ta-curve-bar { fill: var(--ta-accent); opacity: .55; }
+.ta-curve-empty { fill: var(--ta-line); }
+.ta-curve-smooth { fill: none; stroke: var(--ta-text); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.ta-curve-fit { fill: none; stroke: var(--ta-accent); stroke-width: 1.5; stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke; }
+/* Журнал — последний блок Markdown секции ТОПа: его −1rem подтягивал следующий
+   элемент (переключатель языка, карточки) внахлёст. Отступ возмещает это. */
+.ta-radar-excluded { margin-bottom: calc(1rem + 40px); }
+.ta-radar-excluded ul { margin: 0 18px 16px !important; padding: 0 !important; list-style: none; }
+.ta-radar-excluded li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px;
+  padding: 10px 0; border-top: 1px solid var(--ta-divider); }
+.ta-radar-excluded li a { color: var(--ta-text); font-weight: 600; }
+.ta-radar-excluded-score { color: var(--ta-muted); font-variant-numeric: tabular-nums; }
+.ta-radar-reasons { grid-column: 1 / -1; color: var(--ta-muted); font-size: .8125rem; }
+
+/* Страница-отчёт: документ одной колонки с таблицами признаков и источников. */
+.ta-report { max-width: 880px; margin: 0 auto 48px; }
+.ta-report h1 { margin: 4px 0 6px !important; font-size: clamp(1.5rem, 3vw, 2rem) !important; }
+.ta-report h2 { margin: 32px 0 10px !important; font-size: 1.125rem !important; }
+.ta-report p { max-width: 75ch; }
+.ta-report-back a { color: var(--ta-muted); }
+.ta-report-kicker, .ta-report-subtitle, .ta-report-note, .ta-report-original, .ta-report-empty {
+  color: var(--ta-muted); font-size: .875rem !important; }
+.ta-report-original { font-family: var(--ta-mono); font-size: .8125rem !important; }
+.ta-report-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;
+  margin: 20px 0 0; }
+.ta-report-facts dt { color: var(--ta-muted); font-size: .75rem; }
+.ta-report-facts dd { margin: 2px 0 0; color: var(--ta-text); font-weight: 600; }
+.ta-report-checks { padding-left: 0 !important; list-style: none; }
+.ta-report-checks li { margin: 4px 0; font-size: .875rem; }
+.ta-check-ok { color: var(--ta-text); }
+.ta-check-no { color: var(--ta-muted); }
+.ta-report td.ta-plus { color: var(--ta-accent); font-variant-numeric: tabular-nums; }
+.ta-report td.ta-minus { color: var(--ta-muted); font-variant-numeric: tabular-nums; }
+.ta-mt-mark { display: inline-block; margin-left: 6px; padding: 1px 6px; border: 1px solid var(--ta-border);
+  border-radius: 6px; color: var(--ta-muted); font-size: .6875rem; vertical-align: middle; }
+
+/* ---------- Ход анализа ---------- */
+
+/* Пока идёт анализ, под формой видна панель той же ширины: пульс «идёт
+   работа», часы, пять фаз и подсказки о методике. Прогресс внутри активной
+   фазы — реальный счётчик её этапа; общий процент не выдумывается. Нижний
+   отступ возмещает −1rem блока Markdown. */
+.ta-run {
+  max-width: 620px; margin: 28px auto 1rem; padding: 20px 22px 18px;
+  background: var(--ta-surface); border: 1px solid var(--ta-divider);
+  border-radius: var(--ta-radius-lg);
+  box-shadow: inset 0 1px 0 var(--ta-bevel), var(--ta-shadow-sm);
+}
+.ta-run-head { display: flex; align-items: center; gap: 14px; }
+.ta-run-pulse {
+  position: relative; flex: 0 0 10px; width: 10px; height: 10px;
+  border-radius: 50%; background: var(--ta-accent);
+}
+.ta-run-pulse::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: var(--ta-accent); animation: ta-ping 1.8s var(--ta-ease) infinite;
+}
+@keyframes ta-ping { from { transform: scale(1); opacity: .45; } to { transform: scale(3.2); opacity: 0; } }
+.ta-run-title { flex: 1 1 auto; min-width: 0; }
+.ta-run-title p {
+  margin: 0 !important; color: var(--ta-text);
+  font-size: .9375rem !important; font-weight: 620; line-height: 1.3;
+}
+.ta-run-query {
+  display: block; margin-top: 2px; color: var(--ta-muted); font-size: .8125rem; line-height: 1.4;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ta-run-clock { flex: none; text-align: right; }
+.ta-run-clock b {
+  display: block; color: var(--ta-text); font-family: var(--ta-mono);
+  font-size: 1.25rem; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums;
+}
+.ta-run-left { display: block; margin-top: 2px; color: var(--ta-muted); font-size: .6875rem; }
+
+/* Фазы: вертикальная лента с маркерами. Пройденная — залитый кружок с
+   галочкой, текущая — вращающаяся дуга, следующая — пустой кружок с
+   пояснением, что на ней будет. */
+.ta-steps-list { list-style: none; margin: 18px 0 0 !important; padding: 0 !important; }
+/* Streamlit задаёт пунктам списка свои отступы и размер шрифта: без !important
+   фазы слипались, а линия между маркерами пропадала. */
+.ta-step {
+  position: relative; display: flex; gap: 12px;
+  margin: 0 !important; padding: 0 0 14px !important; font-size: .875rem !important;
+}
+.ta-step:last-child { padding-bottom: 0 !important; }
+.ta-step::before {
+  content: ""; position: absolute; left: 9px; top: 24px; bottom: 4px; width: 2px;
+  border-radius: 1px; background: var(--ta-line);
+}
+.ta-step:last-child::before { display: none; }
+.ta-step-done::before { background: var(--ta-line-strong); }
+.ta-step-mark {
+  position: relative; flex: 0 0 20px; width: 20px; height: 20px;
+  display: grid; place-items: center; border-radius: 50%;
+  border: 1.5px solid var(--ta-line-strong); background: var(--ta-surface);
+  color: var(--ta-on-accent);
+}
+.ta-step-mark svg { display: block; }
+.ta-step-done .ta-step-mark { background: var(--ta-accent); border-color: var(--ta-accent); }
+.ta-step-active .ta-step-mark::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ta-accent);
+}
+.ta-step-active .ta-step-mark::after {
+  content: ""; position: absolute; inset: -1.5px; border-radius: 50%;
+  border: 1.5px solid transparent; border-top-color: var(--ta-accent);
+  border-right-color: var(--ta-accent); animation: ta-spin 1s linear infinite;
+}
+@keyframes ta-spin { to { transform: rotate(360deg); } }
+.ta-step-body { flex: 1 1 auto; min-width: 0; padding-top: 1px; }
+.ta-step-name { display: block; color: var(--ta-text); font-size: .875rem; font-weight: 600; line-height: 1.35; }
+.ta-step-done .ta-step-name { color: var(--ta-muted); font-weight: 500; }
+.ta-step-next .ta-step-name { color: var(--ta-muted); font-weight: 500; }
+.ta-step-hint {
+  margin: 1px 0 0 !important; color: var(--ta-muted); opacity: .8;
+  font-size: .75rem !important; line-height: 1.45;
+}
+
+/* Прогресс активной фазы: живое сообщение сервиса и счётчик её этапа. */
+.ta-progress { margin: 4px 0 2px; }
+.ta-progress-detail {
+  margin: 0 !important; color: var(--ta-muted); overflow-wrap: anywhere;
+  font-size: .8125rem !important; line-height: 1.45;
+}
+.ta-progress-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.ta-progress-track {
+  position: relative; overflow: hidden; flex: 1 1 auto;
+  height: 4px; border-radius: 2px; background: var(--ta-line);
+}
+.ta-progress-fill {
+  display: block; height: 100%; border-radius: inherit; background: var(--ta-accent);
+  transition: width .6s var(--ta-ease);
+}
+.ta-progress-indeterminate {
+  position: absolute; width: 32%;
+  animation: ta-progress-slide 1.4s var(--ta-ease) infinite;
+}
+@keyframes ta-progress-slide {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(325%); }
+}
+.ta-progress-value {
+  flex: none; color: var(--ta-muted); font-size: .75rem; font-variant-numeric: tabular-nums;
+}
+.ta-progress-value b { color: var(--ta-text); font-family: var(--ta-mono); font-weight: 600; }
+
+/* Подсказка о методике сменяется раз в восемь секунд с опросом сервера. */
+.ta-facts { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--ta-divider); }
+.ta-facts-label {
+  display: block; color: var(--ta-muted); font-size: .6875rem; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.ta-run .ta-fact {
+  margin: 6px 0 0 !important; min-height: 3em; color: var(--ta-text);
+  font-size: .8125rem !important; line-height: 1.5;
+}
+
+[data-testid="stSpinner"] { color: var(--ta-muted); justify-content: center; }
+
+/* ---------- Пустое состояние и ошибка ---------- */
+
+.ta-empty {
+  padding: 56px 24px 24px; margin: 0; text-align: center;
+}
+.ta-empty h2 {
+  font-size: 1.0625rem !important; font-weight: 600; line-height: 1.35 !important;
+  margin: 0 0 8px !important; padding: 0 !important;
+}
+.ta-empty p {
+  color: var(--ta-muted); margin: 0 auto; max-width: 46ch; font-size: .9375rem !important;
+}
+
+/* Цвет не единственный признак ошибки: рядом иконка. Streamlit своей не рисует,
+   а шрифтовых глифов у проекта нет — маска по встроенному SVG. */
+[data-testid="stAlertContainer"] { display: flex; align-items: flex-start; gap: 12px; }
+[data-testid="stAlertContainer"]::before {
+  content: ""; flex: 0 0 20px; width: 20px; height: 20px; margin-top: 2px;
+  background-color: var(--ta-error);
+  -webkit-mask: var(--ta-icon-alert) center / contain no-repeat;
+  mask: var(--ta-icon-alert) center / contain no-repeat;
+}
+[data-testid="stAlert"] {
+  margin-top: 24px;
+  border-radius: var(--ta-radius-md);
+  background: var(--ta-error-surface) !important;
+  border: 1px solid var(--ta-error);
+  color: var(--ta-text) !important;
+}
+[data-testid="stAlert"] [data-testid="stMarkdownContainer"] p { color: var(--ta-text) !important; }
+
+/* ---------- Таблица источников ---------- */
+
+.ta-coverage-list {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 10px; list-style: none; margin: 0 0 18px; padding: 0;
+}
+.ta-coverage-list li {
+  display: flex; flex-direction: column; gap: 3px;
+  min-width: 0; padding: 12px 15px;
+  border: 1px solid var(--ta-divider); border-radius: var(--ta-radius-md);
+  background: var(--ta-surface); color: var(--ta-muted);
+  font-size: .8125rem; overflow-wrap: anywhere;
+}
+.ta-coverage-list strong { color: var(--ta-text); font-size: .875rem; }
+
+.ta-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--ta-divider); border-radius: var(--ta-radius-lg);
+  background: var(--ta-surface); box-shadow: var(--ta-shadow-sm);
+}
+.ta-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: .875rem; }
+.ta-table caption {
+  text-align: left; padding: 20px 24px 16px; color: var(--ta-muted);
+  font-size: .6875rem; letter-spacing: .09em; text-transform: uppercase;
+}
+.ta-table th, .ta-table td {
+  text-align: left; vertical-align: top; padding: 15px 24px; overflow-wrap: anywhere;
+}
+.ta-table th {
+  background: var(--ta-raised); color: var(--ta-muted);
+  font-size: .6875rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase;
+  border-top: 1px solid var(--ta-divider); border-bottom: 1px solid var(--ta-divider);
+}
+.ta-table td { border-top: 1px solid var(--ta-divider); color: var(--ta-muted); }
+.ta-table tbody tr:first-child td { border-top: 0; }
+.ta-table tbody tr:hover td { background: var(--ta-raised); }
+.ta-table a { color: var(--ta-link); font-family: var(--ta-mono); font-size: .8125rem; text-underline-offset: 3px; }
+
+/* ---------- Адаптив ---------- */
+
+@media (max-width: 767px) {
+  .stMainBlockContainer { padding: 32px 16px 72px; }
+  [data-testid="stForm"] { padding: 14px 14px 60px; }
+  [data-testid="stForm"] .st-key-analysis_mode { left: 10px; }
+  .ta-empty { padding: 40px 12px 16px; }
+  .ta-more-publications-body { padding: 4px 10px 12px; }
+  .ta-stat { flex-basis: 100%; }
+  .ta-run { padding: 16px 16px 14px; margin-top: 20px; }
+  .ta-run-clock b { font-size: 1.0625rem; }
+  .ta-table th, .ta-table td { padding: 12px 16px; }
+  .ta-table caption { padding: 16px 16px 12px; }
+  .ta-section { margin-top: 44px; }
+  .ta-hero h1 { max-width: none; }
+  .ta-radar-card:has(> .ta-radar-details[open]) { display: flex; flex-direction: column; }
+  .ta-radar-card:has(> .ta-radar-details[open]) > .ta-radar-details {
+    width: 100%; padding: 12px 0 0; border-left: 0; border-top: 1px solid var(--ta-divider);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  /* Без движения полоса этапа без счётчика не бегает: видна вся, бледной. */
+  .ta-progress-indeterminate { width: 100%; opacity: .3; }
+  .ta-card:hover, .ta-card:focus-within { transform: none; }
+}

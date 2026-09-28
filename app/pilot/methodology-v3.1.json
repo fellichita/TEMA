@@ -1,0 +1,24 @@
+{
+  "version": "3.1.0",
+  "predecessor": "3.0.0",
+  "archive_policy": "Saved 3.0 assessments replay the unchanged 3.0 evaluator. New cards carry an explicit methodology version.",
+  "growth": "Observed unique study families in two completed three-year periods: (R+1)/(B+1). Incomplete or incomparable history never confirms growth. This is not field-normalized growth.",
+  "growth_gates": ["complete comparable history", "R >= 10", "at least two active recent years", "G >= 1.5", "positive descriptive Theil-Sen slope", "both recent year-to-year transitions nonnegative", "specific technology", "supported problem, advantage and case"],
+  "persistence": "100 * active_recent_years / 3 * nonnegative_recent_transitions / 2",
+  "weights": {"growth": 30, "persistence": 20, "novelty": 20, "independence": 15, "application": 15},
+  "novelty_rubric": {"new_mechanism": 100, "new_combination": 75, "new_application": 50, "renamed": 0, "established": 0},
+  "application_rubric": {"research": 50, "demonstrator": 75, "deployment": 100},
+  "unknown": "Missing components stay null without renormalizing weights. Metadata author diversity does not establish independent replication.",
+  "categories": {
+    "unassessed_cluster": "Not yet a verified specific technology",
+    "insufficient_evidence": "Unknown novelty, incomplete history, unsupported claims, or unmet emergence conditions",
+    "confirmed_trend": "Every growth gate and reviewed novelty >= 50; not a claim of earliest weak-signal status or predicted success",
+    "early_signal": "Reviewed low-volume hypothesis: complete history and earlier search, specific technology, supported claims, novelty >=75, B=0, 2<=R<10, first observed within three years, nondecreasing recent transitions with positive final change",
+    "renewed_interest": "Growth gates pass, reviewed novelty zero",
+    "established_topic": "Reviewed novelty zero, growth gates do not pass",
+    "transient_burst": "Reviewed novel candidate with rise then fall in the last three years",
+    "declining": "Reviewed novel candidate with nonpositive first transition and falling final year"
+  },
+  "score_interpretation": "Uncalibrated evidence-priority heuristic, not a weak-signal probability. Bounds represent missing contributions, not a statistical confidence interval. Eligibility precedes ranking; publication volume cannot bypass novelty.",
+  "validation_status": "Regression tested against known failures; independent scientific calibration remains a separate measured acceptance condition."
+}

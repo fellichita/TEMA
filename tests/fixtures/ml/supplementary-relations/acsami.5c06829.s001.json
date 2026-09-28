@@ -1,0 +1,54 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1021/acsami.5c06829.s001",
+  "checked_on": "2026-09-09",
+  "source_metadata_sha256": "b374e132d26cffb707fe2b37e136dacb51ef21f69f904ccc11ea7db5e088829c",
+  "metadata": {
+    "DOI": "10.1021/acsami.5c06829.s001",
+    "type": "component",
+    "relation": {
+      "is-component-of": [
+        {
+          "id-type": "doi",
+          "id": "10.1021/acsami.5c06829",
+          "asserted-by": "object"
+        }
+      ]
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://pubs.acs.org/doi/suppl/10.1021/acsami.5c06829/suppl_file/am5c06829_si_001.pdf"
+      }
+    },
+    "publisher": "American Chemical Society (ACS)",
+    "created": {
+      "date-parts": [
+        [
+          2025,
+          8,
+          11
+        ]
+      ],
+      "date-time": "2025-08-11T11:00:27Z",
+      "timestamp": 1754910027000
+    },
+    "deposited": {
+      "date-parts": [
+        [
+          2025,
+          8,
+          20
+        ]
+      ],
+      "date-time": "2025-08-20T08:08:53Z",
+      "timestamp": 1755677333000
+    },
+    "issued": {
+      "date-parts": [
+        [
+          null
+        ]
+      ]
+    }
+  },
+  "registered_from_year": 2025
+}

@@ -1,0 +1,54 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1021/acsphotonics.1c00526.s001",
+  "checked_on": "2026-09-09",
+  "source_metadata_sha256": "7c78e545da295747a9feeb90a62438216e9dc1812bb511c57a0eff74f3558cc1",
+  "metadata": {
+    "DOI": "10.1021/acsphotonics.1c00526.s001",
+    "type": "component",
+    "relation": {
+      "is-component-of": [
+        {
+          "id-type": "doi",
+          "id": "10.1021/acsphotonics.1c00526",
+          "asserted-by": "object"
+        }
+      ]
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://pubs.acs.org/doi/suppl/10.1021/acsphotonics.1c00526/suppl_file/ph1c00526_si_001.pdf"
+      }
+    },
+    "publisher": "American Chemical Society (ACS)",
+    "created": {
+      "date-parts": [
+        [
+          2021,
+          7,
+          1
+        ]
+      ],
+      "date-time": "2021-07-01T09:45:17Z",
+      "timestamp": 1625132717000
+    },
+    "deposited": {
+      "date-parts": [
+        [
+          2021,
+          7,
+          21
+        ]
+      ],
+      "date-time": "2021-07-21T03:28:00Z",
+      "timestamp": 1626838080000
+    },
+    "issued": {
+      "date-parts": [
+        [
+          null
+        ]
+      ]
+    }
+  },
+  "registered_from_year": 2021
+}

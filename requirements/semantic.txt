@@ -1,0 +1,4 @@
+# Optional CPU inference for the explicitly selected local semantic mode.
+-r ml.txt
+onnxruntime>=1.29,<1.30
+tokenizers>=0.23,<0.24

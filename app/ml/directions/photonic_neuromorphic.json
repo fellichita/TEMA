@@ -1,0 +1,14 @@
+{
+  "id": "photonic_neuromorphic",
+  "profile_version": 1,
+  "canonical_query": "photonic neuromorphic computing",
+  "display_name_ru": "Фотонные нейроморфные вычисления",
+  "aliases": ["фотонная нейроморфика", "фотонные нейросети", "photonic neural computing", "photonic neuromorphic computing"],
+  "scope_kind": "photonic_executor",
+  "description_ru": "Проверяется связь оптического устройства с нейронной операцией; обучение электронным процессором допускается.",
+  "axis_labels": {"carrier": "Оптический носитель", "compute": "Нейронная операция"},
+  "axes": {
+    "carrier": ["\\b(?:optic\\w*|photon\\w*|nanophoton\\w*|optoelectr\\w*|photoelectr\\w*|microrings?|waveguides?|vcsels?|lasers?|mzis?|diffractive|interferometers?|micro[- ]?combs?)\\b"],
+    "compute": ["\\b(?:neural|neuromorphic|neurons?|synap\\w*|spiking|snns?|reservoirs?|inference|convolution\\w*|macs?|learning|perceptrons?|memristive)\\b"]
+  }
+}

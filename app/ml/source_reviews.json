@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "reviews": {
+    "10.1088/2515-7647/ae2e67": {
+      "issue": "publication_date_disputed",
+      "affected_corpus_year": 2025,
+      "corpus_publication_date": "2025-12-17",
+      "source_id": "W4417442250",
+      "decision": "exclude_affected_year_until_verified",
+      "checked_on": "2026-09-08",
+      "reason_ru": "В корпусе указан 2025 год. Институт авторов указывает журнал 2026 года, авторская запись Zenodo — 22 апреля 2026. Доступность этой версии в 2025 году не подтверждена; год не заменяется догадкой.",
+      "sources": [
+        {"url": "https://ifisc.uib-csic.es/en/publications/photonic-reservoir-computing-a-thematic-review/", "reported_journal_year": 2026},
+        {"url": "https://zenodo.org/records/21104995", "reported_publication_date": "2026-04-22"}
+      ]
+    }
+  }
+}

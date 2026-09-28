@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "protocol_version": "multisource-evaluation/1.0.0",
+  "status": "protocol_prepared_real_inputs_and_review_pending",
+  "application_must_not_load_this_file": true,
+  "study_design": "prospective",
+  "areas": [
+    {"area_id": "ai_inference_memory", "proposed_direction": "методы уменьшения памяти при инференсе искусственного интеллекта"},
+    {"area_id": "battery_materials", "proposed_direction": "технологии аккумуляторных материалов"},
+    {"area_id": "dna_data_storage", "proposed_direction": "технологии хранения данных в ДНК"}
+  ],
+  "cuts": [
+    {"id": "T0", "role": "development", "minimum_days_after_previous": 0},
+    {"id": "T1", "role": "validation", "minimum_days_after_previous": 14},
+    {"id": "T2", "role": "blind", "minimum_days_after_previous": 14}
+  ],
+  "arms": ["C", "B", "S", "S+Q", "S+A", "S+Q+A", "S+Q+A+F"],
+  "modes": ["end-to-end", "fixed-pool"],
+  "top_k": 5,
+  "random_control_families_per_area": 5,
+  "primary_review_task_cap": 650,
+  "minimum_second_reviewer_fraction": 0.25,
+  "maximum_policy_variants": 3,
+  "policy_presets": [
+    {"id": "base", "search_yoy_fraction": "0.25", "minimum_recent_count": 30, "persistence_fraction": "0.6666666667"},
+    {"id": "sensitive", "search_yoy_fraction": "0.15", "minimum_recent_count": 15, "persistence_fraction": "0.6666666667"},
+    {"id": "conservative", "search_yoy_fraction": "0.40", "minimum_recent_count": 50, "persistence_fraction": "1"}
+  ],
+  "rubric": ["concept_specific", "scope_relevant", "factual_claims_supported", "not_merely_renamed", "next_step_useful"],
+  "ranking_label": "concept_useful_now",
+  "longitudinal_label": "independent_confirmation_180d",
+  "missing_labels_are_unknown": true,
+  "default_without_R1_gate": "scientific"
+}

@@ -1,0 +1,30 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers"
+markers = ["gui: requires a real Tk display and an isolated test process"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E9", "F", "B"]
+
+[tool.mypy]
+python_version = "3.13"
+explicit_package_bases = true
+files = ["app", "tools/run_checks.py", "tests/_checks_plugin.py"]
+warn_unused_ignores = true
+warn_redundant_casts = true
+
+[[tool.mypy.overrides]]
+module = ["app.backend.*", "app.runtime.*", "app.pilot.*", "app.ui.*", "app.diagnostics", "tools.run_checks", "tests._checks_plugin"]
+check_untyped_defs = true
+
+# These external distributions currently ship no usable type information.
+# Local modules remain checked; missing imports are not ignored globally.
+[[tool.mypy.overrides]]
+module = ["sklearn", "sklearn.*", "threadpoolctl", "defusedxml", "defusedxml.*",
+          "streamlit", "requests"]
+ignore_missing_imports = true

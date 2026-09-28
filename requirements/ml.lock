@@ -1,0 +1,9 @@
+# Local MVP dependencies, verified on CPython 3.13 / macOS.
+-r base.lock
+numpy==2.5.2
+scipy==1.18.1
+scikit-learn==1.9.0
+joblib==1.6.0
+threadpoolctl==3.6.0
+cloudpickle==3.1.2
+narwhals==2.25.0

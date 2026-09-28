@@ -1,0 +1,14 @@
+{
+  "id": "quantum_reservoir",
+  "profile_version": 2,
+  "canonical_query": "quantum reservoir computing",
+  "display_name_ru": "Квантовые резервуарные вычисления",
+  "aliases": ["квантовые резервуарные вычисления", "квантовые резервуарные компьютеры", "quantum reservoir computing", "quantum reservoir computation"],
+  "scope_kind": "paired_axes",
+  "description_ru": "Проверяются именованная тема или связь собственной работы авторов с квантовым резервуаром. Квантовые точки как материал, классическая обработка квантовых данных и фоновые перечисления не считаются достаточным подтверждением. Эвристика не доказывает физическую реализацию и может пропускать неявные формулировки.",
+  "axis_labels": {"carrier": "Квантовый носитель", "compute": "Резервуарные вычисления"},
+  "axes": {
+    "carrier": ["\\b(?:quantum|qubits?|spin[- ]qubits?)\\b"],
+    "compute": ["\\b(?:reservoir[- ](?:comput\\w*|process\\w*|networks?)|qr[cp])\\b"]
+  }
+}

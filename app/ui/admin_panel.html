@@ -1,0 +1,1987 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Панель Trendanalyser</title>
+<style>
+/* Панель владельца. Тот же язык, что у сайта: бумажные поверхности, волосяные
+   линии, один почти чёрный акцент; цвет — только у состояний. Ни одного
+   внешнего ресурса. */
+:root {
+  color-scheme: light;
+  --bg: #F5F3EF; --surface: #FDFCFA; --raised: #EFECE6; --field: #FAF8F4;
+  --divider: #E6E2DA; --line: rgb(29 27 24 / 11%); --border: #7A736A;
+  --text: #1B1917; --muted: #5E584F; --faint: #8A847A;
+  --accent: #1D1B18; --accent-hover: #2C2925; --on-accent: #FDFCFA;
+  --ok: #1E7348; --ok-soft: #E6F2EA; --warn: #9A5A06; --warn-soft: #FAF0DD;
+  --err: #B42318; --err-soft: #FBEEE9; --live: #2155C4; --live-soft: #E8EEFB;
+  --shadow: 0 1px 2px rgb(20 22 28 / 4%), 0 12px 32px -12px rgb(20 22 28 / 14%);
+  --radius: 14px; --radius-sm: 10px;
+  --font: Inter, "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont,
+          "SF Pro Text", "Helvetica Neue", Ubuntu, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", "SF Mono", "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #2C2D33; --surface: #34363C; --raised: #3D3F46; --field: #292A30;
+    --divider: #43454C; --line: rgb(228 230 234 / 10%); --border: #868A92;
+    --text: #E4E6EA; --muted: #ABAFB6; --faint: #8B8F97;
+    --accent: #E4E6EA; --accent-hover: #F2F4F7; --on-accent: #2C2D33;
+    --ok: #62C48F; --ok-soft: rgb(98 196 143 / 14%); --warn: #E6AC4F; --warn-soft: rgb(230 172 79 / 14%);
+    --err: #F27D71; --err-soft: rgb(242 125 113 / 14%); --live: #86A8F7; --live-soft: rgb(134 168 247 / 14%);
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 12px 32px -12px rgb(0 0 0 / 55%);
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 var(--font);
+  font-feature-settings: "tnum" 1, "cv11" 1; -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; }
+a { color: inherit; text-underline-offset: 3px; text-decoration-color: var(--border); }
+code, pre { font-family: var(--mono); }
+h1, h2, h3, p { margin: 0; }
+:focus-visible { outline: 2px solid var(--live); outline-offset: 2px; border-radius: 6px; }
+
+/* Шапка */
+.top {
+  position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 12px max(16px, calc((100vw - 1360px) / 2)); background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.mark {
+  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
+  background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 17px; flex: none;
+}
+.brand b { display: block; font-size: 15px; letter-spacing: -.01em; }
+.brand span.sub { display: block; color: var(--muted); font-size: 12px; }
+.link-state { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; white-space: nowrap; }
+.link-state.lost { color: var(--err); font-weight: 600; }
+
+main { max-width: 1360px; margin: 0 auto; padding: 20px 16px 48px; display: grid; gap: 16px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 18px 20px; min-width: 0;
+}
+.card > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.card h2 { font-size: 13px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.hint { color: var(--muted); font-size: 13px; }
+.muted { color: var(--muted); }
+.faint { color: var(--faint); }
+.empty { color: var(--muted); padding: 18px 0 6px; }
+.empty b { color: var(--text); font-weight: 600; }
+
+/* Точки состояния */
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--faint); flex: none; display: inline-block; }
+.dot.on { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+.dot.live { background: var(--live); box-shadow: 0 0 0 3px var(--live-soft); animation: pulse 1.6s ease-in-out infinite; }
+.dot.warn { background: var(--warn); box-shadow: 0 0 0 3px var(--warn-soft); }
+.dot.err { background: var(--err); box-shadow: 0 0 0 3px var(--err-soft); }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px transparent; } }
+
+/* Кнопки */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 18px;
+  border-radius: 999px; border: 1px solid var(--border); background: var(--surface); cursor: pointer;
+  font-weight: 600; transition: background .15s, border-color .15s, opacity .15s; white-space: nowrap;
+}
+.btn:hover { background: var(--raised); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { background: var(--accent-hover); }
+.btn.danger { color: var(--err); border-color: color-mix(in srgb, var(--err) 55%, transparent); }
+.btn.danger:hover { background: var(--err-soft); }
+.btn.small { min-height: 30px; padding: 0 12px; font-size: 13px; }
+.btn:disabled { opacity: .55; cursor: default; }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line);
+  background: transparent; cursor: pointer; color: var(--muted); flex: none;
+}
+.icon-btn:hover { background: var(--raised); color: var(--text); }
+.spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Сервер */
+.server { display: grid; gap: 18px; padding: 22px 24px; }
+.server-main { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.power {
+  width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; flex: none;
+  background: var(--raised); color: var(--faint);
+}
+.power svg { width: 24px; height: 24px; }
+.power.running { background: var(--ok-soft); color: var(--ok); }
+.power.starting, .power.stopping { background: var(--live-soft); color: var(--live); }
+.power.failed { background: var(--err-soft); color: var(--err); }
+.server-text { flex: 1 1 280px; min-width: 0; }
+.server-text h1 { font-size: 22px; line-height: 1.25; letter-spacing: -.02em; }
+.server-text p { color: var(--muted); margin-top: 2px; }
+.server-text p.error { color: var(--err); }
+.access { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.field {
+  display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px 12px; border-radius: var(--radius-sm);
+  background: var(--field); border: 1px solid var(--line);
+}
+.field .label { display: block; color: var(--muted); font-size: 12px; }
+.field .value { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.field .value.off { color: var(--faint); text-decoration: line-through; font-weight: 500; }
+.field > div { flex: 1; min-width: 0; }
+
+/* Показатели */
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.kpi { padding: 14px 16px; }
+.kpi .k-label { color: var(--muted); font-size: 12.5px; }
+.kpi .k-value { font-size: 26px; font-weight: 650; letter-spacing: -.02em; line-height: 1.2; margin-top: 4px; }
+.kpi .k-value small { font-size: 14px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.kpi .k-sub { color: var(--muted); font-size: 12.5px; margin-top: 2px; min-height: 19px; }
+.bar { height: 6px; border-radius: 999px; background: var(--raised); overflow: hidden; margin-top: 8px; }
+.bar > span { display: block; height: 100%; border-radius: inherit; background: var(--accent); transition: width .4s ease; }
+.bar.live > span { background: var(--live); }
+.bar.ok > span { background: var(--ok); }
+.bar.warn > span { background: var(--warn); }
+.bar.err > span { background: var(--err); }
+
+.grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(320px, 1fr); gap: 16px; align-items: start; }
+.col { display: grid; gap: 16px; min-width: 0; }
+
+/* Текущий анализ */
+.run-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.kicker { color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.run-head h3 { font-size: 20px; line-height: 1.3; letter-spacing: -.015em; margin-top: 4px; overflow-wrap: anywhere; }
+.run-clock { text-align: right; flex: none; }
+.run-clock b { display: block; font-size: 28px; font-weight: 650; letter-spacing: -.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.run-clock span { color: var(--muted); font-size: 12.5px; }
+.phases { list-style: none; padding: 0; margin: 18px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.phases li { font-size: 12.5px; color: var(--faint); padding-top: 10px; border-top: 3px solid var(--raised); line-height: 1.35; }
+.phases li.done { color: var(--muted); border-top-color: var(--ok); }
+.phases li.active { color: var(--text); font-weight: 600; border-top-color: var(--live); }
+.now { margin-top: 16px; padding: 14px 16px; border-radius: var(--radius-sm); background: var(--live-soft); }
+.now.idle { background: var(--raised); }
+.now .now-label { font-size: 13px; color: var(--muted); }
+.now .now-label b { color: var(--text); }
+.now p { margin-top: 2px; overflow-wrap: anywhere; }
+.now .bar { background: color-mix(in srgb, var(--surface) 70%, transparent); }
+.timeline { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+.timeline td { padding: 5px 0; vertical-align: middle; }
+.timeline td:first-child { width: 42%; padding-right: 12px; }
+.timeline td:last-child { width: 88px; text-align: right; color: var(--muted); white-space: nowrap; }
+.timeline .bar { margin: 0; height: 8px; }
+.timeline tr.active td:first-child { font-weight: 600; }
+.run-actions { display: flex; justify-content: flex-end; margin-top: 16px; gap: 8px; }
+.error-box { margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--err-soft); color: var(--err); overflow-wrap: anywhere; }
+
+/* Таблицы */
+.table-wrap { overflow-x: auto; margin: 0 -4px; }
+table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.table th { text-align: left; font-weight: 600; color: var(--muted); font-size: 12px; padding: 0 8px 8px; white-space: nowrap; }
+.table td { padding: 9px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+.table td.num, .table th.num { text-align: right; }
+.table tr.off td { color: var(--muted); }
+.who { display: flex; align-items: center; gap: 9px; font-weight: 600; white-space: nowrap; }
+.q { max-width: 380px; overflow-wrap: anywhere; }
+.q small { display: block; color: var(--err); font-size: 12px; margin-top: 2px; }
+.nowrap { white-space: nowrap; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 999px; font-size: 12px;
+  font-weight: 600; white-space: nowrap; background: var(--raised); color: var(--muted);
+}
+.badge.ok { background: var(--ok-soft); color: var(--ok); }
+.badge.warn { background: var(--warn-soft); color: var(--warn); }
+.badge.err { background: var(--err-soft); color: var(--err); }
+.badge.live { background: var(--live-soft); color: var(--live); }
+
+/* Журнал */
+.chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.chip {
+  border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 3px 10px; font-size: 12.5px;
+  cursor: pointer; color: var(--muted);
+}
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.feed { list-style: none; margin: 0; padding: 0; max-height: 560px; overflow-y: auto; overscroll-behavior: contain; }
+.feed li { display: grid; grid-template-columns: 62px 18px 1fr; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.45; }
+.feed li:first-child { border-top: 0; }
+.feed time { color: var(--faint); font-variant-numeric: tabular-nums; font-size: 12px; padding-top: 1px; }
+.feed .ic { width: 16px; height: 16px; margin-top: 2px; color: var(--faint); }
+.feed li.success .ic { color: var(--ok); }
+.feed li.warning .ic { color: var(--warn); }
+.feed li.error .ic { color: var(--err); }
+.feed li.error span.t { color: var(--err); }
+.feed li.stage span.t { color: var(--muted); }
+.feed li.divider { display: block; text-align: center; color: var(--faint); font-size: 12px; }
+.feed span.t { overflow-wrap: anywhere; }
+
+/* Списки справа */
+.rows { display: grid; gap: 0; }
+.row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); min-width: 0; }
+.row:first-child { border-top: 0; padding-top: 0; }
+.row .grow { flex: 1; min-width: 0; }
+.row .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .meta { color: var(--muted); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; }
+.row .end { color: var(--muted); font-size: 12.5px; text-align: right; white-space: nowrap; }
+.job .bar { margin-top: 6px; }
+dl.facts { display: grid; grid-template-columns: auto 1fr; gap: 7px 14px; margin: 0; font-size: 13.5px; }
+dl.facts dt { color: var(--muted); }
+dl.facts dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.yes { color: var(--ok); font-weight: 600; }
+.no { color: var(--faint); }
+details.card > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+details.card > summary::-webkit-details-marker { display: none; }
+details.card > summary::after { content: "Показать"; color: var(--muted); font-size: 12.5px; }
+details.card[open] > summary::after { content: "Скрыть"; }
+pre.log {
+  margin: 12px 0 0; max-height: 320px; overflow: auto; font-size: 12px; line-height: 1.5; padding: 12px;
+  background: var(--field); border: 1px solid var(--line); border-radius: var(--radius-sm); white-space: pre-wrap; word-break: break-all;
+}
+.dimmed { opacity: .55; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  background: var(--accent); color: var(--on-accent); padding: 10px 18px; border-radius: 999px; font-weight: 600;
+  box-shadow: var(--shadow); transition: opacity .2s, transform .2s; max-width: calc(100vw - 32px); z-index: 10;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.error { background: var(--err); color: #fff; }
+
+/* Несколько анализов и очередь */
+.run-card { padding: 16px 0 18px; border-top: 1px solid var(--line); }
+.run-card:first-child { border-top: 0; padding-top: 0; }
+.run-card details { margin-top: 10px; }
+.run-card details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+.queue-title { margin: 18px 0 6px; font-size: 12px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.table tr.clickable { cursor: pointer; }
+.table tr.clickable:hover td { background: var(--raised); }
+
+/* Ресурсы */
+.res { display: grid; gap: 0; }
+.res-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.res-row:first-child { border-top: 0; padding-top: 0; }
+.res-row > div:first-child { flex: 1 1 220px; min-width: 0; }
+.res-row b { display: block; font-size: 13.5px; }
+.res-row span.hint { display: block; font-size: 12.5px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; gap: 2px; background: var(--field); }
+.seg button { border: 0; background: transparent; border-radius: 999px; min-width: 34px; height: 28px; padding: 0 10px; cursor: pointer; color: var(--muted); font-weight: 600; font-size: 13px; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.switch { position: relative; width: 44px; height: 26px; border-radius: 999px; border: 0; cursor: pointer; background: var(--raised); flex: none; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgb(0 0 0 / 25%); transition: transform .15s; }
+.switch[aria-pressed="true"] { background: var(--ok); }
+.switch[aria-pressed="true"]::after { transform: translateX(18px); }
+
+/* Результат анализа для аналитика */
+.numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.numbers div { padding: 10px 12px; border-radius: var(--radius-sm); background: var(--field); border: 1px solid var(--line); }
+.numbers b { display: block; font-size: 20px; letter-spacing: -.01em; }
+.numbers span { color: var(--muted); font-size: 12px; }
+.warn-box { padding: 10px 12px; border-radius: var(--radius-sm); background: var(--warn-soft); color: var(--warn); font-size: 13px; display: grid; gap: 4px; }
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.items li { padding: 9px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+.items li:first-child { border-top: 0; padding-top: 0; }
+.items .t { font-weight: 600; overflow-wrap: anywhere; }
+.items .o { color: var(--faint); font-size: 12.5px; overflow-wrap: anywhere; }
+.items .m { color: var(--muted); font-size: 12.5px; margin-top: 2px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.items p { margin: 4px 0 0; color: var(--muted); font-size: 12.5px; overflow-wrap: anywhere; }
+.tech-detail summary { cursor: pointer; border-radius: 6px; padding: 3px 6px; margin: -3px -6px; }
+.tech-detail summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tech-detail summary:hover { background: var(--raised); }
+.tech-detail[open] summary { margin-bottom: 10px; }
+.tech-sources { margin: 10px 0 4px 14px; padding-left: 12px; border-left: 2px solid var(--line); }
+.tech-sources > b { display: block; margin-bottom: 6px; font-size: 12.5px; }
+
+/* Кнопки сервера */
+.server-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Посетители: строка открывает карточку */
+.table tr.person { cursor: pointer; }
+.table tr.person:hover td { background: var(--raised); }
+.table tr.person.selected td { background: var(--live-soft); }
+.person-name {
+  display: inline-flex; align-items: center; gap: 9px; font-weight: 600; white-space: nowrap;
+  background: none; border: 0; padding: 0; cursor: pointer; color: inherit; text-align: left;
+}
+.doing { color: var(--text); min-width: 180px; max-width: 320px; overflow-wrap: anywhere; }
+.table tr.off .doing { color: var(--muted); }
+
+/* Карточка посетителя */
+.scrim { position: fixed; inset: 0; background: rgb(0 0 0 / 28%); z-index: 20; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100vw); z-index: 21; overflow-y: auto;
+  background: var(--surface); border-left: 1px solid var(--line); box-shadow: -24px 0 48px -24px rgb(0 0 0 / 35%);
+  padding: 20px 22px 32px; display: grid; gap: 16px; align-content: start; overscroll-behavior: contain;
+}
+.drawer[hidden], .scrim[hidden], .compose[hidden] { display: none; }
+.drawer.wide { width: min(640px, 100vw); }
+.drawer-head { display: flex; align-items: flex-start; gap: 12px; }
+#drawer-body { display: grid; gap: 20px; }
+.drawer-head h2 { font-size: 20px; letter-spacing: -.015em; text-transform: none; color: var(--text); }
+.drawer-head .grow { flex: 1; min-width: 0; }
+.drawer-head p { color: var(--muted); margin-top: 2px; overflow-wrap: anywhere; }
+.drawer h3 { font-size: 12px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.drawer-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.compose { display: grid; gap: 8px; padding: 12px; border-radius: var(--radius-sm); background: var(--field); border: 1px solid var(--line); }
+.compose textarea {
+  width: 100%; min-height: 76px; resize: vertical; font: inherit; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+}
+.compose-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--muted); font-size: 12.5px; }
+.now-box { padding: 12px 14px; border-radius: var(--radius-sm); background: var(--live-soft); }
+.now-box.off { background: var(--raised); }
+.now-box b { display: block; font-size: 15px; overflow-wrap: anywhere; }
+.now-box span { color: var(--muted); font-size: 12.5px; }
+.trail { list-style: none; margin: 0; padding: 0; }
+.trail li { display: grid; grid-template-columns: 62px 1fr; gap: 10px; padding: 7px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.trail li:first-child { border-top: 0; }
+.trail time { color: var(--faint); font-size: 12px; }
+.trail li.success span { color: var(--ok); }
+.trail li.warning span { color: var(--warn); }
+.trail li.error span { color: var(--err); }
+.trail span { overflow-wrap: anywhere; }
+
+/* Вкладки панели */
+.tabs {
+  position: sticky; top: 59px; z-index: 4; display: flex; gap: 4px; padding: 8px max(16px, calc((100vw - 1360px) / 2));
+  background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line); overflow-x: auto;
+}
+.tab {
+  border: 0; background: transparent; border-radius: 999px; padding: 7px 16px; cursor: pointer; color: var(--muted);
+  font-weight: 600; white-space: nowrap;
+}
+.tab:hover { background: var(--raised); color: var(--text); }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--on-accent); }
+.tab .count { font-weight: 500; opacity: .75; margin-left: 4px; }
+.tab-panel { display: grid; gap: 16px; min-width: 0; }
+.tab-panel[hidden] { display: none; }
+
+/* Фильтры и формы */
+.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: end; }
+.filters label, .form-row label { display: grid; gap: 4px; color: var(--muted); font-size: 12px; min-width: 0; }
+.input, select.input {
+  font: inherit; color: var(--text); background: var(--field); border: 1px solid var(--line); border-radius: 8px;
+  padding: 7px 10px; min-height: 36px; min-width: 0; width: 100%;
+}
+.input:focus { outline: 2px solid var(--live); outline-offset: 0; }
+.check { display: inline-flex; align-items: center; gap: 8px; color: var(--text); font-size: 13px; cursor: pointer; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-top: 12px; }
+.toolbar .group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.form-row { display: grid; grid-template-columns: 90px minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: 8px; align-items: end; }
+.pager { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 12px; color: var(--muted); font-size: 13px; }
+
+/* Статистика анализов */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { padding: 12px 14px; border-radius: var(--radius-sm); background: var(--field); border: 1px solid var(--line); }
+.stat b { display: block; font-size: 22px; letter-spacing: -.01em; }
+.stat span { color: var(--muted); font-size: 12.5px; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.hbars { display: grid; gap: 6px; }
+.hbar { display: grid; grid-template-columns: minmax(0, 1fr) 90px 44px; gap: 10px; align-items: center; font-size: 13px; }
+.hbar .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hbar .num { text-align: right; color: var(--muted); }
+.spark { display: flex; align-items: flex-end; gap: 3px; height: 64px; padding-top: 6px; }
+.spark span { flex: 1; background: var(--live); border-radius: 3px 3px 0 0; min-height: 2px; opacity: .85; }
+.spark span.zero { background: var(--raised); }
+.table td.sel, .table th.sel { width: 28px; }
+.table tr.picked td { background: var(--live-soft); }
+.mark-buttons { display: inline-flex; gap: 4px; }
+.mark-buttons button { border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 2px 8px; cursor: pointer; color: var(--muted); font-size: 12.5px; }
+.mark-buttons button[aria-pressed="true"].yes { background: var(--ok-soft); color: var(--ok); border-color: var(--ok); }
+.mark-buttons button[aria-pressed="true"].no { background: var(--err-soft); color: var(--err); border-color: var(--err); }
+.compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.compare > div { padding: 12px 14px; border-radius: var(--radius-sm); background: var(--field); border: 1px solid var(--line); min-width: 0; }
+.compare h4 { margin: 0 0 6px; font-size: 14px; overflow-wrap: anywhere; }
+.chart { width: 100%; height: 140px; }
+.chart .line { fill: none; stroke: var(--live); stroke-width: 2; }
+.chart .base { fill: none; stroke: var(--faint); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.chart text { fill: var(--muted); font-size: 11px; }
+.words { display: flex; flex-wrap: wrap; gap: 6px; }
+
+@media (max-width: 1180px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 980px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card { padding: 16px; }
+  .server { padding: 18px 16px; }
+  .server-main .btn, .server-buttons { width: 100%; }
+  .server-buttons .btn { flex: 1 1 auto; }
+  .drawer { padding: 16px; }
+  .phases { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .tabs { top: 55px; }
+  .phases li { border-top: 0; border-left: 3px solid var(--raised); padding: 2px 0 2px 10px; }
+  .phases li.done { border-left-color: var(--ok); }
+  .phases li.active { border-left-color: var(--live); }
+  .run-head { flex-direction: column; }
+  .run-clock { text-align: left; }
+  .link-state span.text { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="mark" aria-hidden="true">T</span>
+    <div><b>Trendanalyser</b><span class="sub">Панель управления · только этот компьютер</span></div>
+  </div>
+  <div class="link-state" id="link-state" role="status"><span class="dot" id="link-dot"></span><span class="text" id="link-text">Подключаемся…</span></div>
+</header>
+<nav class="tabs" role="tablist" aria-label="Разделы панели">
+  <button class="tab" role="tab" data-tab="overview" aria-selected="true">Обзор</button>
+  <button class="tab" role="tab" data-tab="analyses" aria-selected="false">Анализы<span class="count" id="tab-analyses-count"></span></button>
+  <button class="tab" role="tab" data-tab="sources" aria-selected="false">Источники и языки</button>
+  <button class="tab" role="tab" data-tab="learning" aria-selected="false">Обучение</button>
+</nav>
+<main>
+<div class="tab-panel" id="panel-overview" role="tabpanel">
+  <section class="card server" id="server" aria-label="Сервер"></section>
+  <section class="kpis" id="kpis" aria-label="Показатели"></section>
+  <div class="grid">
+    <div class="col">
+      <section class="card" aria-labelledby="current-title">
+        <header><h2 id="current-title">Идущие анализы</h2><span class="hint" id="current-hint"></span></header>
+        <div id="current"></div>
+        <div id="current-actions"></div>
+      </section>
+      <section class="card" aria-labelledby="visitors-title">
+        <header><h2 id="visitors-title">Посетители</h2><span class="hint" id="visitors-hint"></span></header>
+        <div id="visitors"></div>
+      </section>
+      <section class="card" aria-labelledby="resources-title">
+        <header><h2 id="resources-title">Ресурсы</h2><span class="hint">применяются сразу, идущие анализы не прерываются</span></header>
+        <div id="resources"></div>
+      </section>
+      <section class="card" aria-labelledby="runs-title">
+        <header><h2 id="runs-title">Последние анализы</h2><span class="hint">нажмите — результат для аналитика</span></header>
+        <div id="runs"></div>
+      </section>
+    </div>
+    <div class="col">
+      <section class="card" aria-labelledby="feed-title">
+        <header><h2 id="feed-title">Журнал событий</h2>
+          <div class="chips" id="filters" role="group" aria-label="Фильтр журнала">
+            <button class="chip" data-filter="all" aria-pressed="true">Все</button>
+            <button class="chip" data-filter="people" aria-pressed="false">Люди</button>
+            <button class="chip" data-filter="runs" aria-pressed="false">Анализы</button>
+            <button class="chip" data-filter="problems" aria-pressed="false">Проблемы</button>
+          </div>
+        </header>
+        <ol class="feed" id="feed" aria-live="polite"></ol>
+      </section>
+      <section class="card" aria-labelledby="blocks-title">
+        <header><h2 id="blocks-title">Блокировки</h2><span class="hint">сохраняются между запусками</span></header>
+        <div id="blocks"></div>
+      </section>
+      <section class="card" aria-labelledby="jobs-title">
+        <header><h2 id="jobs-title">Фоновые задачи</h2></header>
+        <div id="jobs"></div>
+      </section>
+      <section class="card" aria-labelledby="proc-title">
+        <header><h2 id="proc-title">Процессы и компьютер</h2></header>
+        <div id="processes"></div>
+      </section>
+      <section class="card" aria-labelledby="service-title">
+        <header><h2 id="service-title">Модель и ключи</h2></header>
+        <div id="service"></div>
+      </section>
+      <details class="card" id="tunnel-card">
+        <summary><h2>Журнал туннеля</h2></summary>
+        <pre class="log" id="tunnel-log"></pre>
+      </details>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-analyses" role="tabpanel" hidden>
+  <section class="card" aria-labelledby="an-filters-title">
+    <header><h2 id="an-filters-title">Все совершённые анализы</h2><span class="hint" id="an-index"></span></header>
+    <form class="filters" id="an-filters" autocomplete="off">
+      <label>Поиск по запросу, трендам, технологиям<input class="input" name="q" maxlength="200" placeholder="например, аккумуляторы"></label>
+      <label>Состояние<select class="input" name="state"><option value="">любое</option><option value="succeeded">готов</option>
+        <option value="failed">ошибка</option><option value="cancelled">отменён</option><option value="interrupted">прерван</option>
+        <option value="running">идёт</option></select></label>
+      <label>Режим<select class="input" name="mode"><option value="">любой</option><option value="fast">быстрый</option><option value="deep">глубокий</option></select></label>
+      <label>С даты<input class="input" type="date" name="from"></label>
+      <label>По дату<input class="input" type="date" name="to"></label>
+      <label>Страна материалов<select class="input" name="country" id="an-country"><option value="">любая</option></select></label>
+      <label>Источник<select class="input" name="source" id="an-source"><option value="">любой</option></select></label>
+      <label>Сортировка<select class="input" name="sort"><option value="created_at">по дате</option><option value="duration">по длительности</option>
+        <option value="publications">по числу публикаций</option><option value="signals">по числу трендов</option>
+        <option value="technologies">по числу технологий</option><option value="off_topic_share">по доле отсеянного</option>
+        <option value="query">по запросу</option></select></label>
+    </form>
+    <div class="toolbar">
+      <div class="group">
+        <label class="check"><input type="checkbox" name="with_signals" form="an-filters"> только с трендами</label>
+        <label class="check"><input type="checkbox" name="with_technologies" form="an-filters"> только с технологиями</label>
+        <button class="btn small" type="button" data-action="an-order" id="an-order">↓ по убыванию</button>
+        <button class="btn small" type="button" data-action="an-reset">Сбросить фильтры</button>
+      </div>
+      <div class="group">
+        <button class="btn small" type="button" data-action="an-compare" id="an-compare" disabled>Сравнить выбранные</button>
+        <button class="btn small" type="button" data-action="an-export" data-format="csv">Экспорт CSV</button>
+        <button class="btn small" type="button" data-action="an-export" data-format="json">Экспорт JSON</button>
+      </div>
+    </div>
+  </section>
+  <section class="stat-grid" id="an-stats" aria-label="Статистика анализов"></section>
+  <section class="card" aria-labelledby="an-table-title">
+    <header><h2 id="an-table-title">Список</h2><span class="hint">нажмите на строку — результат, публикации и отметки для обучения</span></header>
+    <div id="an-table"></div>
+  </section>
+  <div class="two">
+    <section class="card"><header><h2>Активность за 30 дней</h2></header><div id="an-activity"></div></section>
+    <section class="card"><header><h2>Что ищут чаще всего</h2></header><div id="an-queries"></div></section>
+    <section class="card"><header><h2>Технологии, повторяющиеся между анализами</h2></header><div id="an-tech"></div></section>
+    <section class="card"><header><h2>Тренды, повторяющиеся между анализами</h2></header><div id="an-signals"></div></section>
+    <section class="card"><header><h2>Вклад источников</h2></header><div id="an-sources"></div></section>
+    <section class="card"><header><h2>Страны материалов</h2></header><div id="an-countries"></div></section>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-sources" role="tabpanel" hidden>
+  <section class="card" aria-labelledby="src-countries-title">
+    <header><h2 id="src-countries-title">Страны источников</h2>
+      <span class="hint">из источников каких стран брать сведения · действует для новых анализов</span></header>
+    <div class="chips" id="src-countries" role="group" aria-label="Страны"></div>
+    <p class="hint" style="margin-top:10px">Ничего не выбрано — все страны. «Международные» — каталоги без одной страны (arXiv, GitHub, Semantic Scholar…).
+      Google News, GDELT и DOAJ ищут только в изданиях и журналах выбранных стран. Научный корпус анализа (Crossref, OpenAlex) международный и этим фильтром не ограничивается.</p>
+    <div class="toolbar"><div class="group" id="src-summary"></div>
+      <div class="group"><button class="btn small" type="button" data-action="src-all">Все страны</button>
+      <button class="btn primary small" type="button" data-action="src-save">Сохранить страны</button></div></div>
+  </section>
+  <section class="card" aria-labelledby="src-list-title">
+    <header><h2 id="src-list-title">Источники</h2><span class="hint">все без ключей API · переключатель выключает источник</span></header>
+    <div id="src-list"></div>
+  </section>
+  <section class="card" aria-labelledby="lang-title">
+    <header><h2 id="lang-title">Языки перевода</h2><span class="hint">на эти языки сайт переводит ТОП; посетитель выбирает язык над ТОПом</span></header>
+    <div id="lang-list"></div>
+    <h3 class="queue-title">Добавить язык</h3>
+    <form class="form-row" id="lang-catalogue" autocomplete="off">
+      <label>Из каталога<select class="input" name="code" id="lang-catalogue-select"></select></label>
+      <span></span><span></span>
+      <button class="btn primary small" type="submit">Добавить и скачать</button>
+    </form>
+    <form class="form-row" id="lang-custom" autocomplete="off" style="margin-top:10px">
+      <label>Код<input class="input" name="code" maxlength="3" placeholder="pl" pattern="[a-z]{2,3}" required></label>
+      <label>Название<input class="input" name="name" maxlength="40" placeholder="Польский" required></label>
+      <label>Модель Hugging Face (английский → язык)<input class="input" name="model_id" maxlength="193" placeholder="Xenova/opus-mt-en-pl" required></label>
+      <button class="btn small" type="submit">Добавить свой</button>
+    </form>
+    <p class="hint" style="margin-top:10px">Подходит экспорт ONNX моделей Helsinki-NLP opus-mt (например, Xenova/opus-mt-en-…). При добавлении программа
+      один раз скачивает модель, закрепляет её ревизию и SHA-256 файлов и дальше переводит без сети.</p>
+  </section>
+</div>
+
+<div class="tab-panel" id="panel-learning" role="tabpanel" hidden>
+  <section class="card" aria-labelledby="ml-title">
+    <header><h2 id="ml-title">Самообучение на своих анализах</h2><span class="hint" id="ml-state"></span></header>
+    <div id="ml-summary"></div>
+    <div class="toolbar"><div class="group" id="ml-settings"></div>
+      <div class="group">
+        <button class="btn small" type="button" data-action="ml-retrain">Переобучить сейчас</button>
+        <button class="btn small" type="button" data-action="ml-backfill">Обучить на прошлых анализах</button>
+        <button class="btn danger small" type="button" data-action="ml-reset">Сбросить модель</button>
+      </div></div>
+  </section>
+  <div class="two">
+    <section class="card"><header><h2>Качество на новых анализах</h2><span class="hint">модель и одна эвристика на анализах, которых модель не видела</span></header>
+      <div id="ml-chart"></div></section>
+    <section class="card"><header><h2>Чему научилась модель</h2></header><div id="ml-words"></div></section>
+  </div>
+  <section class="card"><header><h2>Точность источников</h2><span class="hint">доля материалов по теме в прошлых анализах → доля сбора в следующих</span></header>
+    <div id="ml-sources"></div></section>
+</div>
+</main>
+<div class="scrim" id="scrim" data-action="close-person" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="false" aria-labelledby="drawer-title" hidden>
+  <div id="drawer-head"></div>
+  <div id="drawer-actions"></div>
+  <form class="compose" id="compose" hidden>
+    <label for="compose-text" class="hint">Сообщение появится на странице посетителя в течение 15 секунд</label>
+    <textarea id="compose-text" maxlength="500" placeholder="Например: сервис перезапустится через 5 минут"></textarea>
+    <div class="compose-foot"><span id="compose-count">0 / 500</span>
+      <span><button type="button" class="btn small" data-action="compose-cancel">Отмена</button>
+      <button type="submit" class="btn primary small">Отправить</button></span></div>
+  </form>
+  <div id="drawer-body"></div>
+</aside>
+<aside class="drawer wide" id="run-drawer" role="dialog" aria-modal="false" aria-labelledby="run-title" hidden>
+  <div id="run-body"></div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script nonce="{{nonce}}">
+"use strict";
+const $ = (id) => document.getElementById(id);
+const NF = new Intl.NumberFormat("ru-RU", {maximumFractionDigits: 1});
+const ESC = {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"};
+const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESC[c]);
+const TERMINAL = new Set(["succeeded", "failed", "cancelled", "interrupted"]);
+// Те же пять фаз, что видит посетитель на сайте.
+const PHASES = [
+  ["Понимаем запрос", ["plan"]],
+  ["Собираем публикации", ["discovery"]],
+  ["Выделяем темы", ["relevance", "labels"]],
+  ["Проверяем рост и доказательства", ["history", "evidence", "antecedents", "enrichment", "verify"]],
+  ["Собираем ТОП", ["external_sources", "publish", "reconcile", "radar", "complete"]],
+];
+const RUN_STATES = {
+  succeeded: ["Готов", "ok"], failed: ["Ошибка", "err"], cancelled: ["Отменён", "warn"],
+  interrupted: ["Прерван", "err"], running: ["Идёт", "live"], queued: ["В очереди", "live"],
+  cancelling: ["Отменяется", "warn"],
+};
+const MODES = {fast: "быстрый", deep: "глубокий"};
+const CATEGORIES = {confirmed_trend: ["Подтверждённый тренд", "ok"], early_signal: ["Ранний сигнал", "live"],
+                    weak_signal_candidate: ["Кандидат в слабые сигналы", ""], emerging_candidate: ["Зарождающийся кандидат", ""]};
+const CONFIDENCE = {low: "низкая", medium: "средняя", high: "высокая"};
+const FEATURES = {growth: "рост", persistence: "устойчивость", novelty: "новизна", independence: "независимость",
+                  application: "применение"};
+const PROVIDERS = {local: "Локальная модель", deepseek: "DeepSeek", yandex: "YandexGPT"};
+const ICONS = {
+  visit: '<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  login: '<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M14 9l2 2"/>',
+  run: '<path d="M7 4v16l13-8Z"/>',
+  stage: '<path d="m9 6 6 6-6 6"/>',
+  service: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+  action: '<path d="M4 4l7 17 2.5-7.5L21 11Z"/>',
+  owner: '<path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6Z"/>',
+  message: '<path d="M4 5h16v11H8l-4 4Z"/>',
+};
+const POWER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v8"/><path d="M6.3 7.2a8 8 0 1 0 11.4 0"/></svg>';
+const COPY = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+const REFRESH = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>';
+const EYE = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+function plural(n, one, few, many) {
+  const a = Math.abs(n) % 10, b = Math.abs(n) % 100;
+  return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many;
+}
+function duration(sec) {
+  sec = Math.max(0, Math.round(sec));
+  if (sec < 60) return `${sec} с`;
+  const m = Math.floor(sec / 60), s = sec % 60;
+  if (m < 60) return s ? `${m} мин ${s} с` : `${m} мин`;
+  return `${Math.floor(m / 60)} ч ${m % 60} мин`;
+}
+function clock(sec) {
+  sec = Math.max(0, Math.floor(sec));
+  const pad = (x) => String(x).padStart(2, "0");
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  return h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+}
+// Use a monotonic clock between polls. Some browsers pause it during system
+// sleep; the wall clock supplies only the missing sleep interval on resume.
+const timebase = {wall: Date.now(), mono: performance.now(), lastWall: Date.now(),
+                  lastMono: performance.now(), sleepOffset: 0};
+let serverClockSynced = false;
+function clockNow() {
+  const wall = Date.now(), mono = performance.now();
+  const wallAdvance = wall - timebase.lastWall;
+  const missed = wallAdvance - (mono - timebase.lastMono);
+  if (wallAdvance >= 1500 && missed > 1000) timebase.sleepOffset += missed;
+  timebase.lastWall = wall;
+  timebase.lastMono = mono;
+  return timebase.wall + mono - timebase.mono + timebase.sleepOffset;
+}
+function syncServerClock(iso, roundTripMs) {
+  const serverNow = Date.parse(iso);
+  if (!Number.isFinite(serverNow)) return;
+  // The timestamp was created somewhere between sending the request and
+  // receiving the response. A slow response alone must not rewind the clocks.
+  const difference = serverNow - clockNow();
+  const earliest = difference, latest = difference + Math.max(0, roundTripMs);
+  const tolerance = serverClockSynced ? 2000 : 0;
+  if (earliest > tolerance) timebase.wall += earliest;
+  else if (latest < -tolerance) timebase.wall += latest;
+  serverClockSynced = true;
+}
+function since(iso) { return (clockNow() - Date.parse(iso)) / 1000; }
+function ago(iso) {
+  const sec = since(iso);
+  if (!Number.isFinite(sec)) return "—";
+  if (sec < 5) return "только что";
+  if (sec < 60) return `${Math.floor(sec)} с назад`;
+  if (sec < 3600) return `${Math.floor(sec / 60)} мин назад`;
+  if (sec < 86400) return `${Math.floor(sec / 3600)} ч ${Math.floor((sec % 3600) / 60)} мин назад`;
+  return new Date(iso).toLocaleString("ru-RU", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"});
+}
+function timeOf(iso) { return new Date(iso).toLocaleTimeString("ru-RU"); }
+function when(iso) {
+  const moment = new Date(iso), today = new Date();
+  const time = moment.toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"});
+  return moment.toDateString() === today.toDateString() ? time
+    : moment.toLocaleDateString("ru-RU", {day: "numeric", month: "short"}) + ", " + time;
+}
+function gb(bytes) { return NF.format(bytes / 1024 ** 3); }
+function size(bytes) { return bytes >= 1024 ** 3 ? `${gb(bytes)} ГБ` : `${Math.round(bytes / 1024 ** 2)} МБ`; }
+function address(ip) { return !ip ? "—" : ip === "127.0.0.1" || ip === "::1" ? "этот компьютер" : ip; }
+function badge(state, extra) {
+  const [label, tone] = RUN_STATES[state] || [state, ""];
+  return `<span class="badge ${tone}">${esc(extra ? `${label} · ${extra}` : label)}</span>`;
+}
+function bar(fraction, tone = "") {
+  const width = Math.max(0, Math.min(1, fraction || 0)) * 100;
+  return `<div class="bar ${tone}"><span style="width:${width.toFixed(1)}%"></span></div>`;
+}
+function icon(kind) {
+  return `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[kind] || ICONS.service}</svg>`;
+}
+const rendered = new WeakMap();
+function setHTML(element, html) {
+  // Перерисовываем только изменившееся: наведение, выделение и прокрутка не сбиваются.
+  if (rendered.get(element) !== html) { element.innerHTML = html; rendered.set(element, html); }
+}
+
+let data = null, lastOk = 0, lastSeq = 0, monitorId = null, prevServer = null;
+let filter = "all", showPassword = false, pending = false, localSeq = 0;
+// Открытая карточка посетителя: её ключ уходит в опрос, и API присылает его ленту.
+let selected = null;
+// Открытая карточка результата анализа и её последние данные.
+let selectedRun = null, runData = null, runTimer = null;
+const events = [];
+
+function addEvent(event) {
+  events.push(event);
+  if (events.length > 600) events.splice(0, events.length - 600);
+}
+function localEvent(kind, text, level = "info") {
+  addEvent({seq: `local-${++localSeq}`, at: new Date().toISOString(), kind, level, text});
+}
+
+function absorb(next) {
+  const server = next.launcher.server;
+  if (prevServer !== null && server.state !== prevServer) {
+    const notes = {running: ["Сервер включён", "success"], stopped: ["Сервер выключен", "warning"],
+                   starting: ["Сервер запускается", "info"], stopping: ["Сервер останавливается", "info"],
+                   failed: [`Сервер остановлен из-за сбоя: ${server.error || "причина не указана"}`, "error"]};
+    const note = notes[server.state];
+    if (note) localEvent("service", note[0], note[1]);
+  }
+  prevServer = server.state;
+  const api = next.api;
+  if (server.state !== "running") {
+    // Выключенный сервер при включении начнёт журнал заново — это ожидаемо, без разделителя.
+    monitorId = null;
+    lastSeq = 0;
+  }
+  if (!api) return false;
+  if (monitorId !== null && api.monitor_started_at !== monitorId) {
+    // Сервис анализа перезапущен: его журнал начался заново.
+    monitorId = api.monitor_started_at;
+    lastSeq = 0;
+    addEvent({seq: `divider-${++localSeq}`, divider: true, text: "Новый запуск сервиса анализа"});
+    return true;
+  }
+  monitorId = api.monitor_started_at;
+  for (const event of api.events) if (event.seq > lastSeq) addEvent(event);
+  lastSeq = Math.max(lastSeq, api.last_seq);
+  return false;
+}
+
+async function poll() {
+  let again = false;
+  const requestedMono = performance.now(), requestedWall = Date.now();
+  try {
+    const response = await fetch(`/overview?after=${lastSeq}${selected ? `&person=${selected}` : ""}`, {cache: "no-store"});
+    if (!response.ok) throw new Error(String(response.status));
+    const next = await response.json();
+    const roundTripMs = Math.max(0, performance.now() - requestedMono, Date.now() - requestedWall);
+    syncServerClock(next.now, roundTripMs);
+    lastOk = clockNow();
+    again = absorb(next);
+    data = next;
+    render();
+  } catch (error) {
+    renderLink();
+  } finally {
+    clearTimeout(poll.timer);
+    poll.timer = setTimeout(poll, again ? 50 : document.hidden ? 5000 : 1500);
+  }
+}
+
+function render() {
+  renderLink();
+  renderServer();
+  renderKpis();
+  renderCurrent();
+  renderResources();
+  renderVisitors();
+  renderRuns();
+  renderFeed();
+  renderBlocks();
+  renderDrawer();
+  renderJobs();
+  renderProcesses();
+  renderService();
+  renderTunnel();
+  tick();
+}
+
+function renderLink() {
+  const fresh = clockNow() - lastOk < 6000;
+  $("link-state").classList.toggle("lost", !fresh && lastOk !== 0);
+  const dot = "dot " + (fresh ? "on" : lastOk ? "err" : "");
+  if ($("link-dot").className !== dot) $("link-dot").className = dot;
+  const label = fresh ? "На связи · обновляется каждые 1,5 с"
+    : lastOk ? "Нет связи с окном запуска — оно закрыто?" : "Подключаемся…";
+  if ($("link-text").textContent !== label) $("link-text").textContent = label;
+}
+
+function serverState() { return data?.launcher.server.state; }
+function apiDown(message) {
+  const state = serverState();
+  const text = state === "starting" ? "Сервер запускается — данные появятся, когда он будет готов."
+    : state === "running" ? (data.api_error || "Сервис анализа не ответил.") : "Сервер выключен.";
+  return `<p class="empty">${esc(message || text)}</p>`;
+}
+
+function renderServer() {
+  const launcher = data.launcher, server = launcher.server;
+  const state = server.state;
+  const modes = {public: `публичная ссылка${launcher.tunnel ? " через " + launcher.tunnel.name : ""}`,
+                 local: "только этот компьютер, вход по паролю", "local-open": "только этот компьютер, без пароля"};
+  const titles = {running: "Сервер работает", starting: "Сервер запускается", stopping: "Сервер останавливается",
+                  stopped: "Сервер выключен", failed: "Сервер остановлен из-за сбоя"};
+  let sub;
+  if (state === "running") sub = `Включён <span data-ago="${esc(server.started_at)}"></span> · ${esc(modes[launcher.mode])}`;
+  else if (state === "starting" || state === "stopping") sub = esc((server.step || "Подождите") + "…");
+  else if (state === "failed") sub = esc(server.error || "Причина не указана.");
+  else sub = "Сайт и ссылка не отвечают посетителям. Панель и окно запуска продолжают работать.";
+  let button;
+  const paused = data.api?.service?.paused;
+  const pause = state === "running" && data.api
+    ? `<button class="btn" data-action="${paused ? "resume" : "pause"}" title="${paused ? "Снова принимать новые анализы" : "Сайт работает, но новые анализы не запускаются; идущий доживёт"}">${paused ? "Открыть запуск анализов" : "Приостановить новые анализы"}</button>` : "";
+  if (state === "running") button = `<button class="btn danger" data-action="power" data-to="stop">${POWER.replace("<svg", '<svg width="16" height="16"')} Выключить сервер</button>`;
+  else if (state === "stopped" || state === "failed") button = `<button class="btn primary" data-action="power" data-to="start">${POWER.replace("<svg", '<svg width="16" height="16"')} ${state === "failed" ? "Включить снова" : "Включить сервер"}</button>`;
+  else button = `<button class="btn" disabled><span class="spinner"></span> ${state === "starting" ? "Запускается" : "Останавливается"}</button>`;
+  const on = state === "running";
+  const fields = [];
+  if (launcher.url && launcher.mode === "public") {
+    fields.push(`<div class="field"><div><span class="label">Публичная ссылка${on ? "" : " · не работает, пока сервер выключен"}</span>
+      <a class="value ${on ? "" : "off"}" href="${esc(launcher.url)}" target="_blank" rel="noopener noreferrer">${esc(launcher.url)}</a></div>
+      <button class="icon-btn" data-action="copy" data-value="${esc(launcher.url)}" title="Скопировать ссылку" aria-label="Скопировать ссылку">${COPY}</button></div>`);
+  }
+  if (launcher.password) {
+    fields.push(`<div class="field"><div><span class="label">Пароль входа · действует до закрытия окна запуска</span>
+      <code class="value">${showPassword ? esc(launcher.password) : "•".repeat(14)}</code></div>
+      <button class="icon-btn" data-action="reveal" title="${showPassword ? "Скрыть" : "Показать"} пароль" aria-label="${showPassword ? "Скрыть" : "Показать"} пароль">${EYE}</button>
+      <button class="icon-btn" data-action="copy" data-value="${esc(launcher.password)}" title="Скопировать пароль" aria-label="Скопировать пароль">${COPY}</button>
+      ${on ? `<button class="icon-btn" data-action="password" title="Сменить пароль: все посетители выйдут и войдут заново" aria-label="Сменить пароль">${REFRESH}</button>` : ""}</div>`);
+  }
+  fields.push(`<div class="field"><div><span class="label">Сайт на этом компьютере</span>
+    <a class="value ${on ? "" : "off"}" href="${esc(launcher.local_url)}" target="_blank" rel="noopener noreferrer">${esc(launcher.local_url)}</a></div></div>`);
+  setHTML($("server"), `<div class="server-main">
+      <div class="power ${esc(state)}">${state === "starting" || state === "stopping" ? '<span class="spinner"></span>' : POWER}</div>
+      <div class="server-text"><h1>${esc(titles[state] || state)}</h1><p class="${state === "failed" ? "error" : ""}">${sub}${paused && on ? " · <b>новые анализы приостановлены</b>" : ""}</p></div>
+      <div class="server-buttons">${pause}${button}</div></div>
+    <div class="access">${fields.join("")}</div>`);
+}
+
+function renderKpis() {
+  const api = data.api, system = data.system;
+  const counters = api?.counters || {};
+  const current = api?.current;
+  const active = current && !TERMINAL.has(current.state);
+  const tiles = [];
+  const online = counters.online ?? 0;
+  tiles.push(["Сейчас на сайте", api ? `${online} <small>${plural(online, "человек", "человека", "человек")}</small>` : "—",
+              api ? `за запуск: ${counters.visitors || 0} · неверных паролей: ${counters.login_failures || 0}`
+                + (api.blocks.length ? ` · блокировок: ${api.blocks.length}` : "") : "сервер выключен", ""]);
+  const running = api?.active?.length || 0, queued = api?.queue?.length || 0, slots = api?.resources?.slots || 1;
+  tiles.push(["Анализы сейчас", api ? `${running}<small> из ${slots}</small>` : "—",
+              api ? (queued ? `в очереди ${queued}` : running ? esc((api.active[0].stage_label || "идёт") + (running > 1 ? " и др." : ""))
+                     : "места свободны") : "", api ? bar(running / slots, running >= slots ? "warn" : "live") : ""]);
+  const done = counters.runs_succeeded || 0, failed = (counters.runs_failed || 0) + (counters.runs_interrupted || 0);
+  tiles.push(["Анализов за запуск", api ? String(counters.runs_started || 0) : "—",
+              api ? `готово ${done} · ошибок ${failed} · отменено ${counters.runs_cancelled || 0}` : "", ""]);
+  const gpu = system.gpu && system.gpu[0];
+  if (gpu) {
+    const memory = gpu.memory_total_mb ? gpu.memory_used_mb / gpu.memory_total_mb : 0;
+    tiles.push(["Видеокарта", `${gpu.utilization ?? "—"}<small>%</small>`,
+                `${NF.format(gpu.memory_used_mb / 1024)} из ${NF.format(gpu.memory_total_mb / 1024)} ГБ${gpu.temperature != null ? ` · ${gpu.temperature} °C` : ""}`,
+                bar(memory, memory > .9 ? "err" : memory > .75 ? "warn" : "")]);
+  } else {
+    tiles.push(["Видеокарта", "—", "нет данных nvidia-smi", ""]);
+  }
+  const memory = system.memory;
+  tiles.push(["Процессор", system.cpu_percent != null ? `${NF.format(system.cpu_percent)}<small>%</small>` : "—",
+              memory ? `память ${gb(memory.used)} из ${gb(memory.total)} ГБ` : "",
+              memory ? bar(memory.used / memory.total, memory.used / memory.total > .9 ? "err" : "") : ""]);
+  setHTML($("kpis"), tiles.map(([label, value, sub, extra]) =>
+    `<div class="card kpi"><div class="k-label">${esc(label)}</div><div class="k-value">${value}</div>
+     <div class="k-sub">${sub}</div>${extra}</div>`).join(""));
+}
+
+function phaseIndex(stage) { return PHASES.findIndex(([, stages]) => stages.includes(stage)); }
+
+function runBody(c, live) {
+  const who = c.visitor ? `<span>${esc(c.visitor)}</span>` : "";
+  const kicker = `<span class="kicker">${badge(c.state)} ${who}<span>${esc(MODES[c.mode] || c.mode || "")}</span>
+    ${c.started_at ? `<span>начат в ${esc(new Date(c.started_at).toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit"}))}</span>` : ""}</span>`;
+  const expected = c.expected_seconds;
+  const clockHtml = live && c.started_at
+    ? `<b data-since="${esc(c.started_at)}"></b>
+       <span data-left="${esc(c.started_at)}" data-expected="${expected || ""}"></span>`
+    : `<b>${c.elapsed_seconds != null ? clock(c.elapsed_seconds) : "—"}</b><span>${c.state === "succeeded" ? "полное время" : "до остановки"}</span>`;
+  // Фаза не откатывается назад, когда поздний этап дособирает ранний.
+  const stages = c.stages || [];
+  const reached = Math.max(-1, ...stages.map((entry) => phaseIndex(entry.stage)), phaseIndex(c.stage));
+  const phases = PHASES.map(([name], index) => {
+    const cls = c.state === "succeeded" || index < reached || (!live && index === reached) ? "done"
+      : index === reached ? "active" : "";
+    return `<li class="${cls}">${esc(name)}</li>`;
+  }).join("");
+  const current = stages.find((entry) => entry.active);
+  let now = "";
+  if (live) {
+    const counted = c.total ? `${bar(c.completed / c.total, "live")}
+      <div class="muted" style="font-size:12.5px;margin-top:4px">${c.completed} из ${c.total}</div>` : "";
+    now = `<div class="now"><div class="now-label">Сейчас: <b>${esc(c.stage_label || (c.state === "queued" ? "в очереди" : "начинаем"))}</b>
+      ${current?.current_since ? ` · <span data-since="${esc(current.current_since)}" data-format="duration"></span> на этапе` : ""}</div>
+      ${c.message ? `<p>${esc(c.message)}</p>` : ""}${counted}</div>`;
+  }
+  const longest = Math.max(1, ...stages.map((entry) => entry.seconds));
+  const timeline = stages.length ? `<details ${live ? "" : "open"}><summary>Хронология этапов</summary><table class="timeline"><tbody>${stages.map((entry) => {
+      const on = entry.active && live;
+      return `<tr class="${on ? "active" : ""}"><td>${esc(entry.label)}</td>
+        <td>${bar(entry.seconds / longest, on ? "live" : "")}</td><td>${esc(duration(entry.seconds))}</td></tr>`;
+    }).join("")}</tbody></table></details>` : "";
+  const error = c.error ? `<div class="error-box">${esc(c.error)}</div>` : "";
+  return `<div class="run-head"><div>${kicker}<h3>${esc(c.query)}</h3></div>
+      <div class="run-clock">${clockHtml}</div></div>
+    ${live && expected ? `<div class="bar live" title="Время относительно прогноза"><span data-meter="${esc(c.started_at)}" data-expected="${expected}"></span></div>` : ""}
+    <ol class="phases">${phases}</ol>${now}${timeline}${error}`;
+}
+
+function renderCurrent() {
+  const api = data.api;
+  setHTML($("current-actions"), "");
+  if (!api) {
+    $("current-hint").textContent = "";
+    return setHTML($("current"), apiDown());
+  }
+  const active = api.active || [], queue = api.queue || [], slots = api.resources?.slots || 1;
+  $("current-hint").textContent = `занято ${active.length} из ${slots} ${plural(slots, "места", "мест", "мест")}`
+    + (queue.length ? ` · в очереди ${queue.length}` : "");
+  let html = active.map((c) => `<article class="run-card">${runBody(c, true)}
+    <div class="run-actions">
+      <button class="btn small" data-action="open-run" data-id="${esc(c.id)}">Подробнее</button>
+      ${c.state !== "cancelling" ? `<button class="btn danger small" data-action="cancel" data-id="${esc(c.id)}" data-query="${esc(c.query)}">Остановить</button>` : ""}
+    </div></article>`).join("");
+  const last = api.current;
+  if (!active.length) {
+    html = last && TERMINAL.has(last.state)
+      ? `<p class="hint" style="margin-bottom:10px">Сейчас ничего не считается. Последний анализ:</p>
+         <article class="run-card">${runBody(last, false)}<div class="run-actions">
+         <button class="btn small" data-action="open-run" data-id="${esc(last.id)}">Результат для аналитика</button></div></article>`
+      : `<p class="empty"><b>Сейчас ничего не считается.</b> С этого запуска сервера анализов ещё не было.</p>`;
+  }
+  if (queue.length) {
+    html += `<p class="queue-title">Очередь</p><div class="table-wrap"><table class="table"><thead><tr><th class="num">№</th><th>Кто</th>
+      <th>Запрос</th><th>Режим</th><th>Ждёт</th><th></th></tr></thead><tbody>${queue.map((item) => `
+      <tr><td class="num">${item.position}</td><td class="nowrap">${esc(item.visitor || "—")}</td><td class="q">${esc(item.query)}</td>
+        <td class="nowrap">${esc(MODES[item.mode] || "")}</td><td class="nowrap">${esc(duration(item.waiting_seconds))}</td>
+        <td><button class="btn small" data-action="cancel" data-id="${esc(item.id)}" data-query="${esc(item.query)}">Убрать</button></td></tr>`).join("")}
+      </tbody></table></div>`;
+  }
+  setHTML($("current"), html);
+}
+
+function renderResources() {
+  const api = data.api;
+  if (!api) return setHTML($("resources"), apiDown());
+  if (!api.resources) {
+    return setHTML($("resources"), `<p class="empty">Сервер запущен прежней версией программы и ресурсов не знает.
+      Закройте окно запуска и запустите его снова.</p>`);
+  }
+  const r = api.resources, loaded = api.service.llm_loaded;
+  const seg = (name, values, suffix = "") => `<div class="seg" role="group">${values.map((value) =>
+    `<button data-action="resource" data-name="${name}" data-value="${value}" aria-pressed="${r[name] === value}">${value}${suffix}</button>`).join("")}</div>`;
+  const toggle = (name) => `<button class="switch" data-action="resource-toggle" data-name="${name}" aria-pressed="${!!r[name]}" aria-label="${name}"></button>`;
+  setHTML($("resources"), `<div class="res">
+    <div class="res-row"><div><b>Одновременных анализов</b><span class="hint">Сверх этого числа анализы встают в очередь и стартуют сами.
+      Больше мест — короче очередь, но анализы делят видеокарту и лимиты источников (OpenAlex, arXiv).</span></div>${seg("slots", [1, 2, 3, 4])}</div>
+    <div class="res-row"><div><b>Пакет генерации модели</b><span class="hint">Сколько тем модель называет за один проход по видеокарте.
+      8 — в 2,4 раза быстрее, чем по одной (ответы те же).</span></div>${seg("llm_batch", [1, 2, 4, 8])}</div>
+    <div class="res-row"><div><b>Держать модель в памяти</b><span class="hint">Не загружать Qwen заново на каждый анализ; занимает ~2 ГБ видеопамяти.
+      Сейчас: ${loaded ? "загружена" : "не загружена"}.</span></div>
+      <span style="display:flex;gap:8px;align-items:center">${loaded ? `<button class="btn small" data-action="unload_llm">Выгрузить</button>` : ""}${toggle("keep_llm_loaded")}</span></div>
+    <div class="res-row"><div><b>Глубокий режим для гостей</b><span class="hint">Глубокий анализ идёт в 4–5 раз дольше быстрого и дольше держит место.</span></div>${toggle("deep_allowed")}</div>
+    <div class="res-row"><div><b>Точный ТОП технологий без OpenAlex</b><span class="hint">Когда OpenAlex не отвечает (нет ключа, исчерпан лимит),
+      первое упоминание фраз берётся из arXiv. Выключено — пачками, ~30 с (счёт по точной фразе, иногда чуть меньше, чем у arXiv).
+      Включено — по одной фразе, как считает arXiv, ~2 минуты.</span></div>${toggle("radar_exact")}</div>
+    <div class="res-row"><div><b>Длина очереди</b><span class="hint">Сколько анализов может ждать; 0 — без очереди (при занятых местах гостю откажут).</span></div>${seg("queue_limit", [0, 5, 10, 20])}</div>
+  </div>`);
+}
+
+function openRun(id) {
+  selectedRun = id;
+  runData = null;
+  $("run-drawer").hidden = false;
+  $("scrim").hidden = false;
+  setHTML($("run-body"), `<div class="drawer-head"><div class="grow"><h2 id="run-title">Результат анализа</h2><p>Собираем…</p></div>
+    <button class="icon-btn" data-action="close-run" aria-label="Закрыть">✕</button></div>`);
+  loadRun();
+}
+
+function closeRun() {
+  selectedRun = null;
+  clearTimeout(runTimer);
+  $("run-drawer").hidden = true;
+  if (!selected) $("scrim").hidden = true;
+}
+
+async function loadRun() {
+  const id = selectedRun;
+  clearTimeout(runTimer);
+  if (!id) return;
+  try {
+    const response = await fetch(`/run?run_id=${encodeURIComponent(id)}`, {cache: "no-store"});
+    const answer = await response.json();
+    if (selectedRun !== id) return;
+    runData = response.ok ? answer : {error: answer.error || "Не удалось открыть анализ."};
+  } catch (error) {
+    runData = {error: "Нет связи с окном запуска."};
+  }
+  renderRun();
+  // Идущий анализ обновляется, готовый — нет.
+  if (selectedRun === id && (!runData || runData.error || !TERMINAL.has(runData.state))) runTimer = setTimeout(loadRun, 4000);
+}
+
+function olderRadarPolicy(version) {
+  const match = typeof version === "string" ? /^radar\/([0-9]{1,6})\.([0-9]{1,6})\.([0-9]{1,6})$/.exec(version) : null;
+  if (!match) return false;
+  const current = [1, 3, 0];
+  for (let index = 0; index < current.length; index++) {
+    const part = Number(match[index + 1]);
+    if (part !== current[index]) return part < current[index];
+  }
+  return false;
+}
+
+function renderRun() {
+  const r = runData;
+  const head = (title, sub) => `<div class="drawer-head"><div class="grow"><h2 id="run-title">${esc(title)}</h2><p>${sub}</p></div>
+    <button class="icon-btn" data-action="close-run" aria-label="Закрыть">✕</button></div>`;
+  if (!r) return;
+  if (r.error && !r.state) return setHTML($("run-body"), head("Результат анализа", esc(r.error)));
+  const meta = [badge(r.state), r.visitor ? esc(r.visitor) : null, esc(MODES[r.mode] || ""), esc(when(r.created_at)),
+                r.duration_seconds != null ? esc(duration(r.duration_seconds)) : null].filter(Boolean).join(" · ");
+  const parts = [head(r.query, meta)];
+  if (r.error) parts.push(`<div class="error-box">${esc(r.error)}</div>`);
+  if (r.state !== "succeeded") {
+    parts.push(`<p class="empty">${r.state === "running" || r.state === "queued" ? `Анализ идёт: ${esc(r.message || "")}` : "Готового результата нет."}</p>`);
+    return setHTML($("run-body"), `<div style="display:grid;gap:18px">${parts.join("")}</div>`);
+  }
+  const n = r.numbers || {};
+  parts.push(`<div class="numbers">
+    <div><b>${n.publications ?? "—"}</b><span>публикаций</span></div>
+    <div><b>${n.signals ?? 0}</b><span>трендов и сигналов</span></div>
+    <div><b>${n.technologies ?? 0}</b><span>технологий из ${n.technology_candidates ?? 0}</span></div>
+    <div><b>${n.sources ?? 0}</b><span>источников дали данные</span></div>
+    ${n.grants ? `<div><b>${n.grants}</b><span>грантов NIH · $${NF.format((n.grants_usd || 0) / 1e6)} млн</span></div>` : ""}</div>`);
+  if (r.warnings?.length) parts.push(`<div class="warn-box">${r.warnings.map((text) => `<div>${esc(text)}</div>`).join("")}</div>`);
+  if (olderRadarPolicy(r.radar_policy_version)) parts.push(`<div class="warn-box">Этот сохранённый анализ создан до обновления отбора направлений. Запустите новый анализ, чтобы увидеть результаты по новым правилам.</div>`);
+  const link = (url, text) => url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(text)}</a>` : esc(text);
+  parts.push(`<section><h3>Тренды и сигналы</h3>${r.signals?.length ? `<ul class="items">${r.signals.map((item) => {
+      const [label, tone] = CATEGORIES[item.category] || [item.category || "—", ""];
+      return `<li><div class="t">${link(item.url, item.title_ru || item.title)}</div>
+        ${item.title_ru ? `<div class="o">${esc(item.title)}</div>` : ""}
+        <div class="m"><span class="badge ${tone}">${esc(label)}</span><span>уверенность: ${esc(CONFIDENCE[item.confidence] || "—")}</span>
+          <span>${item.sources} ${plural(item.sources, "источник", "источника", "источников")}</span>
+          ${item.checked?.length ? `<span>подтверждено: ${esc(item.checked.map((code) => FEATURES[code] || code).join(", "))}</span>` : ""}</div>
+        ${item.summary ? `<p>${esc(item.summary.slice(0, 280))}</p>` : ""}</li>`;
+    }).join("")}</ul>` : '<p class="empty">Трендов не найдено.</p>'}</section>`);
+  const techRow = (item, index) => {
+    const score = item.probability;
+    const confidence = typeof score === "number" && Number.isFinite(score) && score >= 0 && score <= 1
+      ? `${Math.round(score * 100)}%` : "—";
+    const sources = Array.isArray(item.sources) ? item.sources : [];
+    const sourceRows = sources.map((source) => `<li><div class="t">${link(source.url, source.title)}</div>
+      <div class="m"><span>${esc(source.published || "дата неизвестна")}</span>
+        <span>${esc(source.source || source.type || "источник")}</span>
+        ${source.model_confidence != null ? `<span>оценка модели для публикации: ${esc(source.model_confidence)}/100</span>` : ""}</div></li>`).join("");
+    return `<li><details class="tech-detail"><summary><span class="t">${index + 1}. ${esc(item.title)}</span>
+      <span class="m"><span class="badge ${item.is_signal ? "ok" : ""}">Уверенность модели: ${confidence}</span>
+        <span>${item.is_signal ? "Слабый сигнал" : item.rule_excluded ? "Исключена правилом" : "Кандидат"}</span>
+        ${item.documents ? `<span>${item.documents} ${plural(item.documents, "материал", "материала", "материалов")}</span>` : ""}</span></summary>
+      ${item.description ? `<p>${esc(item.description)}</p>` : ""}
+      ${item.reasons?.length ? `<p>${esc(item.reasons.join(" · "))}</p>` : ""}
+      <div class="tech-sources"><b>Источники по технологии · ${sources.length}</b>
+        ${sourceRows ? `<ul class="items">${sourceRows}</ul>` : '<p class="empty">Публикации для этой технологии не найдены.</p>'}
+      </div></details></li>`;
+  };
+  parts.push(`<section><h3>ТОП-15 технологий</h3>${r.technologies?.length ? `<ul class="items">${r.technologies.map(techRow).join("")}</ul>`
+    : '<p class="empty">Ни одна технология не прошла отбор.</p>'}
+    ${r.excluded?.length ? `<details style="margin-top:8px"><summary class="hint" style="cursor:pointer">Ближайшие исключённые (${r.excluded.length})</summary>
+      <ul class="items" style="margin-top:8px">${r.excluded.map(techRow).join("")}</ul></details>` : ""}</section>`);
+  if (!r.technologies?.length) parts.push(`<section><h3>Публикации</h3>${r.top_publications?.length ? `<ul class="items">${r.top_publications.map((item) => `
+      <li><div class="t">${link(item.url, item.title_ru || item.title)}</div>${item.title_ru ? `<div class="o">${esc(item.title)}</div>` : ""}
+      <div class="m"><span>${esc(item.published_at || "дата неизвестна")}</span><span>${esc(item.source || "")}</span>
+        ${item.model_confidence != null ? `<span>оценка модели: ${esc(item.model_confidence)}/100</span>` : ""}
+        ${item.trend ? `<span>тренд: ${esc(item.trend)}</span>` : ""}</div></li>`).join("")}</ul>` : '<p class="empty">Публикаций нет.</p>'}</section>`);
+  if (r.sources?.length) parts.push(`<section><h3>Источники</h3><div class="m" style="display:flex;flex-wrap:wrap;gap:6px">${r.sources.map((item) =>
+      `<span class="badge ${item.state === "complete" ? "ok" : item.accepted ? "warn" : ""}">${esc(item.source_id)} · ${item.accepted ?? 0}</span>`).join("")}</div></section>`);
+  if (r.stages?.length) {
+    const longest = Math.max(1, ...r.stages.map((entry) => entry.seconds));
+    parts.push(`<section><h3>Этапы</h3><table class="timeline"><tbody>${r.stages.map((entry) => `<tr><td>${esc(entry.label)}</td>
+      <td>${bar(entry.seconds / longest)}</td><td>${esc(duration(entry.seconds))}</td></tr>`).join("")}</tbody></table></section>`);
+  }
+  // Все публикации анализа с оценкой темы: отметки владельца учат модель.
+  parts.push(`<section><h3>Публикации анализа и ваши отметки</h3><div id="run-pubs"><p class="empty">Загружаем…</p></div></section>`);
+  setHTML($("run-body"), `<div style="display:grid;gap:20px">${parts.join("")}</div>`);
+  if (typeof loadRunPublications === "function") {
+    if (pubs.run === r.id && pubs.data) renderRunPublications(); else loadRunPublications(r.id, "all", 0);
+  }
+}
+
+function renderVisitors() {
+  const api = data.api;
+  if (!api) { $("visitors-hint").textContent = ""; return setHTML($("visitors"), apiDown()); }
+  const people = api.visitors;
+  const online = api.counters.online || 0;
+  $("visitors-hint").textContent = `${online} на сайте · ${api.service.separate_visitors ? "вход по паролю" : "без пароля"}`;
+  if (!people.length) {
+    const link = data.launcher.url && data.launcher.mode === "public" ? ` Ссылка для гостей: ${data.launcher.url}` : "";
+    return setHTML($("visitors"), `<p class="empty"><b>Пока никто не заходил.</b>${esc(link)}</p>`);
+  }
+  const rows = people.map((person) => `
+    <tr class="person ${person.online ? "" : "off"} ${person.key === selected ? "selected" : ""}" data-action="open-person" data-person="${esc(person.key)}">
+      <td><button class="person-name" data-action="open-person" data-person="${esc(person.key)}" aria-label="Подробнее: ${esc(person.label)}">
+        <span class="dot ${person.blocked ? "err" : person.online ? "on" : ""}"></span>${esc(person.label)}</button>
+        ${person.tabs > 1 ? `<span class="faint">${person.tabs} ${plural(person.tabs, "вкладка", "вкладки", "вкладок")}</span>` : ""}</td>
+      <td class="doing">${esc(person.doing || person.page)}</td>
+      <td class="nowrap" title="${esc(person.agent_raw || "")}">${esc(person.agent || "—")}</td>
+      <td class="nowrap">${esc(address(person.ip))}</td>
+      <td class="num">${person.runs}</td>
+      <td class="nowrap">${statusBadge(person)}</td>
+    </tr>`).join("");
+  setHTML($("visitors"), `<div class="table-wrap"><table class="table"><thead><tr><th>Кто</th><th>Что делает</th><th>Браузер</th>
+    <th>Адрес</th><th class="num">Анализов</th><th>Состояние</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="hint" style="margin-top:10px">Нажмите на посетителя — откроется его лента действий и управление.</p>`);
+}
+
+function statusBadge(person) {
+  if (person.blocked) return '<span class="badge err">заблокирован</span>';
+  if (person.signed_out) return '<span class="badge warn">выгнан</span>';
+  return person.online ? '<span class="badge ok">на сайте</span>'
+    : `<span class="faint">ушёл <span data-ago="${esc(person.last_seen)}"></span></span>`;
+}
+
+function selectedPerson() {
+  return data?.api?.visitors.find((person) => person.key === selected) || null;
+}
+
+function openPerson(key) {
+  selected = key;
+  $("compose").hidden = true;
+  $("drawer").hidden = false;
+  $("scrim").hidden = false;
+  if (data) { renderDrawer(); renderVisitors(); }
+  // Лента этого посетителя придёт со следующим опросом — не ждём полторы секунды.
+  clearTimeout(poll.timer);
+  poll();
+}
+
+function closePerson() {
+  selected = null;
+  $("drawer").hidden = true;
+  $("scrim").hidden = true;
+  if (data) renderVisitors();
+}
+
+function renderDrawer() {
+  if (!selected) return;
+  const api = data.api, person = selectedPerson();
+  const detail = api?.person?.key === selected ? api.person : null;
+  if (!api || !person) {
+    setHTML($("drawer-head"), `<div class="drawer-head"><div class="grow"><h2 id="drawer-title">Посетитель</h2>
+      <p>${api ? "Этот посетитель больше не в списке." : "Сервер выключен."}</p></div>
+      <button class="icon-btn" data-action="close-person" aria-label="Закрыть">✕</button></div>`);
+    setHTML($("drawer-actions"), "");
+    setHTML($("drawer-body"), "");
+    return;
+  }
+  const state = person.blocked ? "заблокирован" : person.signed_out ? "выгнан, для входа нужен пароль"
+    : person.online ? `на сайте · ${person.tabs} ${plural(person.tabs, "вкладка", "вкладки", "вкладок")}` : "ушёл";
+  setHTML($("drawer-head"), `<div class="drawer-head"><div class="grow"><h2 id="drawer-title">${esc(person.label)}</h2>
+      <p>${esc(state)}</p></div>
+    <button class="icon-btn" data-action="close-person" aria-label="Закрыть карточку">✕</button></div>`);
+  const current = api.current;
+  const theirRun = current && !TERMINAL.has(current.state) && current.visitor && current.visitor === person.label;
+  const buttons = [
+    `<button class="btn small" data-action="compose">Написать сообщение</button>`,
+    person.signed_in && !person.signed_out && !person.blocked
+      ? `<button class="btn small" data-action="sign_out">Выгнать</button>` : "",
+    !person.blocked && (person.signed_in || person.can_block_ip)
+      ? `<button class="btn danger small" data-action="block">Заблокировать</button>` : "",
+    theirRun ? `<button class="btn danger small" data-action="cancel" data-id="${esc(current.id)}" data-query="${esc(current.query)}">Остановить его анализ</button>` : "",
+  ].filter(Boolean);
+  const blocks = api.blocks.filter((entry) => (person.block_ids || []).includes(entry.id));
+  setHTML($("drawer-actions"), `<div class="drawer-actions">${buttons.join("")}</div>
+    ${person.pending_messages ? `<p class="hint" style="margin-top:8px">Сообщений ждут доставки: ${person.pending_messages}</p>` : ""}
+    ${blocks.length ? `<div class="drawer-actions" style="margin-top:8px">${blocks.map((entry) =>
+      `<button class="btn small" data-action="unblock" data-id="${esc(entry.id)}">Снять блокировку: ${esc(entry.kind === "visitor" ? "браузер" : entry.value)}</button>`).join("")}</div>` : ""}`);
+  const facts = [
+    ["Страница", person.page],
+    ["Браузер", person.agent_raw || "—"],
+    ["Адрес", address(person.ip) + (person.ip && !person.can_block_ip ? " (не блокируется)" : "")],
+    ["Анализов", String(person.runs)],
+    ["Впервые", new Date(person.first_seen).toLocaleString("ru-RU")],
+  ];
+  const runs = detail?.runs || [];
+  const trail = detail?.actions || [];
+  setHTML($("drawer-body"), `
+    <div class="now-box ${person.online && !person.blocked ? "" : "off"}"><span>${person.blocked ? "Последнее до блокировки" : person.online ? "Сейчас" : "Последнее"}</span>
+      <b>${esc(person.doing || person.page)}</b>
+      <span>${person.online ? "отметка" : "был на сайте"} <span data-ago="${esc(person.last_seen)}"></span></span></div>
+    <section><h3>Кто это</h3><dl class="facts">${facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl></section>
+    ${runs.length ? `<section><h3>Анализы</h3><div class="rows">${runs.map((run) => `<div class="row"><div class="grow">
+      <div class="title">${esc(run.query)}</div><div class="meta">${esc(MODES[run.mode] || "")} · ${esc(when(run.started_at))} · ${esc(duration(run.seconds))}</div></div>
+      ${badge(run.state)}</div>`).join("")}</div></section>` : ""}
+    <section><h3>Лента действий</h3>${detail ? (trail.length ? `<ol class="trail">${trail.map((item) => `
+      <li class="${esc(item.level)}"><time title="${esc(new Date(item.at).toLocaleString("ru-RU"))}">${esc(timeOf(item.at))}</time>
+      <span>${esc(item.text.charAt(0).toUpperCase() + item.text.slice(1))}</span></li>`).join("")}</ol>`
+      : '<p class="empty">Действий пока нет.</p>') : '<p class="empty">Загружаем…</p>'}</section>`);
+}
+
+function renderBlocks() {
+  const api = data.api;
+  if (!api) return setHTML($("blocks"), apiDown());
+  if (!api.blocks.length) return setHTML($("blocks"), `<p class="empty">Никто не заблокирован. Заблокировать можно из карточки посетителя.</p>`);
+  setHTML($("blocks"), `<div class="rows">${api.blocks.map((entry) => `<div class="row">
+    <span class="dot err"></span><div class="grow"><div class="title">${esc(entry.kind === "visitor" ? "Браузер" : `Адрес ${entry.value}`)}</div>
+    <div class="meta">${esc(entry.label)}${entry.at ? " · " + esc(when(entry.at)) : ""}</div></div>
+    <button class="btn small" data-action="unblock" data-id="${esc(entry.id)}">Снять</button></div>`).join("")}</div>`);
+}
+
+function renderRuns() {
+  const api = data.api;
+  if (!api) return setHTML($("runs"), apiDown());
+  if (!api.runs) return setHTML($("runs"), `<p class="empty">Не удалось прочитать историю анализов.</p>`);
+  if (!api.runs.length) return setHTML($("runs"), `<p class="empty">В этом профиле ещё нет анализов.</p>`);
+  const rows = api.runs.map((run) => `
+    <tr class="clickable" data-action="open-run" data-id="${esc(run.id)}"><td class="q">${esc(run.query)}${run.error ? `<small>${esc(run.error)}</small>` : ""}</td>
+      <td class="nowrap">${esc(MODES[run.mode] || "—")}</td>
+      <td class="nowrap">${esc(run.visitor || "—")}</td>
+      <td>${badge(run.state, TERMINAL.has(run.state) ? "" : run.stage_label)}</td>
+      <td class="nowrap num">${run.duration_seconds != null ? esc(duration(run.duration_seconds)) : "—"}</td>
+      <td class="nowrap faint">${esc(when(run.created_at))}</td></tr>`).join("");
+  setHTML($("runs"), `<div class="table-wrap"><table class="table"><thead><tr><th>Запрос</th><th>Режим</th><th>Кто</th>
+    <th>Статус</th><th class="num">Длился</th><th>Когда</th></tr></thead><tbody>${rows}</tbody></table></div>`);
+}
+
+const FILTERS = {
+  all: () => true,
+  people: (event) => ["visit", "login", "action", "owner", "message"].includes(event.kind),
+  runs: (event) => event.kind === "run" || event.kind === "stage",
+  problems: (event) => event.level === "error" || event.level === "warning",
+};
+function renderFeed() {
+  const shown = events.filter((event) => event.divider ? filter === "all" : FILTERS[filter](event)).slice(-300).reverse();
+  if (!shown.length) return setHTML($("feed"), `<li class="divider">${events.length ? "Нет событий этого вида." : "Событий пока нет."}</li>`);
+  setHTML($("feed"), shown.map((event) => event.divider ? `<li class="divider">— ${esc(event.text)} —</li>`
+    : `<li class="${esc(event.level)} ${event.kind === "stage" ? "stage" : ""}"><time datetime="${esc(event.at)}" title="${esc(new Date(event.at).toLocaleString("ru-RU"))}">${esc(timeOf(event.at))}</time>
+       ${icon(event.kind)}<span class="t">${esc(event.text)}</span></li>`).join(""));
+}
+
+function renderJobs() {
+  const api = data.api;
+  if (!api) return setHTML($("jobs"), apiDown());
+  const jobs = api.jobs.filter((job) => job.state === "running" || job.idle_seconds < 600);
+  if (!jobs.length) return setHTML($("jobs"), `<p class="empty">Фоновых задач нет. Здесь появляются перевод ТОПа и досчёт ТОП-15 технологий для открытых анализов.</p>`);
+  const states = {running: ["идёт", "live"], ready: ["готово", "ok"], unavailable: ["недоступно", "warn"]};
+  setHTML($("jobs"), `<div class="rows">${jobs.map((job) => {
+    const [label, tone] = states[job.state] || [job.state, ""];
+    return `<div class="row job"><div class="grow"><div class="title">${esc(job.kind)}</div>
+      <div class="meta">${esc(job.query || job.run_id)}${job.message ? " · " + esc(job.message) : ""}</div>
+      ${job.state === "running" && job.total ? bar(job.completed / job.total, "live") : ""}</div>
+      <div class="end"><span class="badge ${tone}">${esc(label)}</span>${job.total ? `<div>${job.completed} из ${job.total}</div>` : ""}</div></div>`;
+  }).join("")}</div>`);
+}
+
+function renderProcesses() {
+  const launcher = data.launcher, system = data.system;
+  const rows = launcher.processes.map((process) => {
+    const state = process.alive ? "работает" : !process.started ? "не запущен"
+      : process.exit_code != null ? `завершился с кодом ${process.exit_code}` : "остановлен";
+    const meta = [process.port ? `порт ${process.port}` : null, process.pid ? `PID ${process.pid}` : null,
+                  process.memory ? `${size(process.memory)} памяти` : null].filter(Boolean).join(" · ");
+    return `<div class="row"><span class="dot ${process.alive ? "on" : process.exit_code ? "err" : ""}"></span>
+      <div class="grow"><div class="title">${esc(process.name)}</div><div class="meta">${esc(meta || "—")}</div></div>
+      <div class="end">${esc(state)}</div></div>`;
+  });
+  const disk = system.disk;
+  const gpu = system.gpu && system.gpu[0];
+  const facts = [
+    ["Окно запуска", `открыто ${ago(launcher.launched_at).replace(" назад", "")}`],
+    ["Включений сервера", String(launcher.server.starts)],
+    gpu ? ["Видеокарта", `${gpu.name}${gpu.power_w != null ? ` · ${NF.format(gpu.power_w)} Вт` : ""}`] : null,
+    ["Ядер процессора", String(system.cpu_count ?? "—")],
+    disk ? ["Свободно на диске", `${gb(disk.free)} из ${gb(disk.total)} ГБ`] : null,
+  ].filter(Boolean);
+  setHTML($("processes"), `<div class="rows">${rows.join("")}</div>
+    <dl class="facts" style="margin-top:14px">${facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`);
+}
+
+function renderService() {
+  const api = data.api;
+  if (!api) return setHTML($("service"), apiDown());
+  const service = api.service;
+  const mark = (value, yes = "есть", no = "нет") => value ? `<span class="yes">${yes}</span>` : `<span class="no">${no}</span>`;
+  const models = {ready: "готова", missing: "не установлена", corrupt: "повреждена", unavailable: "недоступна"};
+  const facts = [
+    ["Встроенная модель", service.ready ? `<span class="yes">${esc(models[service.model_state] || "готова")}</span>` : `<span class="no">${esc(models[service.model_state] || "не готова")}</span>`],
+    ["Провайдер ИИ", esc(PROVIDERS[service.provider] || service.provider || "—")],
+    ["Локальная LLM", mark(service.local_llm_installed, "установлена", "нет")],
+    ["Ключ OpenAlex", mark(service.keys.openalex_api_key, "есть", "нет — лимит 1000 запросов в сутки")],
+    ...(service.openalex_closed_seconds ? [["OpenAlex сейчас", `<span class="no" style="color:var(--warn)">лимит исчерпан, откроется через ${esc(duration(service.openalex_closed_seconds))}</span>`]] : []),
+    ["Ключ DeepSeek", mark(service.keys.deepseek_api_key)],
+    ["Ключ YandexGPT", mark(service.keys.yandex_api_key)],
+    ["Ключ EPO (патенты)", mark(service.keys.epo_ops_key)],
+    ["Профиль данных", `<code>${esc(service.data_dir || data.launcher.data_dir || "по умолчанию")}</code>`],
+  ];
+  setHTML($("service"), `<dl class="facts">${facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join("")}</dl>`);
+}
+
+function renderTunnel() {
+  const launcher = data.launcher;
+  $("tunnel-card").hidden = !launcher.tunnel;
+  if (!launcher.tunnel) return;
+  const log = $("tunnel-log");
+  const stick = log.scrollHeight - log.scrollTop - log.clientHeight < 24;
+  const text = launcher.tunnel_log.length ? launcher.tunnel_log.join("\n") : "Журнал пуст.";
+  if (log.textContent !== text) {
+    log.textContent = text;
+    if (stick) log.scrollTop = log.scrollHeight;
+  }
+}
+
+// Часы идут между опросами сами: время считается от момента на сервере.
+function tick() {
+  document.querySelectorAll("[data-since]").forEach((node) => {
+    const sec = since(node.dataset.since);
+    const label = node.dataset.format === "duration" ? duration(sec) : clock(sec);
+    if (node.textContent !== label) node.textContent = label;
+  });
+  document.querySelectorAll("[data-ago]").forEach((node) => {
+    const label = ago(node.dataset.ago);
+    if (node.textContent !== label) node.textContent = label;
+  });
+  document.querySelectorAll("[data-left]").forEach((node) => {
+    const expected = Number(node.dataset.expected);
+    if (!expected) {
+      if (node.textContent !== "прогноза нет") node.textContent = "прогноза нет";
+      return;
+    }
+    const left = expected - since(node.dataset.left);
+    const label = left > 30 ? `≈ ещё ${duration(Math.ceil(left / 60) * 60)}` : left > 0 ? "вот-вот закончится"
+      : `дольше прогноза на ${duration(-left)}`;
+    if (node.textContent !== label) node.textContent = label;
+  });
+  document.querySelectorAll("[data-meter]").forEach((node) => {
+    const fraction = since(node.dataset.meter) / Number(node.dataset.expected);
+    const width = `${Math.min(100, Math.max(0, fraction * 100)).toFixed(1)}%`;
+    if (node.style.width !== width) node.style.width = width;
+    node.parentElement.classList.toggle("warn", fraction > 1);
+  });
+  if (data) renderLink();
+}
+let tickTimer;
+function pumpClock() {
+  if (!document.hidden) tick();
+  tickTimer = setTimeout(pumpClock, document.hidden ? 1000 : 200);
+}
+function resumeClock() {
+  clearTimeout(tickTimer);
+  pumpClock();
+}
+document.addEventListener("visibilitychange", resumeClock);
+window.addEventListener("pageshow", resumeClock);
+pumpClock();
+
+function toast(text, error = false) {
+  const node = $("toast");
+  node.textContent = text;
+  node.className = "toast show" + (error ? " error" : "");
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => { node.className = "toast" + (error ? " error" : ""); }, 3200);
+}
+
+async function command(path, payload) {
+  if (pending) return null;
+  pending = true;
+  try {
+    const response = await fetch(path, {method: "POST", cache: "no-store",
+      headers: {"Content-Type": "application/json", "X-Panel": "1"}, body: JSON.stringify(payload)});
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      toast(answer.error === "invalid_request"
+        ? "Окно запуска работает на прежней версии и не знает этой команды — перезапустите его."
+        : answer.error || "Команда не выполнена.", true);
+      return null;
+    }
+    toast(answer.message || "Готово.");
+    // Результат команды виден сразу, а не на следующем опросе.
+    clearTimeout(poll.timer);
+    poll();
+    return answer;
+  } catch (error) {
+    toast("Нет связи с окном запуска.", true);
+    return null;
+  } finally {
+    pending = false;
+  }
+}
+
+document.addEventListener("click", async (event) => {
+  const target = event.target.closest("[data-action], [data-filter]");
+  if (!target) return;
+  if (target.dataset.filter) {
+    filter = target.dataset.filter;
+    document.querySelectorAll("[data-filter]").forEach((chip) => chip.setAttribute("aria-pressed", String(chip === target)));
+    renderFeed();
+    return;
+  }
+  const action = target.dataset.action;
+  if (action === "copy") {
+    try { await navigator.clipboard.writeText(target.dataset.value); toast("Скопировано."); }
+    catch (error) { toast("Не удалось скопировать.", true); }
+  } else if (action === "reveal") {
+    showPassword = !showPassword;
+    if (data) renderServer();
+  } else if (action === "cancel") {
+    if (confirm(`Остановить анализ «${target.dataset.query}»?\nЕго автор увидит, что анализ отменён.`)) {
+      await command("/cancel", {id: target.dataset.id});
+    }
+  } else if (action === "open-run") {
+    openRun(target.dataset.id);
+  } else if (action === "close-run") {
+    closeRun();
+  } else if (action === "resource") {
+    await command("/action", {action: "resources", values: {[target.dataset.name]: Number(target.dataset.value)}});
+  } else if (action === "resource-toggle") {
+    await command("/action", {action: "resources", values: {[target.dataset.name]: target.getAttribute("aria-pressed") !== "true"}});
+  } else if (action === "unload_llm") {
+    await command("/action", {action: "unload_llm"});
+  } else if (action === "open-person") {
+    openPerson(target.dataset.person);
+  } else if (action === "close-person") {
+    if (selectedRun || !$("run-drawer").hidden) closeRun();
+    if (selected) closePerson();
+  } else if (action === "compose") {
+    $("compose").hidden = false;
+    $("compose-text").focus();
+  } else if (action === "compose-cancel") {
+    $("compose").hidden = true;
+  } else if (action === "sign_out") {
+    const person = selectedPerson();
+    if (person && confirm(`Выгнать «${person.label}»?\nСтраница посетителя вернётся на экран входа; чтобы войти, нужен пароль.`)) {
+      await command("/action", {action: "sign_out", person: person.key});
+    }
+  } else if (action === "block") {
+    const person = selectedPerson();
+    if (!person) return;
+    const what = [person.signed_in ? "этот браузер" : null, person.can_block_ip ? `адрес ${person.ip}` : null].filter(Boolean);
+    if (confirm(`Заблокировать «${person.label}»: ${what.join(" и ")}?\nОн увидит «Доступ закрыт»; его идущий анализ остановится. Блокировку можно снять.`)) {
+      await command("/action", {action: "block", person: person.key});
+    }
+  } else if (action === "unblock") {
+    await command("/action", {action: "unblock", id: target.dataset.id});
+  } else if (action === "pause" || action === "resume") {
+    target.disabled = true;
+    await command("/action", {action});
+    target.disabled = false;
+  } else if (action === "password") {
+    if (confirm("Сменить пароль?\nСайт перезапустится, все посетители выйдут и войдут уже с новым паролем. Модели останутся в памяти, идущий анализ продолжится.")) {
+      await command("/server", {action: "password"});
+      showPassword = true;
+    }
+  } else if (action === "power") {
+    const to = target.dataset.to;
+    if (to === "stop") {
+      const api = data?.api, online = api?.counters?.online || 0;
+      const busy = api?.current && !TERMINAL.has(api.current.state);
+      const warnings = [online ? `на сайте ${online} ${plural(online, "человек", "человека", "человек")}` : null,
+                        busy ? "идёт анализ — он прервётся" : null].filter(Boolean);
+      const text = "Выключить сервер? Сайт и ссылка перестанут отвечать, модели выгрузятся из памяти."
+        + (warnings.length ? `\n\nСейчас ${warnings.join(", ")}.` : "")
+        + "\n\nВключить снова можно здесь же; ссылка и пароль сохранятся.";
+      if (!confirm(text)) return;
+    }
+    target.disabled = true;
+    await command("/server", {action: to});
+    target.disabled = false;
+  }
+});
+document.addEventListener("visibilitychange", () => { if (!document.hidden) tick(); });
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (selectedRun || !$("run-drawer").hidden) closeRun(); else if (selected) closePerson();
+});
+$("compose-text").addEventListener("input", () => { $("compose-count").textContent = `${$("compose-text").value.length} / 500`; });
+$("compose").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const text = $("compose-text").value.trim();
+  if (!selected || !text) return;
+  await command("/action", {action: "message", person: selected, text});
+  $("compose-text").value = "";
+  $("compose-count").textContent = "0 / 500";
+  $("compose").hidden = true;
+});
+// ---------- Вкладки: анализы, источники и языки, обучение ----------
+const TABS = ["overview", "analyses", "sources", "learning"];
+let tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "overview";
+const SOURCE_NAMES = {};
+const NF2 = new Intl.NumberFormat("ru-RU", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const DECISIONS = {relevant: ["по теме", "ok"], weak: ["пограничная", "warn"], off_topic: ["не по теме", "err"],
+                   unrated: ["без оценки", ""]};
+const COUNTRY_NAMES = {};
+
+async function view(path) {
+  const response = await fetch(path, {cache: "no-store"});
+  const answer = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(answer.error || "Панель не получила данные.");
+  return answer;
+}
+
+function showTab(name) {
+  tab = TABS.includes(name) ? name : "overview";
+  document.querySelectorAll("[data-tab]").forEach((button) => button.setAttribute("aria-selected", String(button.dataset.tab === tab)));
+  TABS.forEach((name) => { $(`panel-${name}`).hidden = name !== tab; });
+  if (location.hash.slice(1) !== tab) history.replaceState(null, "", "#" + tab);
+  if (tab === "analyses") loadAnalyses();
+  if (tab === "sources") { loadSources(); loadLanguages(); }
+  if (tab === "learning") loadLearning();
+}
+
+function percent(value) { return value == null ? "—" : `${NF.format(value * 100)}%`; }
+function hbars(entries, label = (name) => name) {
+  if (!entries.length) return '<p class="empty">Пока нет данных.</p>';
+  const top = Math.max(1, ...entries.map(([, value]) => value));
+  return `<div class="hbars">${entries.map(([name, value]) => `<div class="hbar"><span class="name" title="${esc(label(name))}">${esc(label(name))}</span>
+    ${bar(value / top, "live")}<span class="num">${esc(value)}</span></div>`).join("")}</div>`;
+}
+function unavailable(node, error) { setHTML(node, `<p class="empty">${esc(error.message || error)}</p>`); }
+
+// --- Анализы ---
+const an = {order: "desc", offset: 0, limit: 50, picked: new Set(), data: null, timer: null};
+
+function analysisQuery() {
+  const form = new FormData($("an-filters"));
+  const parameters = new URLSearchParams();
+  for (const [name, value] of form.entries()) {
+    if (name === "with_signals" || name === "with_technologies") { if (value) parameters.set(name, "1"); continue; }
+    if (String(value).trim()) parameters.set(name, String(value).trim());
+  }
+  parameters.set("order", an.order);
+  parameters.set("offset", String(an.offset));
+  parameters.set("limit", String(an.limit));
+  return parameters;
+}
+
+async function loadAnalyses() {
+  clearTimeout(an.timer);
+  try {
+    an.data = await view("/analyses?" + analysisQuery().toString());
+    renderAnalyses();
+    // Сводки старых анализов досчитываются порциями: пока есть очередь — подтягиваем.
+    if (an.data.index?.pending && tab === "analyses") an.timer = setTimeout(loadAnalyses, 1500);
+  } catch (error) {
+    unavailable($("an-table"), error);
+  }
+}
+
+function renderAnalyses() {
+  const data = an.data, stats = data.statistics || {};
+  $("tab-analyses-count").textContent = data.index ? ` ${data.index.total}` : "";
+  $("an-index").textContent = data.index?.pending ? `собираем сводки: осталось ${data.index.pending}` : `в профиле ${data.index?.total ?? 0}`;
+  const states = stats.states || {};
+  const median = stats.median_seconds || {};
+  setHTML($("an-stats"), [
+    [stats.runs ?? 0, "анализов в выборке"],
+    [states.succeeded ?? 0, `готовы · ошибок ${(states.failed ?? 0) + (states.interrupted ?? 0)} · отменено ${states.cancelled ?? 0}`],
+    [NF.format(stats.publications ?? 0), "публикаций по теме всего"],
+    [percent(stats.average_off_topic_share), "в среднем отсеяно как «не по теме»"],
+    [median.fast != null ? duration(median.fast) : "—", "медиана быстрого"],
+    [median.deep != null ? duration(median.deep) : "—", "медиана глубокого"],
+  ].map(([value, label]) => `<div class="stat"><b>${esc(value)}</b><span>${esc(label)}</span></div>`).join(""));
+  const rows = data.runs || [];
+  if (!rows.length) {
+    setHTML($("an-table"), '<p class="empty">Под фильтр не попал ни один анализ.</p>');
+  } else {
+    setHTML($("an-table"), `<div class="table-wrap"><table class="table"><thead><tr><th class="sel"></th><th>Запрос</th><th>Режим</th>
+      <th>Статус</th><th class="num">Публикаций</th><th class="num">Отсеяно</th><th class="num">Трендов</th><th class="num">Технологий</th>
+      <th>Страны</th><th class="num">Длился</th><th>Когда</th></tr></thead><tbody>${rows.map((run) => {
+        const summary = run.summary || {};
+        const countries = Object.keys(summary.countries || {}).slice(0, 4).join(", ") || (summary.source_countries || []).join(", ");
+        return `<tr class="clickable ${an.picked.has(run.id) ? "picked" : ""}" data-action="open-run" data-id="${esc(run.id)}">
+          <td class="sel"><input type="checkbox" data-action="an-pick" data-id="${esc(run.id)}" ${an.picked.has(run.id) ? "checked" : ""} aria-label="Выбрать"></td>
+          <td class="q">${esc(run.query)}${summary.english_query && summary.english_query !== run.query ? `<div class="faint">${esc(summary.english_query)}</div>` : ""}
+            ${run.error ? `<small>${esc(run.error)}</small>` : ""}</td>
+          <td class="nowrap">${esc(MODES[run.mode] || "—")}</td><td>${badge(run.state)}</td>
+          <td class="num">${summary.publications ?? "—"}</td><td class="num">${summary.off_topic != null ? `${summary.off_topic} (${percent(summary.off_topic_share)})` : "—"}</td>
+          <td class="num">${summary.signals ?? "—"}</td><td class="num">${summary.technologies ?? "—"}</td>
+          <td class="nowrap">${esc(countries || "—")}</td>
+          <td class="num nowrap">${run.duration_seconds != null ? esc(duration(run.duration_seconds)) : "—"}</td>
+          <td class="nowrap faint">${esc(when(run.created_at))}</td></tr>`;
+      }).join("")}</tbody></table></div>
+      <div class="pager"><span>${data.offset + 1}–${data.offset + rows.length} из ${data.total}</span>
+        <button class="btn small" data-action="an-page" data-step="-1" ${data.offset ? "" : "disabled"}>Назад</button>
+        <button class="btn small" data-action="an-page" data-step="1" ${data.offset + rows.length < data.total ? "" : "disabled"}>Дальше</button></div>`);
+  }
+  $("an-compare").disabled = an.picked.size < 2 || an.picked.size > 6;
+  $("an-compare").textContent = `Сравнить выбранные${an.picked.size ? ` (${an.picked.size})` : ""}`;
+  const activity = stats.activity || [];
+  const most = Math.max(1, ...activity.map((day) => day.runs));
+  setHTML($("an-activity"), `<div class="spark" role="img" aria-label="Анализов по дням">${activity.map((day) =>
+    `<span class="${day.runs ? "" : "zero"}" style="height:${Math.max(3, day.runs / most * 100)}%" title="${esc(day.day)}: ${day.runs}"></span>`).join("")}</div>
+    <p class="hint" style="margin-top:6px">${activity.reduce((sum, day) => sum + day.runs, 0)} за 30 дней</p>`);
+  setHTML($("an-queries"), hbars((stats.top_queries || []).map((item) => [item.query, item.runs])));
+  setHTML($("an-tech"), hbars((stats.recurring_technologies || []).map((item) => [item.title, item.runs])));
+  setHTML($("an-signals"), hbars((stats.recurring_signals || []).map((item) => [item.title, item.runs])));
+  setHTML($("an-sources"), hbars(Object.entries(stats.sources || {}).slice(0, 23), (name) => SOURCE_NAMES[name] || name));
+  setHTML($("an-countries"), hbars(Object.entries(stats.countries || {}).slice(0, 20), (code) => COUNTRY_NAMES[code] || code));
+  fillFilterOptions(stats);
+}
+
+function fillFilterOptions(stats) {
+  for (const [id, values, label] of [["an-country", Object.keys(stats.countries || {}), (code) => COUNTRY_NAMES[code] || code],
+                                     ["an-source", Object.keys(stats.sources || {}), (name) => SOURCE_NAMES[name] || name]]) {
+    const select = $(id), chosen = select.value;
+    const known = new Set([...select.options].map((option) => option.value));
+    for (const value of values) {
+      if (!known.has(value)) select.add(new Option(label(value), value));
+    }
+    select.value = chosen;
+  }
+}
+
+function exportAnalyses(format) {
+  const rows = (an.data?.runs || []).filter((run) => !an.picked.size || an.picked.has(run.id));
+  let text, type;
+  if (format === "json") {
+    text = JSON.stringify(rows, null, 1); type = "application/json";
+  } else {
+    const columns = ["id", "query", "mode", "state", "created_at", "duration_seconds", "publications", "off_topic",
+                     "signals", "technologies", "signal_titles", "technology_titles"];
+    const cell = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+    text = "﻿" + [columns.join(";"), ...rows.map((run) => {
+      const summary = run.summary || {};
+      return [run.id, run.query, run.mode, run.state, run.created_at, run.duration_seconds, summary.publications,
+              summary.off_topic, summary.signals, summary.technologies,
+              (summary.signal_titles || []).map((item) => item.title).join(" | "),
+              (summary.technology_titles || []).map((item) => item.title).join(" | ")].map(cell).join(";");
+    })].join("\n");
+    type = "text/csv";
+  }
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(new Blob([text], {type: type + ";charset=utf-8"}));
+  link.download = `trendanalyser-analyses.${format}`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
+
+async function compareAnalyses() {
+  selectedRun = null;
+  $("run-drawer").hidden = false;
+  $("scrim").hidden = false;
+  setHTML($("run-body"), `<div class="drawer-head"><div class="grow"><h2 id="run-title">Сравнение анализов</h2><p>Собираем…</p></div>
+    <button class="icon-btn" data-action="close-run" aria-label="Закрыть">✕</button></div>`);
+  try {
+    const data = await view("/compare?ids=" + encodeURIComponent([...an.picked].join(",")));
+    const list = (items) => items.length ? `<ul class="items">${items.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>` : '<p class="faint">нет</p>';
+    setHTML($("run-body"), `<div style="display:grid;gap:18px"><div class="drawer-head"><div class="grow"><h2 id="run-title">Сравнение анализов</h2>
+      <p>${data.analyses.length} анализа</p></div><button class="icon-btn" data-action="close-run" aria-label="Закрыть">✕</button></div>
+      <div class="compare">${data.analyses.map((item) => `<div><h4>${esc(item.query)}</h4>
+        <div class="m">${badge(item.state)} ${esc(MODES[item.mode] || "")} · ${esc(when(item.created_at))}</div>
+        <dl class="facts" style="margin-top:8px"><dt>Публикаций</dt><dd>${item.numbers.publications ?? "—"}</dd>
+          <dt>Отсеяно</dt><dd>${item.numbers.off_topic ?? "—"} (${percent(item.numbers.off_topic_share)})</dd>
+          <dt>Трендов</dt><dd>${item.numbers.signals ?? "—"}</dd><dt>Технологий</dt><dd>${item.numbers.technologies ?? "—"}</dd>
+          <dt>Длился</dt><dd>${item.duration_seconds != null ? esc(duration(item.duration_seconds)) : "—"}</dd></dl>
+        <h3 style="margin-top:10px">Только здесь: технологии</h3>${list(item.own_technologies)}
+        <h3>Только здесь: тренды</h3>${list(item.own_signals)}</div>`).join("")}</div>
+      <section><h3>Общие технологии</h3>${list(data.common_technologies)}</section>
+      <section><h3>Общие тренды</h3>${list(data.common_signals)}</section></div>`);
+  } catch (error) {
+    unavailable($("run-body"), error);
+  }
+}
+
+// Публикации анализа в карточке результата: оценка темы и отметки владельца.
+const pubs = {run: null, decision: "all", offset: 0, data: null};
+async function loadRunPublications(runId, decision = pubs.decision, offset = 0) {
+  Object.assign(pubs, {run: runId, decision, offset});
+  const node = $("run-pubs");
+  if (!node) return;
+  try {
+    pubs.data = await view(`/publications?run_id=${encodeURIComponent(runId)}&decision=${decision}&offset=${offset}&limit=30`);
+    if (pubs.run === runId) renderRunPublications();
+  } catch (error) {
+    unavailable(node, error);
+  }
+}
+
+function renderRunPublications() {
+  const node = $("run-pubs"), data = pubs.data;
+  if (!node || !data) return;
+  const counts = data.counts || {};
+  const chips = [["all", "все"], ["relevant", `по теме ${counts.relevant ?? 0}`], ["weak", `пограничные ${counts.weak ?? 0}`],
+                 ["off_topic", `не по теме ${counts.off_topic ?? 0}`], ["marked", `отмечено ${counts.marked ?? 0}`]];
+  const header = `<div class="chips" style="margin-bottom:10px">${chips.map(([value, label]) =>
+    `<button class="chip" data-action="pubs-filter" data-decision="${value}" aria-pressed="${pubs.decision === value}">${esc(label)}</button>`).join("")}</div>
+    ${data.rated ? "" : '<p class="hint">Анализ сделан до оценки темы: решения нет, но отметки всё равно учат модель.</p>'}`;
+  const items = data.publications.map((item) => {
+    const [label, tone] = DECISIONS[item.decision] || [item.decision, ""];
+    const facts = [item.score != null ? `оценка ${NF2.format(item.score)}` : null, item.cosine != null ? `смысл ${NF2.format(item.cosine)}` : null,
+                   item.lexical != null ? `слова ${NF2.format(item.lexical)}` : null].filter(Boolean).join(" · ");
+    return `<li><div class="t"><a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">${esc(item.title)}</a></div>
+      <div class="m"><span class="badge ${tone}">${esc(label)}</span><span>${esc(SOURCE_NAMES[item.source_id] || item.source_id)}</span>
+        ${item.country ? `<span>${esc(COUNTRY_NAMES[item.country] || item.country)}</span>` : ""}
+        <span>${esc(item.published_at || item.publication_year || "")}</span>${facts ? `<span>${esc(facts)}</span>` : ""}
+        <span class="mark-buttons" role="group" aria-label="Отметка владельца">
+          <button class="yes" data-action="pub-mark" data-id="${esc(item.publication_id)}" data-label="1" aria-pressed="${item.mark === 1}" title="По теме">✓ по теме</button>
+          <button class="no" data-action="pub-mark" data-id="${esc(item.publication_id)}" data-label="0" aria-pressed="${item.mark === 0}" title="Не по теме">✕ мимо</button>
+        </span></div>${item.summary ? `<p>${esc(item.summary)}</p>` : ""}</li>`;
+  }).join("");
+  setHTML(node, `${header}${items ? `<ul class="items">${items}</ul>` : '<p class="empty">Нет публикаций этого вида.</p>'}
+    <div class="pager"><span>${data.total ? `${data.offset + 1}–${data.offset + data.publications.length} из ${data.total}` : ""}</span>
+      <button class="btn small" data-action="pubs-page" data-step="-1" ${data.offset ? "" : "disabled"}>Назад</button>
+      <button class="btn small" data-action="pubs-page" data-step="1" ${data.offset + data.publications.length < data.total ? "" : "disabled"}>Дальше</button></div>`);
+}
+
+// --- Источники и страны ---
+const src = {data: null, countries: new Set()};
+async function loadSources() {
+  try {
+    src.data = await view("/sources");
+    src.countries = new Set(src.data.countries.filter((item) => item.selected).map((item) => item.code));
+    for (const item of src.data.countries) COUNTRY_NAMES[item.code] = item.name;
+    for (const item of src.data.sources) SOURCE_NAMES[item.source_id] = item.label;
+    renderSources();
+  } catch (error) {
+    unavailable($("src-list"), error);
+  }
+}
+
+function renderSources() {
+  const data = src.data;
+  if (!data) return;
+  setHTML($("src-countries"), data.countries.map((item) =>
+    `<button class="chip" data-action="src-country" data-code="${esc(item.code)}" aria-pressed="${src.countries.has(item.code)}">${esc(item.name)}</button>`).join(""));
+  const saved = new Set(data.countries.filter((item) => item.selected).map((item) => item.code));
+  const dirty = saved.size !== src.countries.size || [...saved].some((code) => !src.countries.has(code));
+  const active = data.sources.filter((item) => item.active).length;
+  setHTML($("src-summary"), `<span class="hint">${src.countries.size ? `Выбрано стран: ${src.countries.size}` : "Все страны"} ·
+    опрашивается источников: ${active} из ${data.sources.length}${dirty ? " · <b>не сохранено</b>" : ""}</span>`);
+  const reasons = {country_filter: "не выбрана страна", disabled_by_owner: "выключен"};
+  const groups = {science: "наука", news: "новости", community: "сообщество"};
+  setHTML($("src-list"), `<div class="table-wrap"><table class="table"><thead><tr><th>Источник</th><th>Страна</th><th>Вид</th>
+    <th>Состояние</th><th class="num">Доля сбора</th><th>Вкл.</th></tr></thead><tbody>${data.sources.map((item) => `
+    <tr class="${item.active ? "" : "off"}"><td><b>${esc(item.label)}</b><div class="faint">${esc(item.description)}</div></td>
+      <td class="nowrap">${esc(item.multi_country ? "по выбранным" : item.country_label)}</td><td class="nowrap">${esc(groups[item.group] || item.group)}</td>
+      <td class="nowrap">${item.active ? '<span class="badge ok">опрашивается</span>' : `<span class="badge">${esc(reasons[item.skip_reason] || "пропуск")}</span>`}</td>
+      <td class="num">${Math.abs(item.weight - 1) >= 0.05 ? `×${NF.format(item.weight)}` : "—"}</td>
+      <td><button class="switch" data-action="src-toggle" data-id="${esc(item.source_id)}" aria-pressed="${item.enabled}" aria-label="Включить ${esc(item.label)}"></button></td></tr>`).join("")}
+    </tbody></table></div>`);
+}
+
+async function saveSources(values) {
+  const answer = await command("/action", {action: "sources", values});
+  if (answer?.sources) { src.data = answer.sources; src.countries = new Set(src.data.countries.filter((item) => item.selected).map((item) => item.code)); renderSources(); }
+}
+
+// --- Языки ---
+const lang = {data: null, timer: null};
+async function loadLanguages() {
+  clearTimeout(lang.timer);
+  try {
+    lang.data = await view("/languages");
+    renderLanguages();
+    if (lang.data.languages.some((item) => item.state === "installing") && tab === "sources") lang.timer = setTimeout(loadLanguages, 2000);
+  } catch (error) {
+    unavailable($("lang-list"), error);
+  }
+}
+
+function renderLanguages() {
+  const data = lang.data;
+  const states = {ready: ["установлен", "ok"], installing: ["скачивается", "live"], failed: ["ошибка", "err"], not_installed: ["не установлен", "warn"]};
+  setHTML($("lang-list"), `<div class="rows">${data.languages.map((item) => {
+    const [label, tone] = states[item.state] || [item.state, ""];
+    const progress = item.state === "installing" && item.progress?.[1] ? `${bar(item.progress[0] / item.progress[1], "live")}
+      <div class="meta">${size(item.progress[0])} из ${size(item.progress[1])}</div>` : "";
+    return `<div class="row"><div class="grow"><div class="title">${esc(item.name)} <span class="faint">${esc(item.code)}</span>
+        ${item.default ? '<span class="badge live">язык сайта</span>' : ""}${item.bundled ? '<span class="badge">встроен</span>' : ""}</div>
+      <div class="meta">${esc(item.model_id)}${item.message ? " · " + esc(item.message) : ""}</div>${progress}</div>
+      <div class="end" style="display:flex;gap:6px;align-items:center"><span class="badge ${tone}">${esc(label)}</span>
+        ${!item.default && (item.state === "ready" || item.bundled) ? `<button class="btn small" data-action="lang-op" data-op="default" data-code="${esc(item.code)}">Сделать языком сайта</button>` : ""}
+        ${!item.bundled && (item.state === "failed" || item.state === "not_installed") ? `<button class="btn small" data-action="lang-op" data-op="install" data-code="${esc(item.code)}">Скачать</button>` : ""}
+        ${!item.bundled && item.state !== "installing" ? `<button class="btn danger small" data-action="lang-op" data-op="remove" data-code="${esc(item.code)}">Удалить</button>` : ""}</div></div>`;
+  }).join("")}</div>`);
+  const select = $("lang-catalogue-select");
+  const options = data.catalogue.map((item) => `<option value="${esc(item.code)}">${esc(item.name)} — ${esc(item.model_id)}</option>`).join("");
+  if (rendered.get(select) !== options) { select.innerHTML = options || '<option value="">все языки каталога добавлены</option>'; rendered.set(select, options); }
+}
+
+async function languageCommand(values) {
+  const answer = await command("/action", {action: "languages", values});
+  if (answer?.languages) { lang.data = answer.languages; renderLanguages(); }
+  loadLanguages();
+}
+
+// --- Обучение ---
+const ml = {data: null, timer: null};
+async function loadLearning() {
+  clearTimeout(ml.timer);
+  try {
+    ml.data = await view("/learning");
+    if (!Object.keys(SOURCE_NAMES).length) {
+      view("/sources").then((data) => { for (const item of data.sources) SOURCE_NAMES[item.source_id] = item.label; renderLearning(); }).catch(() => {});
+    }
+    renderLearning();
+    if ((ml.data.training || ml.data.backfill_running) && tab === "learning") ml.timer = setTimeout(loadLearning, 2500);
+  } catch (error) {
+    unavailable($("ml-summary"), error);
+  }
+}
+
+function learningChart(entries) {
+  const points = entries.filter((entry) => entry.metrics?.holdout?.auc != null);
+  if (points.length < 2) return '<p class="empty">График появится после двух обучений с проверкой на новых анализах.</p>';
+  const width = 600, height = 140, pad = 24;
+  const x = (index) => pad + index * (width - 2 * pad) / (points.length - 1);
+  const y = (value) => height - pad - (value - 0.5) / 0.5 * (height - 2 * pad);
+  const line = (key) => points.map((entry, index) => `${x(index).toFixed(1)},${y(Math.max(0.5, entry.metrics.holdout[key] ?? 0.5)).toFixed(1)}`).join(" ");
+  return `<svg class="chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Качество модели по обучениям">
+    <polyline class="base" points="${line("baseline_auc")}"/><polyline class="line" points="${line("auc")}"/>
+    <text x="${pad}" y="12">AUC: сплошная — модель, пунктир — эвристика</text><text x="${pad}" y="${height - 6}">${esc(when(points[0].trained_at))}</text>
+    <text x="${width - pad}" y="${height - 6}" text-anchor="end">${esc(when(points[points.length - 1].trained_at))}</text></svg>`;
+}
+
+function renderLearning() {
+  const data = ml.data;
+  if (!data) return;
+  const holdout = data.metrics?.holdout || {};
+  const state = data.training ? "обучается…" : data.backfill_running ? "собирает примеры прошлых анализов…"
+    : data.in_use ? `модель участвует в оценке с весом ${percent(data.blend)}` : data.settings.enabled ? "пока работает эвристика" : "выключено";
+  $("ml-state").textContent = state;
+  const collecting = data.metrics?.state === "collecting";
+  setHTML($("ml-summary"), `<div class="stat-grid">
+    <div class="stat"><b>${data.samples ?? 0}</b><span>примеров из ${data.runs ?? 0} анализов${collecting ? ` · нужно от ${data.metrics.needed_samples} из ${data.metrics.needed_runs}` : ""}</span></div>
+    <div class="stat"><b>${holdout.auc != null ? NF2.format(holdout.auc) : "—"}</b><span>AUC модели на новых анализах (эвристика ${holdout.baseline_auc != null ? NF2.format(holdout.baseline_auc) : "—"})</span></div>
+    <div class="stat"><b>${holdout.accuracy != null ? percent(holdout.accuracy) : "—"}</b><span>верных решений (эвристика ${percent(holdout.baseline_accuracy)})</span></div>
+    <div class="stat"><b>${data.feedback ?? 0}</b><span>ваших отметок «по теме / мимо»</span></div>
+    <div class="stat"><b>${data.version ? esc(data.version) : "—"}</b><span>${data.trained_at ? "обучена " + esc(when(data.trained_at)) : "ещё не обучалась"}</span></div>
+  </div>
+  <p class="hint" style="margin-top:10px">Модель учится на примерах каждого завершённого анализа: решения смыслового этапа по полному тексту,
+    подтверждённые методикой тренды и ваши отметки в карточке анализа (вкладка «Анализы»). Её вес растёт с числом примеров и
+    становится нулевым, если на новых анализах она не лучше эвристики.${data.last_error ? ` Последнее обучение не удалось: ${esc(data.last_error)}.` : ""}</p>`);
+  const toggles = [["enabled", "Самообучение включено"], ["auto_retrain", "Переобучать после каждого анализа"], ["adapt_sources", "Менять доли источников по их точности"]];
+  setHTML($("ml-settings"), toggles.map(([name, label]) => `<span class="check"><button class="switch" data-action="ml-setting" data-name="${name}"
+    aria-pressed="${!!data.settings[name]}" aria-label="${esc(label)}"></button>${esc(label)}</span>`).join(""));
+  setHTML($("ml-chart"), learningChart(data.history || []));
+  const chips = (words, tone) => words.length ? `<div class="words">${words.map((word) => `<span class="badge ${tone}">${esc(word)}</span>`).join("")}</div>` : '<p class="faint">пока нет</p>';
+  setHTML($("ml-words"), `<h3>Слова, выдающие чужую тему</h3>${chips(data.noise_words || [], "err")}
+    <h3 style="margin-top:12px">Слова, сопутствующие теме</h3>${chips(data.topic_words || [], "ok")}`);
+  const sources = Object.entries(data.sources || {}).sort((a, b) => b[1].items - a[1].items);
+  setHTML($("ml-sources"), sources.length ? `<div class="table-wrap"><table class="table"><thead><tr><th>Источник</th><th class="num">Примеров</th>
+    <th class="num">По теме</th><th>Точность</th><th class="num">Доля сбора</th></tr></thead><tbody>${sources.map(([name, item]) => `
+    <tr><td>${esc(SOURCE_NAMES[name] || name)}</td><td class="num">${item.items}</td><td class="num">${item.relevant}</td>
+      <td style="min-width:140px">${bar(item.precision, item.precision > .5 ? "ok" : item.precision > .2 ? "warn" : "err")}<span class="faint">${percent(item.precision)}</span></td>
+      <td class="num">${data.source_weights?.[name] != null && Math.abs(data.source_weights[name] - 1) >= 0.05 ? `×${NF.format(data.source_weights[name])}` : "—"}</td></tr>`).join("")}</tbody></table></div>`
+    : '<p class="empty">Пока нет примеров. Они появятся после первого анализа.</p>');
+}
+
+async function learningCommand(action, values) {
+  const answer = await command("/action", values === undefined ? {action} : {action, values});
+  if (answer) setTimeout(loadLearning, 300);
+}
+
+// Клики новых вкладок; прежние действия обрабатывает общий обработчик выше.
+document.addEventListener("click", async (event) => {
+  const target = event.target.closest("[data-tab], [data-action]");
+  if (!target) return;
+  if (target.dataset.tab) { showTab(target.dataset.tab); return; }
+  const action = target.dataset.action;
+  if (action === "an-pick") {
+    event.stopPropagation();
+    target.checked ? an.picked.add(target.dataset.id) : an.picked.delete(target.dataset.id);
+    renderAnalyses();
+  } else if (action === "an-page") {
+    an.offset = Math.max(0, an.offset + Number(target.dataset.step) * an.limit); loadAnalyses();
+  } else if (action === "an-order") {
+    an.order = an.order === "desc" ? "asc" : "desc";
+    target.textContent = an.order === "desc" ? "↓ по убыванию" : "↑ по возрастанию";
+    an.offset = 0; loadAnalyses();
+  } else if (action === "an-reset") {
+    $("an-filters").reset(); document.querySelectorAll('input[form="an-filters"]').forEach((box) => { box.checked = false; });
+    an.offset = 0; an.picked.clear(); loadAnalyses();
+  } else if (action === "an-export") {
+    exportAnalyses(target.dataset.format);
+  } else if (action === "an-compare") {
+    compareAnalyses();
+  } else if (action === "pubs-filter") {
+    loadRunPublications(pubs.run, target.dataset.decision, 0);
+  } else if (action === "pubs-page") {
+    loadRunPublications(pubs.run, pubs.decision, Math.max(0, pubs.offset + Number(target.dataset.step) * 30));
+  } else if (action === "pub-mark") {
+    const item = pubs.data?.publications.find((entry) => entry.publication_id === target.dataset.id);
+    const label = Number(target.dataset.label);
+    const answer = await command("/action", {action: "feedback", values: {run_id: pubs.run, publication_id: target.dataset.id,
+                                                                          label: item?.mark === label ? null : label}});
+    if (answer && item) { item.mark = answer.label; renderRunPublications(); }
+  } else if (action === "src-country") {
+    const code = target.dataset.code;
+    src.countries.has(code) ? src.countries.delete(code) : src.countries.add(code);
+    renderSources();
+  } else if (action === "src-all") {
+    src.countries.clear(); renderSources();
+  } else if (action === "src-save") {
+    await saveSources({countries: [...src.countries]});
+  } else if (action === "src-toggle") {
+    const disabled = new Set(src.data.sources.filter((item) => !item.enabled).map((item) => item.source_id));
+    disabled.has(target.dataset.id) ? disabled.delete(target.dataset.id) : disabled.add(target.dataset.id);
+    await saveSources({disabled: [...disabled]});
+  } else if (action === "lang-op") {
+    const op = target.dataset.op;
+    if (op === "remove" && !confirm("Удалить язык и его модель с диска?")) return;
+    await languageCommand({op, code: target.dataset.code});
+  } else if (action === "ml-setting") {
+    await learningCommand("learning", {[target.dataset.name]: target.getAttribute("aria-pressed") !== "true"});
+  } else if (action === "ml-retrain") {
+    await learningCommand("retrain", {});
+  } else if (action === "ml-backfill") {
+    await learningCommand("retrain", {backfill: true});
+  } else if (action === "ml-reset") {
+    if (confirm("Забыть обученную модель и собранные примеры?\nВаши отметки «по теме / мимо» сохранятся.")) await learningCommand("reset_learning", {});
+  }
+});
+$("an-filters").addEventListener("change", () => { an.offset = 0; loadAnalyses(); });
+document.querySelectorAll('input[form="an-filters"]').forEach((box) => box.addEventListener("change", () => { an.offset = 0; loadAnalyses(); }));
+$("an-filters").addEventListener("submit", (event) => { event.preventDefault(); an.offset = 0; loadAnalyses(); });
+let searchTimer = null;
+$("an-filters").elements.q.addEventListener("input", () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { an.offset = 0; loadAnalyses(); }, 400); });
+$("lang-catalogue").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const code = $("lang-catalogue-select").value;
+  if (code) await languageCommand({op: "add", code});
+});
+$("lang-custom").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = new FormData(event.target);
+  await languageCommand({op: "add", code: String(form.get("code")).trim(), name: String(form.get("name")).trim(),
+                         model_id: String(form.get("model_id")).trim()});
+  event.target.reset();
+});
+window.addEventListener("hashchange", () => showTab(location.hash.slice(1)));
+view("/sources").then((data) => {
+  for (const item of data.countries) COUNTRY_NAMES[item.code] = item.name;
+  for (const item of data.sources) SOURCE_NAMES[item.source_id] = item.label;
+}).catch(() => {});
+showTab(tab);
+poll();
+</script>
+</body>
+</html>

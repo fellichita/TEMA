@@ -1,0 +1,954 @@
+{
+  "$defs": {
+    "Candidate": {
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "keywords": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Keywords",
+          "type": "array"
+        },
+        "study_count": {
+          "minimum": 1,
+          "title": "Study Count",
+          "type": "integer"
+        },
+        "study_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Study Ids",
+          "type": "array"
+        },
+        "metrics": {
+          "$ref": "#/$defs/Metrics"
+        },
+        "card": {
+          "$ref": "#/$defs/Card"
+        },
+        "sources": {
+          "items": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "type": "object"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "growth_candidate",
+            "exploratory_candidate",
+            "established",
+            "off_direction"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "stage": {
+          "const": "requires_review",
+          "title": "Stage",
+          "type": "string"
+        },
+        "direction_guard": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Guard"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "selection": {
+          "$ref": "#/$defs/Selection"
+        },
+        "execution": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Execution",
+          "type": "object"
+        },
+        "document_evidence": {
+          "items": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "type": "object"
+          },
+          "title": "Document Evidence",
+          "type": "array"
+        },
+        "evidence_annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Evidence Annotations",
+          "type": "object"
+        },
+        "explanations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Explanations",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "semantic_relevance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SemanticGroup"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "keywords",
+        "study_count",
+        "study_ids",
+        "metrics",
+        "card",
+        "sources",
+        "status",
+        "stage",
+        "selection",
+        "execution",
+        "document_evidence",
+        "evidence_annotations",
+        "explanations",
+        "limitations"
+      ],
+      "title": "Candidate",
+      "type": "object"
+    },
+    "Card": {
+      "additionalProperties": true,
+      "properties": {
+        "problem": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quote"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "advantage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quote"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "example": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quote"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "problem",
+        "advantage",
+        "example"
+      ],
+      "title": "Card",
+      "type": "object"
+    },
+    "DirectionDenominator": {
+      "additionalProperties": true,
+      "properties": {
+        "year": {
+          "title": "Year",
+          "type": "integer"
+        },
+        "documents": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Documents"
+        },
+        "state": {
+          "enum": [
+            "positive",
+            "zero",
+            "unknown",
+            "invalid"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "year",
+        "documents",
+        "state"
+      ],
+      "title": "DirectionDenominator",
+      "type": "object"
+    },
+    "GrowthComparability": {
+      "additionalProperties": true,
+      "properties": {
+        "scope": {
+          "const": "retained_studies_in_saved_corpus",
+          "title": "Scope",
+          "type": "string"
+        },
+        "calendar_complete": {
+          "title": "Calendar Complete",
+          "type": "boolean"
+        },
+        "blocking_issues": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Blocking Issues",
+          "type": "object"
+        },
+        "denominators": {
+          "items": {
+            "$ref": "#/$defs/DirectionDenominator"
+          },
+          "title": "Denominators",
+          "type": "array"
+        }
+      },
+      "required": [
+        "scope",
+        "calendar_complete",
+        "blocking_issues",
+        "denominators"
+      ],
+      "title": "GrowthComparability",
+      "type": "object"
+    },
+    "Guard": {
+      "additionalProperties": true,
+      "properties": {
+        "axis_check": {
+          "enum": [
+            "supported",
+            "partial",
+            "off_direction"
+          ],
+          "title": "Axis Check",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "axis_check",
+        "reason"
+      ],
+      "title": "Guard",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "Metrics": {
+      "additionalProperties": true,
+      "properties": {
+        "years": {
+          "items": {
+            "$ref": "#/$defs/YearCount"
+          },
+          "title": "Years",
+          "type": "array"
+        },
+        "first_observed_year_in_corpus": {
+          "title": "First Observed Year In Corpus",
+          "type": "integer"
+        },
+        "first_observed_year_in_window": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "First Observed Year In Window"
+        },
+        "growth_ratio": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Growth Ratio"
+        },
+        "score": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "score_components": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Score Components",
+          "type": "object"
+        },
+        "score_weights": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Score Weights",
+          "type": "object"
+        },
+        "growth_pattern": {
+          "title": "Growth Pattern",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "years",
+        "first_observed_year_in_corpus",
+        "first_observed_year_in_window",
+        "growth_ratio",
+        "score",
+        "score_components",
+        "score_weights",
+        "growth_pattern"
+      ],
+      "title": "Metrics",
+      "type": "object"
+    },
+    "Quote": {
+      "additionalProperties": true,
+      "properties": {
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "study_id": {
+          "title": "Study Id",
+          "type": "string"
+        },
+        "url": {
+          "pattern": "^https?://",
+          "title": "Url",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "source_excerpt",
+            "study_title"
+          ],
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "study_id",
+        "url",
+        "title",
+        "mode"
+      ],
+      "title": "Quote",
+      "type": "object"
+    },
+    "Selection": {
+      "additionalProperties": true,
+      "properties": {
+        "bucket": {
+          "enum": [
+            "candidates",
+            "preliminary_signals",
+            "established",
+            "excluded_off_direction"
+          ],
+          "title": "Bucket",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "window_document_share": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Window Document Share"
+        },
+        "established_threshold": {
+          "const": 0.08,
+          "title": "Established Threshold",
+          "type": "number"
+        }
+      },
+      "required": [
+        "bucket",
+        "reasons",
+        "window_document_share",
+        "established_threshold"
+      ],
+      "title": "Selection",
+      "type": "object"
+    },
+    "SemanticDecision": {
+      "additionalProperties": true,
+      "properties": {
+        "study_id": {
+          "title": "Study Id",
+          "type": "string"
+        },
+        "admitted": {
+          "title": "Admitted",
+          "type": "boolean"
+        },
+        "route": {
+          "enum": [
+            "lexical",
+            "semantic",
+            "rejected"
+          ],
+          "title": "Route",
+          "type": "string"
+        },
+        "lexical_admitted": {
+          "title": "Lexical Admitted",
+          "type": "boolean"
+        },
+        "semantic_only": {
+          "title": "Semantic Only",
+          "type": "boolean"
+        },
+        "similarity": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Similarity"
+        },
+        "scored": {
+          "title": "Scored",
+          "type": "boolean"
+        },
+        "requires_review": {
+          "title": "Requires Review",
+          "type": "boolean"
+        },
+        "unscored_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unscored Reason"
+        }
+      },
+      "required": [
+        "study_id",
+        "admitted",
+        "route",
+        "lexical_admitted",
+        "semantic_only",
+        "similarity",
+        "scored",
+        "requires_review",
+        "unscored_reason"
+      ],
+      "title": "SemanticDecision",
+      "type": "object"
+    },
+    "SemanticGroup": {
+      "additionalProperties": true,
+      "properties": {
+        "semantic_only_documents": {
+          "minimum": 0,
+          "title": "Semantic Only Documents",
+          "type": "integer"
+        },
+        "corpus_requires_review": {
+          "title": "Corpus Requires Review",
+          "type": "boolean"
+        },
+        "requires_review": {
+          "title": "Requires Review",
+          "type": "boolean"
+        },
+        "study_decisions": {
+          "items": {
+            "$ref": "#/$defs/SemanticDecision"
+          },
+          "title": "Study Decisions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "semantic_only_documents",
+        "corpus_requires_review",
+        "requires_review",
+        "study_decisions"
+      ],
+      "title": "SemanticGroup",
+      "type": "object"
+    },
+    "SemanticModel": {
+      "additionalProperties": true,
+      "properties": {
+        "model_id": {
+          "minLength": 1,
+          "title": "Model Id",
+          "type": "string"
+        },
+        "revision": {
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id",
+        "revision"
+      ],
+      "title": "SemanticModel",
+      "type": "object"
+    },
+    "SemanticSummary": {
+      "additionalProperties": true,
+      "properties": {
+        "mode": {
+          "const": "semantic_assisted",
+          "title": "Mode",
+          "type": "string"
+        },
+        "policy": {
+          "const": "lexical_or_semantic_generic",
+          "title": "Policy",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "threshold": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Threshold",
+          "type": "number"
+        },
+        "calibrated": {
+          "const": false,
+          "title": "Calibrated",
+          "type": "boolean"
+        },
+        "similarity_kind": {
+          "const": "cosine",
+          "title": "Similarity Kind",
+          "type": "string"
+        },
+        "guarded_direction": {
+          "title": "Guarded Direction",
+          "type": "boolean"
+        },
+        "model": {
+          "$ref": "#/$defs/SemanticModel"
+        },
+        "text_policy": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Text Policy",
+          "type": "object"
+        },
+        "language_policy": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Language Policy",
+          "type": "object"
+        },
+        "publication_year_bounds": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Publication Year Bounds",
+          "type": "object"
+        },
+        "skipped_occurrences_by_reason": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Skipped Occurrences By Reason",
+          "type": "object"
+        },
+        "blocked_texts_by_reason": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Blocked Texts By Reason",
+          "type": "object"
+        },
+        "input_occurrences": {
+          "minimum": 0,
+          "title": "Input Occurrences",
+          "type": "integer"
+        },
+        "eligible_occurrences": {
+          "minimum": 0,
+          "title": "Eligible Occurrences",
+          "type": "integer"
+        },
+        "scored_texts": {
+          "minimum": 0,
+          "title": "Scored Texts",
+          "type": "integer"
+        },
+        "retained_studies": {
+          "minimum": 0,
+          "title": "Retained Studies",
+          "type": "integer"
+        },
+        "lexical_studies": {
+          "minimum": 0,
+          "title": "Lexical Studies",
+          "type": "integer"
+        },
+        "semantic_only_studies": {
+          "minimum": 0,
+          "title": "Semantic Only Studies",
+          "type": "integer"
+        },
+        "unscored_studies": {
+          "minimum": 0,
+          "title": "Unscored Studies",
+          "type": "integer"
+        },
+        "study_decisions": {
+          "items": {
+            "$ref": "#/$defs/SemanticDecision"
+          },
+          "title": "Study Decisions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "mode",
+        "policy",
+        "policy_version",
+        "threshold",
+        "calibrated",
+        "similarity_kind",
+        "guarded_direction",
+        "model",
+        "text_policy",
+        "language_policy",
+        "publication_year_bounds",
+        "skipped_occurrences_by_reason",
+        "blocked_texts_by_reason",
+        "input_occurrences",
+        "eligible_occurrences",
+        "scored_texts",
+        "retained_studies",
+        "lexical_studies",
+        "semantic_only_studies",
+        "unscored_studies",
+        "study_decisions"
+      ],
+      "title": "SemanticSummary",
+      "type": "object"
+    },
+    "YearCount": {
+      "additionalProperties": true,
+      "properties": {
+        "year": {
+          "title": "Year",
+          "type": "integer"
+        },
+        "documents": {
+          "minimum": 0,
+          "title": "Documents",
+          "type": "integer"
+        },
+        "direction_documents": {
+          "minimum": 0,
+          "title": "Direction Documents",
+          "type": "integer"
+        },
+        "share": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Share"
+        }
+      },
+      "required": [
+        "year",
+        "documents",
+        "direction_documents",
+        "share"
+      ],
+      "title": "YearCount",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": 2,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "pipeline_version": {
+      "title": "Pipeline Version",
+      "type": "string"
+    },
+    "fingerprint": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Fingerprint",
+      "type": "string"
+    },
+    "implementation_fingerprint": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Implementation Fingerprint",
+      "type": "string"
+    },
+    "options": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Options",
+      "type": "object"
+    },
+    "source": {
+      "enum": [
+        "openalex",
+        "crossref"
+      ],
+      "title": "Source",
+      "type": "string"
+    },
+    "provenance": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Provenance",
+      "type": "object"
+    },
+    "preparation": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Preparation",
+      "type": "object"
+    },
+    "temporal_selection": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Temporal Selection",
+      "type": "object"
+    },
+    "coverage": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Coverage",
+      "type": "object"
+    },
+    "growth_data_comparable": {
+      "title": "Growth Data Comparable",
+      "type": "boolean"
+    },
+    "growth_comparability": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/GrowthComparability"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "data_quality_notes": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Data Quality Notes"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "candidates": {
+      "items": {
+        "$ref": "#/$defs/Candidate"
+      },
+      "maxItems": 15,
+      "title": "Candidates",
+      "type": "array"
+    },
+    "preliminary_signals": {
+      "items": {
+        "$ref": "#/$defs/Candidate"
+      },
+      "title": "Preliminary Signals",
+      "type": "array"
+    },
+    "established": {
+      "items": {
+        "$ref": "#/$defs/Candidate"
+      },
+      "title": "Established",
+      "type": "array"
+    },
+    "excluded_off_direction": {
+      "items": {
+        "$ref": "#/$defs/Candidate"
+      },
+      "title": "Excluded Off Direction",
+      "type": "array"
+    },
+    "selection_summary": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Selection Summary",
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "ranked",
+        "no_groups",
+        "insufficient_data"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "semantic_relevance": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SemanticSummary"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "schema_version",
+    "pipeline_version",
+    "fingerprint",
+    "implementation_fingerprint",
+    "options",
+    "source",
+    "provenance",
+    "preparation",
+    "temporal_selection",
+    "coverage",
+    "growth_data_comparable",
+    "warnings",
+    "candidates",
+    "preliminary_signals",
+    "established",
+    "excluded_off_direction",
+    "selection_summary",
+    "status"
+  ],
+  "title": "ResultContract",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:trendanalizer:result:2"
+}

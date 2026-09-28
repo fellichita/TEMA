@@ -1,0 +1,14 @@
+{
+  "id": "dna_data_storage",
+  "profile_version": 2,
+  "canonical_query": "dna data storage",
+  "display_name_ru": "Хранение данных в ДНК",
+  "aliases": ["хранение данных в днк", "днк хранение данных", "хранение информации в днк", "dna data storage", "dna information storage"],
+  "scope_kind": "paired_axes",
+  "description_ru": "Проверяются именованная тема хранения в ДНК или её связь с собственной работой авторов, включая теорию кодирования ДНК-каналов. Фоновое перечисление применений и символическая ДНК-криптография без молекулярного хранения недостаточны. Эвристика не подтверждает качество исследования и может пропускать неявные связи.",
+  "axis_labels": {"carrier": "ДНК-носитель", "compute": "Хранение цифровых данных"},
+  "axes": {
+    "carrier": ["\\b(?:dna|deoxyribonucleic|oligonucleotides?)\\b"],
+    "compute": ["\\b(?:data[- ](?:storage|archiv\\w*|writing|reading|readout|retrieval|encoding)|information[- ]storage|digital[- ](?:data|information|storage)|archival[- ]storage|molecular[- ]data[- ]storage|dna[- ](?:based[- ])?(?:storage|memory|archiv\\w*)|stor(?:e[sd]?|ing)[- ](?:digital[- ])?data|(?:image|file|text)[- ](?:storage|encoding)|recording[- ](?:of[- ])?(?:encoded[- ])?information)\\b"]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "model_id": "onnx-community/Qwen2.5-1.5B-Instruct",
+  "revision": "6287331f475a3e20e8c879be8fd4bf3551ad9d34",
+  "architecture": "qwen2",
+  "layers": 28,
+  "key_value_heads": 2,
+  "head_dimension": 128,
+  "vocabulary_size": 151936,
+  "prefill_chunk": 128,
+  "max_prompt_tokens": 8192,
+  "max_new_tokens": 3072,
+  "tokens": {
+    "start": 151644,
+    "end": 151645,
+    "stop": [151645, 151643]
+  },
+  "files": [
+    {
+      "name": "model.onnx",
+      "remote": "onnx/model_q4.onnx",
+      "bytes": 1787566590,
+      "sha256": "70c24509f760fed9a8f50391165c46a87660197028a42c4547763f1c173ddea6"
+    },
+    {
+      "name": "tokenizer.json",
+      "remote": "tokenizer.json",
+      "bytes": 7031673,
+      "sha256": "a8506e7111b80c6d8635951a02eab0f4e1a8e4e5772da83846579e97b16f61bf"
+    }
+  ]
+}

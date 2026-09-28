@@ -1,0 +1,14 @@
+# Verified with CPython 3.13 / macOS arm64. No torch/transformers required.
+-r ml.lock
+onnxruntime==1.29.0
+tokenizers==0.23.2
+flatbuffers==25.12.19
+protobuf==7.36.1
+packaging==26.3
+huggingface-hub==1.30.0
+click==8.5.0
+filelock==3.32.6
+fsspec==2026.7.0
+hf-xet==1.6.0
+pyyaml==6.0.3
+tqdm==4.70.0

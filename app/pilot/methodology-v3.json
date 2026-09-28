@@ -1,0 +1,45 @@
+{
+  "version": "3.0.0",
+  "status": "implemented_provisional_not_quality_calibrated",
+  "counting_unit": "A deduplicated independent study ID; a DOI observed in two catalogues is not two studies. Retractions and supplements must be resolved before admission.",
+  "reference_corpus": "OpenAlex historical snapshot, with frozen candidate admission rule applied identically to all years. Crossref, patents, arXiv and reports are separate enrichment evidence.",
+  "window": "6 to 10 consecutive completed years as of the saved date. R is the final 3 years, B the immediately preceding 3. Older years are novelty context. The current incomplete year is excluded.",
+  "growth_ratio": "G = (R + 1) / (B + 1). Raw ratio R/B is null when B=0; the label is appearance in the observed corpus, never infinite growth.",
+  "recent_slope": "Theil-Sen median of all 3 pairwise yearly slopes within the final 3 completed years.",
+  "growth_gates": [
+    "Reference history is exhaustive, comparable, uncapped, resolved and free of date conflicts",
+    "R >= 10",
+    "At least 2 recent years have >= 1 admitted independent study",
+    "G >= 1.5",
+    "Theil-Sen slope > 0",
+    "Specific technological mechanism, not a broad topic or uncertain grouping",
+    "Problem, advantage and case all have grounded supporting claims"
+  ],
+  "weights": {"growth": 30, "persistence": 20, "novelty": 20, "independence": 15, "application": 15},
+  "components": {
+    "growth": "clip(50 * log2(G), 0, 100); null if reference history is incomplete or incomparable",
+    "persistence": "100 * active_recent_years / 3; null if reference history is incomplete or incomparable",
+    "novelty": "Rubric below, supported by an explicit novelty claim, checks of earlier analogues AND terminology changes; otherwise null",
+    "independence": "min(100, 25 * number_of_verified_disjoint_research_groups) across recent studies. Only when every recent study is accounted for; otherwise null. Source catalogues, author names and institutions alone are not independent teams.",
+    "application": "Rubric below supported by an explicit application claim; otherwise null. These levels describe documentary evidence and are not TRL, readiness or commercial success."
+  },
+  "novelty_rubric": {"new_mechanism": 100, "new_combination": 75, "new_application": 50, "renamed": 0, "established": 0},
+  "application_rubric": {"research": 50, "demonstrator": 75, "deployment": 100},
+  "missing_policy": "Never renormalize weights or substitute zero/average for an unknown component. priority_score is null if any component is unknown. Report [sum of known weighted values, sum of known weighted values + missing weights] as an uncertainty bound, not as measured score endpoints.",
+  "categories": {
+    "confirmed_trend": "Every growth gate passes AND checked novelty rubric is >= 50",
+    "renewed_interest": "Every growth gate passes AND checked novelty rubric is zero",
+    "established_topic": "Complete reference history and checked novelty rubric is zero, but at least one growth gate fails; no market maturity is implied",
+    "early_signal": "All other candidates, including confirmed growth with unverified novelty"
+  },
+  "confidence": {"high": "All growth gates pass and all score components are known", "medium": "All growth gates pass but at least one score component is unknown", "low": "At least one growth gate fails"},
+  "quality": "insufficient_data if R=0; otherwise complete if reference history is complete/comparable without date conflicts; otherwise partial. This is data completeness, independent of confirmed growth and confidence.",
+  "rounding": "Only displayed components, scores and interval endpoints are rounded to 2 decimal places using decimal ROUND_HALF_UP. Gates use unrounded values. The weighted score uses unrounded components.",
+  "ranking": "Default: confirmed_trend only, up to 15; descending conservative priority lower bound, high/medium/low confidence, descending recent count, ascending stable candidate ID. Never pad with unsupported cards.",
+  "example": {"yearly_counts": [1, 1, 1, 2, 4, 8], "R": 14, "B": 3, "G": 3.75, "slope": 3, "novelty": "new_mechanism", "verified_independent_groups": 4, "application": "research", "priority_score": 91.1},
+  "limitations": [
+    "This score is a transparent prioritization heuristic, not a probability, market forecast or claim of worldwide first invention.",
+    "Structured validation cannot prove scientific truth. Grounding and novelty rubrics require a separately verified assessment; an LLM saying supported is insufficient.",
+    "Thresholds and rubric weights are provisional until independent quality evaluation. Test fixtures verify arithmetic and rejection behavior, not real-world precision."
+  ]
+}

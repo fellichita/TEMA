@@ -1,0 +1,5 @@
+# Local ML; no external model service and no model downloads.
+-r base.txt
+numpy>=2.5,<2.6
+scipy>=1.18,<1.19
+scikit-learn>=1.9,<1.10

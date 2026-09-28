@@ -1,0 +1,666 @@
+{
+  "audit_date": "2026-09-08",
+  "scope": "Read-only local audit before the proposed executor rule; no implementation of point 2.",
+  "pipeline_version": "local-mvp-nmf-1.3.6",
+  "options": {
+    "topic": "photonic neuromorphic computing",
+    "start_year": 2020,
+    "end_year": 2025,
+    "top_k": 15,
+    "max_documents": 20000
+  },
+  "result_path": "storage/mvp-axis-check-2026-09-08.json",
+  "result_sha256": "76636b8b5d2850b60b9f93732e23e54af901a34e9f3789414d2b9e73e89a1378",
+  "corpus_sha256": "a435eea36f1e216253efda4551f1e4a7449efe1e126e3f449c68e5e0d41e3837",
+  "full_suite": {
+    "command": ".venv/bin/python -B -m pytest -q -p no:cacheprovider --tb=short",
+    "passed": 886,
+    "failed": 0,
+    "seconds": 18.16,
+    "native_tk_included": true
+  },
+  "fresh_real_run_identical_including_fingerprint": true,
+  "integrity": {
+    "retained_studies": 1262,
+    "current_cards": 15,
+    "excluded_cards": 1,
+    "metrics_recomputed": 16,
+    "quotes_verified": 48,
+    "guard_support_verified": 131,
+    "score_order_valid": true,
+    "candidate_ids_unique_and_memberships_disjoint": true,
+    "json_finite": true,
+    "coverage_comparable": false,
+    "stages": {
+      "requires_review": 15
+    },
+    "statuses": {
+      "exploratory_candidate": 15
+    },
+    "first_observed_years": {
+      "2021": 1,
+      "2020": 2,
+      "2018": 9,
+      "2019": 3
+    },
+    "cards_with_growth_pattern": 1,
+    "axis_checks": {
+      "partial": 5,
+      "supported": 10
+    }
+  },
+  "executor_probe_summary": {
+    "total": 36,
+    "matches_provisional_proposal": 26,
+    "gaps_to_provisional_proposal": 10,
+    "production_evidence_level_implemented": false,
+    "proxy_definition": "direct if scope admitted and current require_execution sentence/pair predicate is true; nominal if admitted without that predicate; otherwise reject.",
+    "interpretation": "Exploratory labelled cases for future implementation, not failing production tests or a calibrated quality metric. Nominal admission policy still requires the explicit contract in the report."
+  },
+  "executor_probes": [
+    {
+      "id": "enum_short",
+      "category": "enumeration",
+      "expected_proposal": "reject",
+      "title": "Device measurements",
+      "abstract": "from optical to spintronic implementations",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": true
+    },
+    {
+      "id": "enum_real_shape",
+      "category": "enumeration",
+      "expected_proposal": "reject",
+      "title": "Reservoir Computing with Thin-film Ferromagnetic Devices",
+      "abstract": "Physical reservoir computing demonstrates this with a variety of unconventional systems from optical-based to spintronic.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": false
+    },
+    {
+      "id": "enum_such_as",
+      "category": "enumeration",
+      "expected_proposal": "reject",
+      "title": "Device measurements",
+      "abstract": "Physical reservoir computing is implemented in systems such as optical, electronic and mechanical devices.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": false
+    },
+    {
+      "id": "enum_including",
+      "category": "enumeration",
+      "expected_proposal": "reject",
+      "title": "Device measurements",
+      "abstract": "We discuss reservoir computing using different carriers, including optical, magnetic and electronic devices.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": false
+    },
+    {
+      "id": "enum_either",
+      "category": "enumeration",
+      "expected_proposal": "reject",
+      "title": "Device measurements",
+      "abstract": "Reservoir computing is implemented using either optical or spintronic devices.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": false
+    },
+    {
+      "id": "enum_range",
+      "category": "enumeration",
+      "expected_proposal": "reject",
+      "title": "Device measurements",
+      "abstract": "Physical reservoir computing implementations range from optical to spintronic systems.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": true
+    },
+    {
+      "id": "enum_then_direct",
+      "category": "mixed",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "Physical reservoir computing demonstrates a variety of systems from optical-based to spintronic. Our optical chip performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "enum_same_sentence_direct",
+      "category": "mixed",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "Reservoir implementations include optical and spintronic devices, but our optical chip performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "enum_title_then_direct",
+      "category": "mixed",
+      "expected_proposal": "direct",
+      "title": "From optical to spintronic reservoir computing",
+      "abstract": "Our optical chip performs neural inference using trained weights.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "direct_neural",
+      "category": "direct",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "Our optical chip performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "direct_matrix",
+      "category": "direct",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "The optical chip performs the matrix multiplication.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": false
+    },
+    {
+      "id": "direct_weighted",
+      "category": "direct",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "We demonstrate neural weighted sums using optical interferometers.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "direct_passive",
+      "category": "direct",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "Neural inference is performed by an optical chip.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "direct_pair",
+      "category": "direct",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "We fabricate a photonic chip. This chip performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "direct_reverse_pair",
+      "category": "direct",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "Neural weighted sums are computed in our processor. This processor uses optical pulses as signals.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "gpu_training",
+      "category": "hybrid",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "We train the parameters on a GPU while the optical chip performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "gpu_passive_training_ran",
+      "category": "hybrid",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "Training was performed on a GPU while inference ran on the photonic chip.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": false
+    },
+    {
+      "id": "gpu_past_inference",
+      "category": "hybrid",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "A GPU trained the parameters while our optical chip ran neural inference.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": false
+    },
+    {
+      "id": "gpu_frequent_comparison",
+      "category": "hybrid",
+      "expected_proposal": "direct",
+      "title": "Electronic processors and digital processors for neural computation",
+      "abstract": "We compare electronic processors with digital processors. Electronic processors consume power during training. Our optical chip performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "photonic_memristor",
+      "category": "hybrid",
+      "expected_proposal": "direct",
+      "title": "Photonic memristive neural devices",
+      "abstract": "Our optical memristive device performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "photonic_pcm",
+      "category": "hybrid",
+      "expected_proposal": "direct",
+      "title": "Phase-change photonic neural devices",
+      "abstract": "Our phase-change optical chip performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "photonic_and_electronic_roles",
+      "category": "hybrid",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "An electronic controller stores the weights while our optical chip performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "nominal_title",
+      "category": "nominal",
+      "expected_proposal": "nominal",
+      "title": "Photonic neural networks",
+      "abstract": "We review recent progress and unresolved research questions.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": false,
+      "audit_proxy": "nominal",
+      "matches_proposal": true
+    },
+    {
+      "id": "nominal_abstract",
+      "category": "nominal",
+      "expected_proposal": "nominal",
+      "title": "Device measurements",
+      "abstract": "Photonic neural networks.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": false,
+      "audit_proxy": "nominal",
+      "matches_proposal": true
+    },
+    {
+      "id": "nominal_gpu_training_only",
+      "category": "nominal",
+      "expected_proposal": "nominal",
+      "title": "GPU training of parameters for an optical neural network",
+      "abstract": "We report the training procedure and calibration results.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": false,
+      "audit_proxy": "nominal",
+      "matches_proposal": true
+    },
+    {
+      "id": "nominal_microcomb",
+      "category": "nominal",
+      "expected_proposal": "nominal",
+      "title": "Device measurements",
+      "abstract": "Microcombs have applications in neuromorphic computing.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": false
+    },
+    {
+      "id": "nominal_platform",
+      "category": "nominal",
+      "expected_proposal": "nominal",
+      "title": "Device measurements",
+      "abstract": "Our photonic platform has potential applications in neuromorphic computing.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": false
+    },
+    {
+      "id": "denied_title_override",
+      "category": "negative",
+      "expected_proposal": "reject",
+      "title": "Photonic neural networks",
+      "abstract": "Our optical chip does not implement neural computation.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": true
+    },
+    {
+      "id": "gpu_inference",
+      "category": "negative",
+      "expected_proposal": "reject",
+      "title": "Photonic neural networks",
+      "abstract": "All neural inference runs on a GPU.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": true
+    },
+    {
+      "id": "gpu_input_only",
+      "category": "negative",
+      "expected_proposal": "reject",
+      "title": "Device measurements",
+      "abstract": "A GPU performs neural inference using inputs from an optical detector.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": true
+    },
+    {
+      "id": "neural_design_only",
+      "category": "negative",
+      "expected_proposal": "reject",
+      "title": "Neural networks for optical device design",
+      "abstract": "We use a neural network on a GPU to optimize optical resonators.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": true
+    },
+    {
+      "id": "unrelated_cooccurrence",
+      "category": "negative",
+      "expected_proposal": "reject",
+      "title": "Device measurements",
+      "abstract": "Optical transmission and neural computation.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": true
+    },
+    {
+      "id": "simulation_gpu_only",
+      "category": "negative",
+      "expected_proposal": "reject",
+      "title": "Device measurements",
+      "abstract": "We present an optical neural network simulated and executed exclusively on a GPU.",
+      "current_scope": "scope_not_established",
+      "current_execution_predicate": false,
+      "audit_proxy": "reject",
+      "matches_proposal": true
+    },
+    {
+      "id": "optical_design_simulation",
+      "category": "simulation_policy",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "Neural computation is numerically implemented in a photonic circuit.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "baseline_denial_then_direct",
+      "category": "negative_scope",
+      "expected_proposal": "direct",
+      "title": "Device measurements",
+      "abstract": "A baseline optical device does not implement neural computation. Our optical chip performs neural inference.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": true
+    },
+    {
+      "id": "current_denial_after_claim",
+      "category": "negative_scope",
+      "expected_proposal": "reject",
+      "title": "Device measurements",
+      "abstract": "Our optical chip performs neural inference. However, neural inference has not actually been implemented in this chip.",
+      "current_scope": "direct_lexical_signal",
+      "current_execution_predicate": true,
+      "audit_proxy": "direct",
+      "matches_proposal": false
+    }
+  ],
+  "findings": [
+    {
+      "id": "executor_enumeration",
+      "severity": "high",
+      "evidence_probe_ids": [
+        "enum_real_shape",
+        "enum_such_as",
+        "enum_including",
+        "enum_either"
+      ],
+      "real_card": 13,
+      "summary_ru": "Фоновое перечисление носителей ошибочно даёт свидетельство исполнения; подтверждено на магнитном источнике текущей карточки №13."
+    },
+    {
+      "id": "missing_compute_forms",
+      "severity": "high",
+      "evidence_probe_ids": [
+        "direct_matrix",
+        "gpu_passive_training_ran",
+        "gpu_past_inference"
+      ],
+      "summary_ru": "Текущий фильтр отклоняет обязательные положительные примеры matrix multiplication и inference ran."
+    },
+    {
+      "id": "strict_predicate_not_a_direct_label",
+      "severity": "high",
+      "real_card": 5,
+      "summary_ru": "require_execution=True принимает перспективное применение; наличие computing в списке действий само по себе не означает глагольного утверждения."
+    },
+    {
+      "id": "same_device_contradiction",
+      "severity": "high",
+      "evidence_probe_ids": [
+        "current_denial_after_claim",
+        "baseline_denial_then_direct"
+      ],
+      "summary_ru": "Противоречие об исполнении того же чипа не перекрывает раннее положительное утверждение. Отрицание базового устройства должно оставаться независимым."
+    },
+    {
+      "id": "nominal_policy",
+      "severity": "contract",
+      "evidence_probe_ids": [
+        "nominal_microcomb",
+        "nominal_platform",
+        "nominal_title",
+        "nominal_abstract"
+      ],
+      "summary_ru": "Различить уровень свидетельства и допуск; прежние тесты отклоняют одни лишь будущие применения. Ожидания существующих тестов не менять."
+    },
+    {
+      "id": "frequency_veto",
+      "severity": "design",
+      "evidence_probe_ids": [
+        "gpu_frequent_comparison",
+        "photonic_memristor",
+        "photonic_pcm",
+        "photonic_and_electronic_roles"
+      ],
+      "summary_ru": "Частотный доминирующий носитель не должен запрещать гибридное оптическое исполнение. Это ограничение предлагаемого метода, не обнаруженная ошибка существующего dominant_carrier: такой функции сейчас нет."
+    },
+    {
+      "id": "card_field_alignment",
+      "severity": "high",
+      "current_ranks": [
+        1,
+        4,
+        7,
+        8,
+        9,
+        13,
+        14,
+        15
+      ],
+      "summary_ru": "Релевантность документа не гарантирует подходящее содержание выбранных полей. Известные дефекты выбора цитат сохраняются."
+    },
+    {
+      "id": "emergence_limit",
+      "severity": "product",
+      "summary_ru": "15 текущих карточек являются предварительными кандидатами при несопоставимом покрытии; глобальный первый год упоминания не установлен."
+    }
+  ],
+  "real_executor_examples": [
+    {
+      "rank": 1,
+      "candidate_id": "38809ad1872a7b2c",
+      "study_id": "doi:10.31219/osf.io/xnwuk_v1",
+      "title": "State-of-the-art Applications of Optical Microcombs",
+      "url": "https://doi.org/10.31219/osf.io/xnwuk_v1",
+      "source_abstract": "We report ultrahigh bandwidth applications of Kerr microcombs to optical neural networks and to optical data transmission, at data rates from 44 Terabits/s (Tb/s) to approaching 100 Tb/s. Convolutional neural networks (CNNs) are a powerful category of artificial neural networks that can extract the hierarchical features of raw data to greatly reduce the network complexity and enhance the accuracy for machine learning tasks such as computer vision, speech recognition, playing board games and medical diagnosis [1-7]. Optical neural networks can dramatically accelerate the computing speed to overcome the inherent bandwidth bottleneck of electronics. We use a new and powerful class of micro-comb called soliton crystals that exhibit robust operation and stable generation as well as a high intrinsic efficiency with an extremely low spacing of 48.9 GHz. We demonstrate a universal optical vector convolutional accelerator operating at 11 Tera-OPS/s (TOPS) on 250,000 pixel images for 10 kernels simultaneously — enough for facial image recognition. We use the same hardware to sequentially form a deep optical CNN with ten output neurons, achieving successful recognition of full 10 digits with 900 pixel handwritten digit images. We also report world record high data transmission over standard optical fiber from a single optical source, at 44.2 Terabits/s over the C-band, with a spectral efficiency of 10.4 bits/s/Hz, with a coherent data modulation format of 64 QAM. We achieve error free transmission across 75 km of standard optical fiber in the lab and over a field trial with a metropolitan optical fiber network. Our work demonstrates the ability of optical soliton crystal micro-combs to exceed other approaches in performance for the most demanding practical optical communications applications.",
+      "current_scope": "direct_lexical_signal",
+      "accepted_single_sentences": [
+        {
+          "sentence_number": 3,
+          "text": "Optical neural networks can dramatically accelerate the computing speed to overcome the inherent bandwidth bottleneck of electronics.",
+          "require_execution_false": true,
+          "require_execution_true": true
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "candidate_id": "b8b8a4b47eee60c4",
+      "study_id": "doi:10.1021/acsphotonics.5c00983",
+      "title": "Pixelated Nonvolatile Programmable Photonic Integrated Circuits Based on an Inverse Design",
+      "url": "https://doi.org/10.1021/acsphotonics.5c00983",
+      "source_abstract": "Programmable photonic integrated circuits have developed as a key component for a variety of applications, including advancing optical computing, programmable logic operation, and quantum information processing. However, conventional modulation methods have suffered from significant limitations, including restricted refractive index tunability and substantial static power consumption, which impedes their large-scale integration. In this work, we demonstrate ultralow-loss programmable silicon photonics enabled by the phase-change material Sb 2 S 3 . Utilizing inverse design techniques, we introduce pixelated Sb 2 S 3 patterns onto a compact device footprint of only 4 × 18 μm to precisely modulate optical transmission. Through targeted programming of these pixel patterns, we experimentally demonstrate four distinct broadband power distribution ratios (90:10, 80:20, 70:30, and 60:40), achieving a maximum extinction ratio of 12 dB at a central wavelength of 1550 nm for the 90:10 configuration. The measured power distribution ratios closely match inverse design predictions, with deviations of approximately 3%. Based on this approach, we further validated the capability of multi-input/output linear optical transformation devices. This scalable, energy-efficient, and nonvolatile photonic platform paves the way for large-scale optical computing, neuromorphic photonics, and next-generation reconfigurable photonic architectures.",
+      "current_scope": "direct_lexical_signal",
+      "accepted_single_sentences": [
+        {
+          "sentence_number": 8,
+          "text": "This scalable, energy-efficient, and nonvolatile photonic platform paves the way for large-scale optical computing, neuromorphic photonics, and next-generation reconfigurable photonic architectures.",
+          "require_execution_false": true,
+          "require_execution_true": true
+        }
+      ]
+    },
+    {
+      "rank": 13,
+      "candidate_id": "07c48250e0885ebb",
+      "study_id": "openalex:W3127141444",
+      "title": "Reservoir Computing with Thin-film Ferromagnetic Devices",
+      "url": "https://openalex.org/W3127141444",
+      "source_abstract": "Advances in artificial intelligence are driven by technologies inspired by the brain, but these technologies are orders of magnitude less powerful and energy efficient than biological systems. Inspired by the nonlinear dynamics of neural networks, new unconventional computing hardware has emerged with the potential for extreme parallelism and ultra-low power consumption. Physical reservoir computing demonstrates this with a variety of unconventional systems from optical-based to spintronic. Reservoir computers provide a nonlinear projection of the task input into a high-dimensional feature space by exploiting the system's internal dynamics. A trained readout layer then combines features to perform tasks, such as pattern recognition and time-series analysis. Despite progress, achieving state-of-the-art performance without external signal processing to the reservoir remains challenging. Here we show, through simulation, that magnetic materials in thin-film geometries can realise reservoir computers with greater than or similar accuracy to digital recurrent neural networks. Our results reveal that basic spin properties of magnetic films generate the required nonlinear dynamics and memory to solve machine learning tasks. Furthermore, we show that neuromorphic hardware can be reduced in size by removing the need for discrete neural components and external processing. The natural dynamics and nanoscale size of magnetic thin-films present a new path towards fast energy-efficient computing with the potential to innovate portable smart devices, self driving vehicles, and robotics.",
+      "current_scope": "direct_lexical_signal",
+      "accepted_single_sentences": [
+        {
+          "sentence_number": 3,
+          "text": "Physical reservoir computing demonstrates this with a variety of unconventional systems from optical-based to spintronic.",
+          "require_execution_false": true,
+          "require_execution_true": true
+        }
+      ]
+    },
+    {
+      "rank": 15,
+      "candidate_id": "ca5e180f1796e4e6",
+      "study_id": "doi:10.1109/access.2020.2987333",
+      "title": "A Review of Optical Neural Networks",
+      "url": "https://doi.org/10.1109/access.2020.2987333",
+      "source_abstract": "Optical neural network can process information in parallel by using the technology based on free-space and integrated platform. Over the last half century, the development of integrated circuits has been limited by Moore’s law. We know that neural network is based on the digital computer for successive calculation, most of which cannot be made into real-time processing system. Therefore, it is necessary to develop ONN for real-time processing and device miniaturization. In this paper, we review the progress of optical neural networks. Firstly, based on the principle of artificial neural networks, we elaborate the essence of optical matrix multiplier for linear operation. Then we introduce the optical neural network achieved by free-space optical interconnection and waveguide optical interconnection. Finally we talk about the nonlinearity in optical neural networks. With the gradual maturity of nanotechnology and the rapid advancement of silicon photonic integrated circuits, the progress of integrated photonic neural network has been promoted. Therefore, the construction of optical neural network on the future integrated photonic platform has potential application value.",
+      "current_scope": "direct_lexical_signal",
+      "accepted_single_sentences": [
+        {
+          "sentence_number": 1,
+          "text": "Optical neural network can process information in parallel by using the technology based on free-space and integrated platform.",
+          "require_execution_false": true,
+          "require_execution_true": true
+        },
+        {
+          "sentence_number": 5,
+          "text": "In this paper, we review the progress of optical neural networks.",
+          "require_execution_false": true,
+          "require_execution_true": false
+        },
+        {
+          "sentence_number": 7,
+          "text": "Then we introduce the optical neural network achieved by free-space optical interconnection and waveguide optical interconnection.",
+          "require_execution_false": true,
+          "require_execution_true": false
+        },
+        {
+          "sentence_number": 8,
+          "text": "Finally we talk about the nonlinearity in optical neural networks.",
+          "require_execution_false": true,
+          "require_execution_true": false
+        },
+        {
+          "sentence_number": 9,
+          "text": "With the gradual maturity of nanotechnology and the rapid advancement of silicon photonic integrated circuits, the progress of integrated photonic neural network has been promoted.",
+          "require_execution_false": true,
+          "require_execution_true": false
+        }
+      ]
+    }
+  ],
+  "recommended_order": [
+    "2A: executor evidence with paired regressions and preserved existing test expectations",
+    "2B: document levels and direct-first ordering before TOP-15",
+    "Separate fix of problem/advantage/example extraction"
+  ],
+  "preserve_in_future_executor_work": [
+    "sentence splitter",
+    "negation parsing rules",
+    "evidence_card during executor changes",
+    "text cleaning",
+    "label normalization",
+    "NMF constants",
+    "concentration",
+    "score formula and weights",
+    "axis_check vocabulary",
+    "stage meaning"
+  ],
+  "future_acceptance_notes": [
+    "Classify all group documents, not just 12 displayed sources.",
+    "Preserve source text and include the evidence location.",
+    "A nominal label must not automatically admit background-only material.",
+    "Compare changed corpus membership and audit all new finalists after reclustering.",
+    "Direct relation does not itself prove a physical experiment."
+  ],
+  "checks_of_unchanged_state": {
+    "existing_files_verified": 79,
+    "preexisting_files_changed": []
+  },
+  "limits": [
+    "One preserved real corpus, current automated suite and 36 selected scenarios.",
+    "External URL availability and full publisher texts were not rechecked.",
+    "No executor change, new ML model, vocabulary change or first-year lookup was implemented."
+  ]
+}

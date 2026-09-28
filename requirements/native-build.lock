@@ -1,0 +1,3 @@
+# Tools for compiling the private SQLite runtime wheel.
+setuptools==84.0.0
+packaging==26.3

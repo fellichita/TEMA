@@ -1,0 +1,616 @@
+{
+  "provenance": "Archived real Crossref discovery, 2026-09-12; DOI 10.32388/btc1vy and versions .2/.3",
+  "documents": [
+    {
+      "source": "crossref",
+      "source_id": "10.32388/btc1vy",
+      "doi": "10.32388/btc1vy",
+      "patent_publication": null,
+      "patent_family_id": null,
+      "title": "[Retracted] Nested Neural Networks: A Novel Approach to Flexible and Deep Learning Architectures",
+      "abstract": "This manuscript has been retracted.",
+      "publication_year": 2024,
+      "publication_month": 9,
+      "publication_date": "2024-09-03",
+      "date_precision": "day",
+      "authors": [
+        "Yaniv Hozez"
+      ],
+      "url": "https://doi.org/10.32388/btc1vy",
+      "language": null,
+      "document_type": "posted-content",
+      "citation_count": 0,
+      "fetched_at": "2026-09-12T14:17:55.364679Z",
+      "raw_metadata": {
+        "DOI": "10.32388/btc1vy",
+        "URL": "https://doi.org/10.32388/btc1vy",
+        "abstract": "<jats:p>This manuscript has been retracted.</jats:p>",
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-6107-2898",
+            "affiliation": [],
+            "authenticated-orcid": true,
+            "family": "Hozez",
+            "given": "Yaniv",
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ],
+            "sequence": "first"
+          }
+        ],
+        "content-domain": {
+          "crossmark-restriction": false,
+          "domain": []
+        },
+        "created": {
+          "date-parts": [
+            [
+              2024,
+              9,
+              3
+            ]
+          ],
+          "date-time": "2024-09-03T06:14:55Z",
+          "timestamp": 1725344095000
+        },
+        "deposited": {
+          "date-parts": [
+            [
+              2025,
+              3,
+              24
+            ]
+          ],
+          "date-time": "2025-03-24T18:07:49Z",
+          "timestamp": 1742839669000
+        },
+        "indexed": {
+          "date-parts": [
+            [
+              2026,
+              2,
+              28
+            ]
+          ],
+          "date-time": "2026-02-28T01:58:58Z",
+          "timestamp": 1772243938984,
+          "version": "3.50.1"
+        },
+        "institution": [
+          {
+            "name": "Qeios"
+          }
+        ],
+        "is-referenced-by-count": 0,
+        "issued": {
+          "date-parts": [
+            [
+              2024,
+              9,
+              3
+            ]
+          ]
+        },
+        "license": [
+          {
+            "URL": "http://creativecommons.org/licenses/by/4.0/",
+            "content-version": "unspecified",
+            "delay-in-days": 0,
+            "start": {
+              "date-parts": [
+                [
+                  2024,
+                  9,
+                  3
+                ]
+              ],
+              "date-time": "2024-09-03T00:00:00Z",
+              "timestamp": 1725321600000
+            }
+          }
+        ],
+        "link": [
+          {
+            "URL": "https://www.qeios.com/read/BTC1VY/pdf",
+            "content-type": "application/pdf",
+            "content-version": "vor",
+            "intended-application": "unspecified"
+          },
+          {
+            "URL": "https://www.qeios.com/read/BTC1VY/pdf",
+            "content-type": "unspecified",
+            "content-version": "vor",
+            "intended-application": "similarity-checking"
+          }
+        ],
+        "member": "17262",
+        "posted": {
+          "date-parts": [
+            [
+              2024,
+              9,
+              3
+            ]
+          ]
+        },
+        "prefix": "10.32388",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              9,
+              3
+            ]
+          ]
+        },
+        "publisher": "Qeios Ltd",
+        "reference-count": 0,
+        "references-count": 0,
+        "relation": {
+          "has-review": [
+            {
+              "asserted-by": "object",
+              "id": "10.32388/SEVZX1",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/ZBJSHV",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/9FB62L",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/M3OV8W",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/7NZ3V0",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/GIROXH",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/P0OKHL",
+              "id-type": "doi"
+            }
+          ],
+          "has-version": [
+            {
+              "asserted-by": "object",
+              "id": "10.32388/BTC1VY.2",
+              "id-type": "doi"
+            }
+          ]
+        },
+        "resource": {
+          "primary": {
+            "URL": "https://www.qeios.com/read/BTC1VY"
+          }
+        },
+        "score": 22.087181,
+        "source": "Crossref",
+        "subtype": "preprint",
+        "title": [
+          "[Retracted] Nested Neural Networks: A Novel Approach to Flexible and Deep Learning Architectures"
+        ],
+        "type": "posted-content"
+      }
+    },
+    {
+      "source": "crossref",
+      "source_id": "10.32388/btc1vy.2",
+      "doi": "10.32388/btc1vy.2",
+      "patent_publication": null,
+      "patent_family_id": null,
+      "title": "[Retracted] Nested Neural Networks: A Novel Approach to Flexible and Deep Learning Architectures",
+      "abstract": "This manuscript has been retracted.",
+      "publication_year": 2024,
+      "publication_month": 9,
+      "publication_date": "2024-09-10",
+      "date_precision": "day",
+      "authors": [
+        "Yaniv Hozez"
+      ],
+      "url": "https://doi.org/10.32388/btc1vy.2",
+      "language": null,
+      "document_type": "posted-content",
+      "citation_count": 0,
+      "fetched_at": "2026-09-12T14:17:55.364935Z",
+      "raw_metadata": {
+        "DOI": "10.32388/btc1vy.2",
+        "URL": "https://doi.org/10.32388/btc1vy.2",
+        "abstract": "<jats:p>This manuscript has been retracted.</jats:p>",
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-6107-2898",
+            "affiliation": [],
+            "authenticated-orcid": true,
+            "family": "Hozez",
+            "given": "Yaniv",
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ],
+            "sequence": "first"
+          }
+        ],
+        "content-domain": {
+          "crossmark-restriction": false,
+          "domain": []
+        },
+        "created": {
+          "date-parts": [
+            [
+              2024,
+              9,
+              10
+            ]
+          ],
+          "date-time": "2024-09-10T17:12:29Z",
+          "timestamp": 1725988349000
+        },
+        "deposited": {
+          "date-parts": [
+            [
+              2025,
+              3,
+              24
+            ]
+          ],
+          "date-time": "2025-03-24T18:08:12Z",
+          "timestamp": 1742839692000
+        },
+        "indexed": {
+          "date-parts": [
+            [
+              2026,
+              2,
+              28
+            ]
+          ],
+          "date-time": "2026-02-28T01:59:54Z",
+          "timestamp": 1772243994544,
+          "version": "3.50.1"
+        },
+        "institution": [
+          {
+            "name": "Qeios"
+          }
+        ],
+        "is-referenced-by-count": 0,
+        "issued": {
+          "date-parts": [
+            [
+              2024,
+              9,
+              10
+            ]
+          ]
+        },
+        "license": [
+          {
+            "URL": "http://creativecommons.org/licenses/by/4.0/",
+            "content-version": "unspecified",
+            "delay-in-days": 0,
+            "start": {
+              "date-parts": [
+                [
+                  2024,
+                  9,
+                  10
+                ]
+              ],
+              "date-time": "2024-09-10T00:00:00Z",
+              "timestamp": 1725926400000
+            }
+          }
+        ],
+        "link": [
+          {
+            "URL": "https://www.qeios.com/read/BTC1VY.2/pdf",
+            "content-type": "application/pdf",
+            "content-version": "vor",
+            "intended-application": "unspecified"
+          },
+          {
+            "URL": "https://www.qeios.com/read/BTC1VY.2/pdf",
+            "content-type": "unspecified",
+            "content-version": "vor",
+            "intended-application": "similarity-checking"
+          }
+        ],
+        "member": "17262",
+        "posted": {
+          "date-parts": [
+            [
+              2024,
+              9,
+              10
+            ]
+          ]
+        },
+        "prefix": "10.32388",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              9,
+              10
+            ]
+          ]
+        },
+        "publisher": "Qeios Ltd",
+        "reference-count": 0,
+        "references-count": 0,
+        "relation": {
+          "has-review": [
+            {
+              "asserted-by": "object",
+              "id": "10.32388/M9DOC0",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/FYUHRE",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/NO3MQY",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/OPNM3T",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/0FBAJH",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/HDRPJS",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/GJHT6F",
+              "id-type": "doi"
+            }
+          ],
+          "has-version": [
+            {
+              "asserted-by": "object",
+              "id": "10.32388/BTC1VY.3",
+              "id-type": "doi"
+            }
+          ],
+          "is-version-of": [
+            {
+              "asserted-by": "subject",
+              "id": "10.32388/BTC1VY",
+              "id-type": "doi"
+            }
+          ]
+        },
+        "resource": {
+          "primary": {
+            "URL": "https://www.qeios.com/read/BTC1VY.2"
+          }
+        },
+        "score": 22.063646,
+        "source": "Crossref",
+        "subtype": "preprint",
+        "title": [
+          "[Retracted] Nested Neural Networks: A Novel Approach to Flexible and Deep Learning Architectures"
+        ],
+        "type": "posted-content"
+      }
+    },
+    {
+      "source": "crossref",
+      "source_id": "10.32388/btc1vy.3",
+      "doi": "10.32388/btc1vy.3",
+      "patent_publication": null,
+      "patent_family_id": null,
+      "title": "[Retracted] Nested Neural Networks: A Novel Approach to Flexible and Deep Learning Architectures",
+      "abstract": "This manuscript has been retracted.",
+      "publication_year": 2024,
+      "publication_month": 11,
+      "publication_date": "2024-11-02",
+      "date_precision": "day",
+      "authors": [
+        "Yaniv Hozez"
+      ],
+      "url": "https://doi.org/10.32388/btc1vy.3",
+      "language": null,
+      "document_type": "posted-content",
+      "citation_count": 0,
+      "fetched_at": "2026-09-12T14:17:55.365003Z",
+      "raw_metadata": {
+        "DOI": "10.32388/btc1vy.3",
+        "URL": "https://doi.org/10.32388/btc1vy.3",
+        "abstract": "<jats:p>This manuscript has been retracted.</jats:p>",
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-6107-2898",
+            "affiliation": [],
+            "authenticated-orcid": true,
+            "family": "Hozez",
+            "given": "Yaniv",
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ],
+            "sequence": "first"
+          }
+        ],
+        "content-domain": {
+          "crossmark-restriction": false,
+          "domain": []
+        },
+        "created": {
+          "date-parts": [
+            [
+              2024,
+              11,
+              2
+            ]
+          ],
+          "date-time": "2024-11-02T02:17:31Z",
+          "timestamp": 1730513851000
+        },
+        "deposited": {
+          "date-parts": [
+            [
+              2025,
+              3,
+              24
+            ]
+          ],
+          "date-time": "2025-03-24T18:11:46Z",
+          "timestamp": 1742839906000
+        },
+        "indexed": {
+          "date-parts": [
+            [
+              2026,
+              2,
+              28
+            ]
+          ],
+          "date-time": "2026-02-28T01:59:01Z",
+          "timestamp": 1772243941555,
+          "version": "3.50.1"
+        },
+        "institution": [
+          {
+            "name": "Qeios"
+          }
+        ],
+        "is-referenced-by-count": 0,
+        "issued": {
+          "date-parts": [
+            [
+              2024,
+              11,
+              2
+            ]
+          ]
+        },
+        "license": [
+          {
+            "URL": "http://creativecommons.org/licenses/by/4.0/",
+            "content-version": "unspecified",
+            "delay-in-days": 0,
+            "start": {
+              "date-parts": [
+                [
+                  2024,
+                  11,
+                  2
+                ]
+              ],
+              "date-time": "2024-11-02T00:00:00Z",
+              "timestamp": 1730505600000
+            }
+          }
+        ],
+        "link": [
+          {
+            "URL": "https://www.qeios.com/read/BTC1VY.3/pdf",
+            "content-type": "application/pdf",
+            "content-version": "vor",
+            "intended-application": "unspecified"
+          },
+          {
+            "URL": "https://www.qeios.com/read/BTC1VY.3/pdf",
+            "content-type": "unspecified",
+            "content-version": "vor",
+            "intended-application": "similarity-checking"
+          }
+        ],
+        "member": "17262",
+        "posted": {
+          "date-parts": [
+            [
+              2024,
+              11,
+              2
+            ]
+          ]
+        },
+        "prefix": "10.32388",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              11,
+              2
+            ]
+          ]
+        },
+        "publisher": "Qeios Ltd",
+        "reference-count": 0,
+        "references-count": 0,
+        "relation": {
+          "has-review": [
+            {
+              "asserted-by": "object",
+              "id": "10.32388/RFMJWV",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/34DBW4",
+              "id-type": "doi"
+            },
+            {
+              "asserted-by": "object",
+              "id": "10.32388/4RACN6",
+              "id-type": "doi"
+            }
+          ],
+          "is-version-of": [
+            {
+              "asserted-by": "subject",
+              "id": "10.32388/BTC1VY.2",
+              "id-type": "doi"
+            }
+          ]
+        },
+        "resource": {
+          "primary": {
+            "URL": "https://www.qeios.com/read/BTC1VY.3"
+          }
+        },
+        "score": 22.059273,
+        "source": "Crossref",
+        "subtype": "preprint",
+        "title": [
+          "[Retracted] Nested Neural Networks: A Novel Approach to Flexible and Deep Learning Architectures"
+        ],
+        "type": "posted-content"
+      }
+    }
+  ]
+}

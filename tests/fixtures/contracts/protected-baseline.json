@@ -1,0 +1,89 @@
+{
+  "functions": {
+    "app/ml/text.py:clean": "60bb3617ff6de0a0a802740f6c0cf626b00937dc27fac778146843fbbdb3f199",
+    "app/ml/text.py:title_key": "2649abb8139883fc063bd2814f972fe646685d18928f647b3d0914fa6c6418db",
+    "app/ml/text.py:sentences": "66c3b4a3423873f9a28669797e24de1b8a5536718eb19b56999cf229e9325c32",
+    "app/ml/text.py:_denied_implementation": "d04ac14df63eacbe2029944e8e25a495ef6dc4ed734dae3c3385398a9a7f40d7",
+    "app/ml/text.py:safe_url": "4d21f39a3488e710347167d28180b991f8d5b2c098efa570fe147d77b6eafec6",
+    "app/ml/text.py:_supported_advantage": "2cf482f010690b9b9a3c6eb9c8d07803863a14a706bc93d815069d6b47ebcc64",
+    "app/ml/text.py:evidence_card": "651798cb35bec587787f7342830d0f32d514a4114365550ed07f881ca97dccb2",
+    "app/ml/engine.py:prepare": "70d8366015233919eab40cf901c2a35d23e30c83e68f5d2bcff994262dfe08e1",
+    "app/ml/engine.py:coverage": "baae5608da99f268d18f4af035c3fc964995168ed07c33b2a15db7a6b11408db"
+  },
+  "tests": {
+    "tests/test_sentence_splitter.py": "6dafdcec2f29b94371826833d7f7978aef5485561f2d0e55dcc59769a88498db",
+    "tests/test_advantage_negation.py": "937dfe8838b7185a7972e50816d880fa21f4b0ac73b54b5ca974231268985334",
+    "tests/test_direction_relations.py": "2905a80c7aeb433f318d42662ce7e79b5e1dd0a8efde79e1d85e3e8fcb712734"
+  },
+  "approved_placement_migration": {
+    "tests/test_advantage_negation.py": {
+      "allowed_functions": [
+        "test_real_pipeline_does_not_fill_advantage_from_denied_results"
+      ],
+      "unmodified_rest_sha256": "c3ad2dfb7447c015017eb21bed68a23dbae272b418418baf5983c7e927d26005",
+      "authorization": "User reply 2026-09-08: на свое усмотрение, мне главное рабочая ml; scope: result placement only"
+    },
+    "tests/test_direction_relations.py": {
+      "allowed_functions": [
+        "test_real_model_preparation_obeys_scope_even_with_matching_titles"
+      ],
+      "unmodified_rest_sha256": "d9a2688379aa1ecd79915722e8e399af28dd5e4f6e3169eeb7bcd7b3fd6fb74f",
+      "authorization": "User reply 2026-09-08: на свое усмотрение, мне главное рабочая ml; scope: result placement only"
+    }
+  },
+  "approved_function_changes": {
+    "app/ml/text.py:sentences": {
+      "previous_sha256": "fffdc6f3af5ba381f3acf45937f1c40e4778ecd2b0ae31fda57382b7791b76a5",
+      "current_sha256": "66c3b4a3423873f9a28669797e24de1b8a5536718eb19b56999cf229e9325c32",
+      "authorization": "User 2026-09-19: incorporate colleagues' latest main2 commit and autonomously bring the project to production quality; source change arrived in d45972b.",
+      "scope": "Memoize normalized sentence segmentation with a bounded cache; each caller still receives an independent list. No boundary or quote rules changed.",
+      "regression_tests": "tests/test_sentence_splitter.py; tests/test_ml_text_cache_compat.py; differential comparison against 1c64a00 on 5794 fixture and generated strings"
+    },
+    "app/ml/text.py:_denied_implementation": {
+      "previous_sha256": "7071291567bdf7a24d2352c34717737e289058fa2baef7dbc675e2bd9011bfff",
+      "current_sha256": "d04ac14df63eacbe2029944e8e25a495ef6dc4ed734dae3c3385398a9a7f40d7",
+      "authorization": "User 2026-09-19: incorporate colleagues' latest main2 commit and autonomously bring the project to production quality; source change arrived in d45972b.",
+      "scope": "Bounded memoization and precompiled equivalent denial patterns; no negation rule changed.",
+      "regression_tests": "tests/test_advantage_negation.py; tests/test_ml_text_cache_compat.py; differential comparison against 1c64a00 on 5794 fixture and generated strings"
+    },
+    "app/ml/engine.py:prepare": {
+      "previous_sha256": "c7641eb8cf2b515f66d20bf27ccf5df2e6b5f309affe49b5009e089dbc1ccfef",
+      "current_sha256": "70d8366015233919eab40cf901c2a35d23e30c83e68f5d2bcff994262dfe08e1",
+      "authorization": "User 2026-09-09: Теперь реализуй согласованный план. Approved stage 3 explicitly includes audit A05: exclude supplementary records from independent-study counts using verifiable relationships and preserve their provenance.",
+      "scope": "Attach metadata-linked or corroborated legacy ACS supplementary identities to eligible parent evidence. Do not substitute supplementary text/URL/date for the parent. Reject unresolved explicit/cyclic/conflicting relations, preserve parent-to-material retraction only, and normalize a trailing numeric author identifier. Unconfirmed ACS candidates bypass generic title/surname merging. Existing scope, score weights, NMF and coverage unchanged.",
+      "regression_tests": "tests/test_supplementary_studies.py; tests/test_ml_version_integrity.py; tests/test_retrospective_validation.py; three audited corpora and four saved DNA parent/supplement pairs",
+      "prior_approved_changes": [
+        {
+          "previous_sha256": "f26ca80220b454ba3c181f9d303e635233e3574ba2323085ddfd9a94d918e2ed",
+          "current_sha256": "c7641eb8cf2b515f66d20bf27ccf5df2e6b5f309affe49b5009e089dbc1ccfef",
+          "authorization": "User 2026-09-09: Теперь реализуй согласованный план. This explicitly authorizes audit fixes A03/A08/A09 in approved stage 2; no additional permission is required.",
+          "scope": "A03/A09: early raw title/abstract size checks with usable-version fallback; cancellation checkpoints and shared URL admission. Identity, year conflicts, version merging, scoring and coverage unchanged.",
+          "regression_tests": "tests/test_ml_input_safety.py; tests/test_ml_version_integrity.py",
+          "prior_approved_changes": [
+            {
+              "previous_sha256": "1e63dca9d0c6e20c4fa9efc01f778699640e90763482dc819f4ef3b4f6ca7c66",
+              "current_sha256": "f26ca80220b454ba3c181f9d303e635233e3574ba2323085ddfd9a94d918e2ed",
+              "authorization": "User 2026-09-09 explicitly authorized the first data-fix block: exclude retracted DOI versions and preserve a usable version when another version is unusable.",
+              "scope": "Identity normalization, known retraction exclusion and selection of the first eligible version in the existing preference order. Existing year-conflict, text, scope, merge, scoring and coverage rules remain unchanged.",
+              "regression_tests": "tests/test_ml_version_integrity.py"
+            }
+          ]
+        }
+      ]
+    },
+    "app/ml/text.py:clean": {
+      "previous_sha256": "52f5035cafc31eb40d81ed247593b20a7cd3c6c937ddf454bada603c1b84c0de",
+      "current_sha256": "60bb3617ff6de0a0a802740f6c0cf626b00937dc27fac778146843fbbdb3f199",
+      "authorization": "User 2026-09-09: Теперь реализуй согласованный план. This explicitly authorizes audit fixes A03/A08/A09 in approved stage 2; no additional permission is required.",
+      "scope": "A03: linear markup removal and bounded numeric HTML references, preserving ordinary one-pass normalization and source quotations.",
+      "regression_tests": "tests/test_ml_input_safety.py; tests/test_sentence_splitter.py; tests/test_advantage_negation.py"
+    },
+    "app/ml/text.py:safe_url": {
+      "previous_sha256": "cb081a15105a54543d53b15083a0cefed98d135c965cbd43b9dee468f61fa359",
+      "current_sha256": "4d21f39a3488e710347167d28180b991f8d5b2c098efa570fe147d77b6eafec6",
+      "authorization": "User 2026-09-09: Теперь реализуй согласованный план. This explicitly authorizes audit fixes A03/A08/A09 in approved stage 2; no additional permission is required.",
+      "scope": "A09: delegate to shared HTTP(S) URL validation covering raw controls, credentials, ports and host syntax; no network access or URL rewriting.",
+      "regression_tests": "tests/test_http_url_safety.py; tests/test_ml_input_safety.py"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+# A local Linux environment for the same application checks used by CI.
+FROM node:24-bookworm-slim AS node-runtime
+FROM python:3.13.15-bookworm
+COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
+RUN node -e "if (process.versions.node.split('.')[0] !== '24') process.exit(1)"
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    xvfb xauth openbox wmctrl libtk8.6 libfontconfig1 \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /checks
+COPY requirements/ ./requirements/
+COPY scripts/__init__.py scripts/build_sqlite_runtime.py ./scripts/
+RUN python -m pip install --upgrade pip==26.2.1 \
+    && python -m pip install -r requirements/dev.lock -r requirements/semantic.lock -r requirements/native-build.lock \
+    && python -m pip install -r requirements/web.txt \
+    && python -m scripts.build_sqlite_runtime \
+    && python -m pip install -r requirements/pilot.lock \
+    && python -m pip check
+COPY . .
+# Keep the prefix empty at image creation; pip's build-time compile step runs above.
+# Ignore host bytecode on bind mounts; PYTHONDONTWRITEBYTECODE alone still reads it.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPYCACHEPREFIX=/tmp/trendanalyser-checks-pycache
+ENTRYPOINT ["bash", "scripts/check_linux.sh"]

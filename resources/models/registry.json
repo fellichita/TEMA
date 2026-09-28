@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "models": [
+    {
+      "key": "multilingual-e5-small",
+      "spec": "app/pilot/encoder-spec.json",
+      "source": "storage/pilot-models/multilingual-e5-small"
+    },
+    {
+      "key": "e5-small-v2",
+      "spec": "app/ml/encoder_spec.json",
+      "source": "storage/models/e5-small-v2"
+    },
+    {
+      "key": "opus-mt-ru-en",
+      "spec": "app/pilot/translator-spec.json",
+      "source": "storage/translation-models/opus-mt-ru-en"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "version": "3.3.0",
+  "predecessor": "3.2.0",
+  "archive_policy": "3.0, 3.1 and 3.2 arithmetic and evidence-extraction methods remain replayable. The new observation input is optional and omitted from older archives. Every primary result has an immutable source quotation and an explicit extraction version.",
+  "purpose": "A single primary result can be investigated before a publication time series exists. This is a low-confidence observation hypothesis, not verified novelty or a forecast.",
+  "completed_year_history": "Unchanged: 6 to 10 completed years, adjacent final three-year windows. Current-year results are separate evidence; they never increment completed-year studies or produce annual growth rates.",
+  "mature_categories": "The complete 3.2 gates and formulas are retained for reviewed early signals, confirmed trends, emerging candidates, established topics and renewed interest. Sparse current-year primary evidence may remain a low-confidence observation after one annual dip, explicitly preserving the decline concern; persistent decline and large bursts do not gain an early label.",
+  "primary_observation_admission": [
+    "Specific frozen technology with exact title membership and grounded query scope",
+    "At least one archived, dated primary research result, quoted from an abstract and supporting a case claim",
+    "First known observation is 0 to 3 years old, using any known earlier history and antecedents",
+    "Fewer than 10 distinct observed studies across the recent history and bounded primary evidence packet",
+    "No reviewed established, renamed or application-only novelty decision; no known complete-series older baseline or persistent decline. One annual dip is allowed only with a new current-year primary result and a visible concern",
+    "No withdrawn work, literature synthesis, dataset, supplementary asset, unsupported future experiment or explicit contrary conclusion"
+  ],
+  "relaxed_requirements": "For the new weak_signal_candidate observation lane only: one study suffices; the current year is allowed; complete history, an OpenAlex field denominator, publication growth, a novelty assertion, problem and advantage statements are not admission prerequisites. Unknowns stay unknown and are displayed as limitations. A grounded concrete primary case remains mandatory.",
+  "interpretation": "Computational and theoretical primary results are research observations, never evidence of experimental demonstration or deployment. An author's implementation is not an independent replication. An observation without novelty evidence is not a verified novel mechanism.",
+  "signal_priority": "Existing bibliometric signals retain their 3.2 priority. Newly admitted primary observations receive the same fixed watchlist priority of 10, with stable identifier ordering: no fabricated growth, volume bonus or calibrated probability. Stage still precedes numerical ordering.",
+  "quality": "New observation hypotheses have partial data quality, low confidence and growth_confirmed=false even when a complete zero-history query was performed.",
+  "evidence_versions": {
+    "primary_result": "archived-primary-result/1.0.0",
+    "source_novelty": "archived-author-novelty/2.0.0",
+    "primary_passport": "exact-contextual-quotation/3.0.0"
+  },
+  "validation_status": "Behaviour is checked on explicit synthetic positive and negative cases, source-unit regressions and legacy replay. These checks do not measure independent scientific precision, recall, commercial success or predictive lead time. Thresholds are documented operational choices pending independent labelled validation."
+}

@@ -1,0 +1,16 @@
+{
+  "version": "multisource/1.0.0",
+  "growth_threshold": "0.25",
+  "min_recent_count": 30,
+  "min_persistence_numerator": 2,
+  "seasonal_lower": "-0.20",
+  "seasonal_upper": "0.25",
+  "spike_multiplier": "3",
+  "attention_limit": 15,
+  "concept_limit": 100,
+  "wordstat_seed_limit": 3,
+  "wordstat_suggestion_limit": 20,
+  "wordstat_phrase_limit": 15,
+  "wordstat_attempt_limit_per_run": 40,
+  "wordstat_attempt_limit_per_hour": 80
+}

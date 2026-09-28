@@ -1,0 +1,17 @@
+# Build the private native wheel first: python -m scripts.build_sqlite_runtime
+--find-links build/wheels
+-r semantic.lock
+pysqlite3==0.6.0+sqlite3.53.4
+keyring==25.7.0
+# Platform-only transitive dependencies are pinned as well as direct packages.
+SecretStorage==3.5.0 ; sys_platform == "linux"
+jeepney==0.9.0 ; sys_platform == "linux"
+cryptography==50.0.1 ; sys_platform == "linux"
+cffi==2.1.1 ; sys_platform == "linux"
+pycparser==3.0 ; sys_platform == "linux"
+jaraco.classes==3.4.0
+jaraco.context==6.1.2
+jaraco.functools==4.6.0
+more-itertools==11.1.0
+pywin32-ctypes==0.2.3 ; sys_platform == "win32"
+pypdf==6.18.0

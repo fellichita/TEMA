@@ -1,0 +1,41 @@
+{
+  "version": "3.2.0",
+  "predecessor": "3.1.0",
+  "archive_policy": "3.0 and 3.1 evaluators remain frozen. 3.2 source assertions, antecedents and field-exposure observations are retained in hashed assessment inputs and replayed.",
+  "field_exposure": {
+    "source": "OpenAlex first-page meta.count for one fixed QueryPlan.english_query and each completed publication year",
+    "budget": "6 to 10 first-page requests; max_results=1; no discovery corpus denominator",
+    "units": "Candidate numerator: unique study families. Denominator: indexed works returned by a fixed lexical query. This is an explicitly limited exposure proxy, not worldwide coverage or identical research-study units.",
+    "unknown": "Errors, missing totals, zero exposures and candidate counts exceeding exposure prevent relative-growth decisions. Missing is never zero.",
+    "provenance": "Exact query, one-year date bounds, source-reported total/page metadata, observed timestamp and canonical content hash"
+  },
+  "growth": {
+    "windows": "Adjacent three-year windows among the final six completed years; older years provide age context",
+    "rate_ratio": "(recent_studies/recent_exposure)/(baseline_studies/baseline_exposure)",
+    "zero_baseline": "Raw ratio is undefined; Jeffreys-smoothed ratio uses 0.5 pseudo-counts only for descriptive ranking; exact conditional interval can be unbounded",
+    "uncertainty": "95% equal-tail exact conditional Poisson rate-ratio interval via Clopper-Pearson beta quantiles. Does not include indexing, selection, query or overdispersion uncertainty. Stored bounds use12 significant digits and symmetric beta tails to avoid cancellation; confirmation requires lower bound>1+1e-10.",
+    "emerging_gate": "R>=10, two active recent years, raw ratio>=1.5 (or zero baseline), lower interval bound>1, recent field-relative rates nondecreasing and final rate strictly increasing, absolute recent transitions nonnegative"
+  },
+  "positive_admission": [
+    "specific frozen technology",
+    "complete comparable study-family history",
+    "supported problem, advantage and case",
+    "complete archived earlier-term search",
+    "available fixed-query exposure",
+    "reviewed novelty or archived same-study author assertion of a novel mechanism plus an experimental result"
+  ],
+  "categories": {
+    "weak_signal_candidate": "Automatic hypothesis only: author novelty assertion, first observed within three years, baseline zero, 2<=R<10, rising final field-relative rate and nondecreasing recent rates/counts. A Poisson interval including one is displayed, not interpreted as confirmed growth.",
+    "emerging_candidate": "Automatic hypothesis only: first observed within six years plus every relative-growth gate. Author assertions are not independent novelty verification.",
+    "early_signal": "Same sparse eligibility plus expert-reviewed new mechanism/combination (novelty>=75)",
+    "confirmed_trend": "Same emerging eligibility plus expert-reviewed novelty>=50",
+    "insufficient_evidence": "Missing or unmet required evidence, age, coverage or dynamics",
+    "renewed_interest": "Expert-reviewed established/renamed mechanism with field-relative growth",
+    "established_topic": "Expert-reviewed established/renamed mechanism without field-relative growth",
+    "transient_burst": "Final decline following a rise",
+    "declining": "Final decline without a preceding rise"
+  },
+  "signal_priority": "Only eligible positive categories: 100*clip((7-observed_age)/6,0,1)*(clip(log2(relative_ratio)/3,0,1)*persistence*specificity)^(1/3), where specificity is an admission gate equal to 1 and persistence=active_recent_years/3*nonnegative_transitions/2. No deployment bonus or raw-volume tie break.",
+  "score_interpretation": "Signal priority is an uncalibrated ordering heuristic, never a probability. Existing priority_score and its missing-component bounds retain their descriptive legacy meaning and do not determine 3.2 TOP ranking.",
+  "validation_status": "Regression and archived-input replay verified; independent scientific precision, recall and predictive lead time require separately labelled data and dated snapshots. Current index counts are reconstructed history, not strict historical as-of observations."
+}

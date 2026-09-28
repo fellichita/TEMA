@@ -1,0 +1,7 @@
+# Install only after the regular project dependencies in an existing Windows/Linux venv.
+# The CPU onnxruntime distribution must first be uninstalled; both packages provide
+# the same Python module and must not coexist. ONNX Runtime 1.29 uses CUDA 13/cuDNN 9.
+onnxruntime-gpu[cuda,cudnn]==1.29.0
+# The ONNX Runtime 1.29 "cuda" extra does not list cuBLAS directly. Keep its
+# major version aligned even when a cuDNN wheel changes its transitive metadata.
+nvidia-cublas>=13,<14

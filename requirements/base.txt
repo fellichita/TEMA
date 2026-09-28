@@ -1,0 +1,4 @@
+# Runtime backend; точные версии фиксируются в base.lock после проверки.
+httpx>=0.28,<0.29
+pydantic>=2.11,<3
+defusedxml>=0.7.1,<0.8

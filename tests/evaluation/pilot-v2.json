@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "frozen_at": null,
+  "status": "candidate_protocol_proposed_not_evaluated",
+  "application_must_not_load_this_file": true,
+  "development": [
+    "технологии в искусственном интеллекте",
+    "хранение энергии",
+    "робототехника",
+    "нейроморфная фотоника",
+    "хранение данных в ДНК",
+    "квантовые вычисления",
+    "глубокое обучение",
+    "квантовое зондирование живых систем",
+    "белки",
+    "Интернет вещей"
+  ],
+  "validation": [
+    "аддитивное производство металлов",
+    "органическая электроника",
+    "мембранная очистка воды"
+  ],
+  "blind": [
+    "акустические метаматериалы",
+    "геотермальные системы замкнутого цикла",
+    "ферментативная переработка пластика",
+    "твердотельное охлаждение",
+    "низкоуглеродные цементы",
+    "биопечать васкуляризованных тканей",
+    "магнитные микророботы для медицины",
+    "оптические атомные часы",
+    "самовосстанавливающиеся эластомеры",
+    "беспроводная передача энергии под водой",
+    "селективное извлечение лития из рассолов",
+    "нейтрализация космического мусора"
+  ],
+  "pairs_per_direction": {
+    "development": 20,
+    "validation": 20,
+    "blind": 35
+  },
+  "human_labeling": {
+    "total_pairs": 680,
+    "card_sample": [
+      60,
+      90
+    ],
+    "second_reviewer_fraction": 0.25,
+    "disagreements": "all_adjudicated",
+    "labels": [
+      "relevant",
+      "irrelevant",
+      "uncertain"
+    ],
+    "missing_labels_are_not_passes": true,
+    "candidate_labels": [
+      "early_weak_signal",
+      "emerging",
+      "established_research",
+      "mainstream",
+      "renewed_interest",
+      "false_positive",
+      "insufficient_evidence",
+      "uncertain"
+    ],
+    "candidate_sample": "Every actually returned first 15 candidates; no model score, status or rank shown to reviewer."
+  },
+  "gates": {
+    "precision_at_20_macro": 0.85,
+    "minimum_per_blind_direction": 0.7,
+    "substantive_claim_support": 0.95,
+    "numeric_provenance": 1.0,
+    "fabricated_entities_or_sources": 0,
+    "truncated_histories_called_confirmed": 0,
+    "maximum_duplicate_pairs_per_top15": 1,
+    "emerging_precision_at_15": 0.8,
+    "emerging_yield_at_15": 0.5,
+    "scope_precision": 0.95,
+    "specificity_precision": 0.95
+  },
+  "rules": [
+    "Freeze version, model, query plan, documents and source coverage for every evaluated run.",
+    "Current audited directions are development regressions. Their results cannot establish blind accuracy.",
+    "Published blind directions here are unsealed proposals. Supply a separately sealed external protocol before blind execution.",
+    "Judge lifecycle at the displayed candidate granularity independently of the application score or category.",
+    "Report early-weak-signal and emerging precision separately; include yield and all planned directions.",
+    "Do not require the automatic runner to manufacture internal confirmed labels before human scientific evaluation.",
+    "Assisted runs must be distinguished and retain attributed review records; automatic runs cannot be relabeled assisted after seeing labels.",
+    "If held-out failures drive changes, this set becomes validation and a new sealed set is required.",
+    "An internal agent review is not an independent external subject-matter review.",
+    "Do not use a current-data rerun as evidence of historical forecasting performance.",
+    "Candidate gates are initial project targets, not achieved metrics or calibrated scientific standards."
+  ],
+  "protocol_version": 2,
+  "blind_status": "published_proposals_unsealed",
+  "scientific_target": "candidate_emergence_and_weak_signal_separately"
+}

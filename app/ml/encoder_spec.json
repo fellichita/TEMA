@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "model_id": "intfloat/e5-small-v2",
+  "revision": "ffb93f3bd4047442299a41ebb6fa998a38507c52",
+  "dimensions": 384,
+  "max_length": 512,
+  "batch_size": 8,
+  "pooling": "attention_mask_mean_l2",
+  "prefixes": {"query": "query: ", "passage": "passage: "},
+  "files": [
+    {
+      "name": "model.onnx",
+      "bytes": 133093468,
+      "sha256": "4b8205be2a3c5fc53c6534d76a2012064f7309c162b806f2889c6ec8ec4fdcba"
+    },
+    {
+      "name": "tokenizer.json",
+      "bytes": 711396,
+      "sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66"
+    }
+  ]
+}

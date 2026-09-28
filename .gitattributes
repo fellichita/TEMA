@@ -1,0 +1,3 @@
+# Source identities and protected regression bytes must match on every checkout.
+# Git's automatic text detection leaves binary assets unchanged.
+* text=auto eol=lf

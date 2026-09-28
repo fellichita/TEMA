@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "model_id": "Xenova/opus-mt-ru-en",
+  "upstream_model_id": "Helsinki-NLP/opus-mt-ru-en",
+  "revision": "afe8c6c738ec81b6d033fd8f44f9678a639a7c67",
+  "source_language": "ru",
+  "target_language": "en",
+  "quantization": "int8",
+  "decoder_start_token_id": 62517,
+  "eos_token_id": 0,
+  "pad_token_id": 62517,
+  "vocabulary_size": 62518,
+  "max_source_tokens": 512,
+  "max_new_tokens": 64,
+  "beam_width": 4,
+  "normalizer_version": "marian-nfkc-normalizer/1.0.0",
+  "files": [
+    {
+      "name": "encoder_model_quantized.onnx",
+      "remote": "onnx/encoder_model_quantized.onnx",
+      "sha256": "c10df0466540534bb70c4402d539c349b8bfa9968184cad89f51408cf13e7eb7",
+      "bytes": 51628446
+    },
+    {
+      "name": "decoder_model_quantized.onnx",
+      "remote": "onnx/decoder_model_quantized.onnx",
+      "sha256": "d880abf58612013815554ef55c98d0f28b68190b2cb6f65c39d6e834f51dda8c",
+      "bytes": 58560874
+    },
+    {
+      "name": "tokenizer.json",
+      "remote": "tokenizer.json",
+      "sha256": "981cd3d9fef6bb4dda8082afda716b65deb6717cb3ef35ac0b57002c09dec2bb",
+      "bytes": 7205388
+    }
+  ]
+}

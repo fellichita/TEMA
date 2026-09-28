@@ -1,0 +1,162 @@
+{
+  "provenance": "OpenAlex revision from saved production run273069f9af1a4d60984039ece2f09984; exact title and abstract, retrieval2026-09-14. No new provider request.",
+  "query_plan": {
+    "as_of": "2026-09-14",
+    "completed_years": [
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "definition": "Квантовое зондирование живых систем — это междисциплинарная область, использующая квантовые сенсоры (например, NV-центры в алмазе, квантовые точки, атомные магнитометры) для измерения физических величин (магнитных полей, температуры, электрических полей) в биологических образцах с высокой чувствительностью и пространственным разрешением. Включает разработку методов визуализации и спектроскопии для изучения клеточных процессов, нейронной активности, биомагнетизма и молекулярных взаимодействий на наноуровне. Исключает классические методы зондирования (например, оптическую микроскопию без квантовых эффектов) и квантовые вычисления.",
+    "english_query": "quantum sensing of biological systems",
+    "exclusions": [
+      "classical biosensors",
+      "quantum computing",
+      "quantum cryptography",
+      "MRI (classical)",
+      "optical tweezers",
+      "fluorescence microscopy without quantum effects"
+    ],
+    "language": "ru",
+    "limits": {
+      "discovery_documents": 1500,
+      "historical_documents_per_candidate": 3000,
+      "input_tokens": 200000,
+      "llm_calls": 24,
+      "new_historical_documents": 20000,
+      "output_tokens": 30000,
+      "schema_version": 3
+    },
+    "model_version": "yandex/gpt://b1gss2khs93b298hgs24/deepseek-v4-flash@yandex-deepseek-v4-flash",
+    "original_query": "квантовое зондирование живых систем",
+    "planner_version": "query-planner/3.0.0",
+    "queries": [
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "openalex",
+        "text": "quantum sensing biological systems"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "crossref",
+        "text": "quantum sensing biological systems"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "openalex",
+        "text": "NV centers diamond bioimaging"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "crossref",
+        "text": "NV centers diamond bioimaging"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "openalex",
+        "text": "quantum magnetometry neural activity"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "crossref",
+        "text": "quantum magnetometry neural activity"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "openalex",
+        "text": "quantum thermometry living cells"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "crossref",
+        "text": "quantum thermometry living cells"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "openalex",
+        "text": "quantum dots biosensors"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "crossref",
+        "text": "quantum dots biosensors"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "openalex",
+        "text": "atomic magnetometers biomagnetic"
+      },
+      {
+        "purpose": "discovery",
+        "schema_version": 3,
+        "source": "crossref",
+        "text": "atomic magnetometers biomagnetic"
+      }
+    ],
+    "schema_version": 3,
+    "subdirections": [
+      "NV centers in diamond for bioimaging",
+      "quantum magnetometry for neural activity",
+      "quantum thermometry in living cells",
+      "quantum dots as biosensors",
+      "atomic magnetometers for biomagnetic measurements",
+      "quantum-enhanced sensing in vivo"
+    ],
+    "synonyms": [
+      "quantum biosensing",
+      "quantum sensors in biology",
+      "diamond magnetometry",
+      "NV-based sensing",
+      "quantum imaging of biological samples",
+      "quantum probes for cellular measurements"
+    ]
+  },
+  "document": {
+    "source": "openalex",
+    "source_id": "W7125182252",
+    "doi": "10.1038/s41586-025-09971-3",
+    "title": "Quantum spin resonance in engineered proteins for multimodal sensing",
+    "abstract": "Abstract Sensing technologies that exploit quantum phenomena for measurement are finding increasing applications across materials, physical and biological sciences 1–7 . Until recently, biological candidates for quantum sensors were limited to in vitro systems, had poor sensitivity and were prone to light-induced degradation. These limitations impeded practical biotechnological applications, and high-throughput study that would facilitate their engineering and optimization. We recently developed a class of magneto-sensitive fluorescent proteins including MagLOV, which overcomes many of these challenges 8 . Here we show that through directed evolution, it is possible to engineer these proteins to alter the properties of their response to magnetic fields and radio frequencies. We find that MagLOV exhibits optically detected magnetic resonance in living bacterial cells at room temperature, at sufficiently high signal-to-noise for single-cell detection. These effects are explained through the radical-pair mechanism, which involves the protein backbone and a bound flavin cofactor. Using optically detected magnetic resonance and fluorescence magnetic-field effects, we explore a range of applications, including spatial localization of fluorescence signals using gradient fields (that is, magnetic resonance imaging using a genetically encoded probe), sensing of the molecular microenvironment, multiplexing of bio-imaging and lock-in detection, mitigating typical biological imaging challenges such as light scattering and autofluorescence. Taken together, our results represent a suite of sensing modalities for engineered biological systems, based on and designed around understanding the quantum-mechanical properties of magneto-sensitive fluorescent proteins.",
+    "publication_year": 2026,
+    "publication_month": 1,
+    "publication_date": "2026-01-21",
+    "date_precision": "day",
+    "authors": [
+      "Gabriel Abrahams",
+      "Ana Štuhec",
+      "Vincent Spreng",
+      "Robin Henry",
+      "Idris Kempf",
+      "Jessica James",
+      "Kirill Sechkar",
+      "Scott Stacey",
+      "Vicente Trelles-Fernandez",
+      "Lewis M. Antill",
+      "Christiane R. Timmel",
+      "Jack J. Miller",
+      "Maria Ingaramo",
+      "Andrew G. York",
+      "Jean‐Philippe Tetienne",
+      "Harrison Steel"
+    ],
+    "url": "https://doi.org/10.1038/s41586-025-09971-3",
+    "language": "en",
+    "document_type": "article",
+    "citation_count": 23,
+    "fetched_at": "2026-09-14T09:20:18.081972Z"
+  }
+}
