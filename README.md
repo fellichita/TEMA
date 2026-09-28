@@ -7,6 +7,8 @@
 **[Полная документация проекта](docs/documentation.md)** — архитектура, стек,
 установка на трёх ОС, HTTP API, методика анализа и сопровождение.
 
+**Windows: [установка и запуск](#windows).**
+
 Проект распространяется в виде исходного кода. Для работы нужны Python 3.13,
 Tkinter и зависимости выбранного режима. Модели устанавливаются отдельно;
 для поиска новых публикаций нужен интернет.
@@ -51,6 +53,82 @@ Python-окружений, `build/` — для временных файлов S
 `tools/` — инструменты разработчика. Файлы Python названы в `snake_case`,
 документы — в `kebab-case`. Идентификаторы профилей, форматы сохранённых данных и
 версии методик сохранены для совместимости с существующими анализами.
+
+<a id="windows"></a>
+
+## Запуск на Windows
+
+### 1. Подготовка
+
+Установите **Python 3.13 x64 с Tcl/Tk**, **Git** и **Visual Studio Build Tools**
+с компонентами MSVC C++ и Windows SDK. Компилятор нужен для SQLite.
+Первичная установка зависимостей и моделей требует интернета;
+локальная модель Qwen занимает около 1,8 ГБ, дополнительно нужны место под
+остальные модели и рабочие данные.
+
+Откройте **PowerShell**. Если проект ещё не скачан:
+
+```powershell
+git clone --branch main --single-branch https://github.com/fellichita/TEMA.git
+cd TEMA
+```
+
+Если проект уже скачан, откройте PowerShell в его корневой папке — той, где
+находятся `app/`, `requirements/` и `README.md`.
+
+### 2. Установка и первый запуск
+
+Выполняйте команды по очереди, дожидаясь успешного завершения каждой.
+Если команда завершилась ошибкой, исправьте её перед следующим шагом.
+Активация окружения и изменение политики выполнения PowerShell не требуются.
+
+```powershell
+py -3.13 -m venv .venv
+.\.venv\Scripts\python.exe -c "import tkinter; print('Tk', tkinter.TkVersion)"
+.\.venv\Scripts\python.exe -m pip install --upgrade pip==26.2.1
+.\.venv\Scripts\python.exe -m pip install -r requirements/semantic.lock -r requirements/native-build.lock
+.\.venv\Scripts\python.exe -m scripts.build_sqlite_runtime
+.\.venv\Scripts\python.exe -m pip install -r requirements/pilot.lock
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m scripts.setup_models
+.\.venv\Scripts\python.exe -m scripts.install_local_llm
+.\.venv\Scripts\python.exe -m app.main
+```
+
+Последняя команда открывает настольное приложение. Модели скачиваются при первой
+подготовке; выбранный по умолчанию провайдер `local` использует установленный Qwen.
+Поиск новых публикаций требует интернета.
+
+### 3. Повторный запуск
+
+После установки откройте PowerShell в папке проекта и выполните:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.main
+```
+
+### Локальный веб-интерфейс на Windows
+
+После подготовки основной `.venv` выполните следующие команды в PowerShell
+из корня проекта. Если терминал занят настольным приложением, закройте его окно
+или откройте второй терминал в той же папке.
+
+```powershell
+py -3.13 -m venv .venv-web
+.\.venv-web\Scripts\python.exe -m pip install -r requirements/web.txt
+.\.venv-web\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m scripts.setup_models --web-analysis --profile storage/web-local-profile
+.\.venv\Scripts\python.exe -m scripts.run_web_demo --local-only --no-auth --open-browser --data-dir storage/web-local-profile
+```
+
+Откроется браузер по адресу `http://127.0.0.1:8501`. Панель владельца доступна
+на `http://127.0.0.1:8502`. Для повторного запуска достаточно последней команды;
+для остановки нажмите **Ctrl+C** в терминале. Веб использует отдельный профиль
+`storage/web-local-profile`.
+
+Публичная ссылка и назначение файлов `launchers/windows/` описаны в
+[руководстве по веб-развёртыванию](docs/guides/web-deployment.md).
+Подробности моделей и диагностика — в [полной документации](docs/documentation.md).
 
 ## Быстрый запуск на macOS
 
